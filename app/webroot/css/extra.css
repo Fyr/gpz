@@ -10,3 +10,20 @@ form.searchBlock {
 .block p {
 	text-align: justify;
 }
+.block .title {
+	color: #3f6d70;
+}
+.block .more {
+	padding: 0;
+	margin-top: 5px;
+}
+.block .more a {
+	background: #3f6d70;
+}
+.block .more a:hover {
+	background: #34a2a9;
+}
+.paging {
+	margin-top: 10px;
+	text-align: center;
+}

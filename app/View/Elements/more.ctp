@@ -1,0 +1,1 @@
+<div class="more"><?=$this->Html->link('подробнее', $url)?></div>

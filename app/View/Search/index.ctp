@@ -1,34 +1,74 @@
-<?php if((isset($result['error']) and $result['error']) or $error){?>
-	<p>Произошла ошибка <?php if($result['error']){echo $result['error'];}?></p>
-<?php }else{
-	if(!count($result['table'])){?>
+<style type="text/css">
+.table-bordered th, .table-bordered td {
+    border-left: 1px solid #dddddd;
+}
+</style>
+<?=$this->element('title', array('title' => 'Результаты поиска'))?>
+<div class="block clearfix">
+<?
+	$this->Html->css('/Table/css/grid', array('inline' => false));
+	if (!$output['result']) {
+?>
+		<p><?=$output['errorText']?></p>
+<?
+	} elseif (!count($output['content']['table'])) {
+?>
 		<p>Нет результатов</p>
-	<?php }else{ ?>
-		<p> Найдено <?php echo count($result['table']);?> результатов.</p> 
-		<p>Для более точного результата уточните поиск в поле запроса</p>
-		<table>
-		<tr>
-			<th>Производитель</th>
-			<th>Номер</th>
-			<th>Имя</th>
-			<th>Код позиции</th>
-			<th>Изображение</th>
+<? 
+	} else { 
+?>
+		<p>Найдено <?=$output['content']['row_count'];?> результатов.</p> 
+		<p>Для более конкретного результата уточните поиск в поле запроса</p>
+		<table align="left" class="grid table-bordered shadow" border="0" cellpadding="0" cellspacing="0">
+		<thead>
+		<tr class="first table-gradient">
+			<th>
+				<a class="grid-unsortable" href="javascript:void(0)">Производитель</a>
+			</th>
+			<th>
+				<a class="grid-unsortable" href="javascript:void(0)">Номер</a>
+			</th>
+			<th>
+				<a class="grid-unsortable" href="javascript:void(0)">Имя</a>
+			</th>
+			<th>
+				<a class="grid-unsortable" href="javascript:void(0)">Код позиции</a>
+			</th>
+			<th>
+				<a class="grid-unsortable" href="javascript:void(0)">Изображение</a>
+			</th>
 			<th></th>
 		</tr>
-		<?php foreach($result['table'] as $id=>$row){?>
-			<tr>
-				<td><?php echo $row['class_man'];?></td>
-				<td><?php echo $row['partnumber'];?></td>
-				<td><?php echo $row['class_cat'];?></td>
-				<td><?php echo $row['code_cat'];?></td>
-				<td><img src="<?php echo $row['imagepath'];?>" /></td>
-				<td class="priceCell">
-					<a href="javascript:void(0);" class="showPrice" data-number="<?php echo $row['partnumber'];?>" data-classman="<?php echo $row['class_man'];?>">Посмотреть цены</a>
-					<img style="display:none;" src="/img/spinner.gif">
+		</thead>
+		<tbody>
+<? 
+		foreach ($output['content']['table'] as $id => $row) {
+?>
+			<tr class="grid-row">
+				<td><?=$row['class_man'];?></td>
+				<td><?=$row['partnumber'];?></td>
+				<td><?=$row['class_cat'];?></td>
+				<td><?=$row['code_cat'];?></td>
+				<td style="text-align:center;">
+<?
+			if ($row['imagepath']) {
+?>
+				<img src="<?=$row['imagepath'];?>" />
+<?
+			}
+?>
+				</td>
+				<td class="priceCell" nowrap="nowrap">
+					<a href="/search/price/?number=<?=$row['partnumber']?>&classman=<?=$row['class_man'];?>" class="showPrice">подробнее</a>
 					<span class="value"></span>
 				</td>
 			</tr>
-		<?php }?>
+<? 
+		}
+?>
+		</tbody>
 		</table>	
-	<?php }?>
-<?php }?>
+<?
+	}
+?>
+</div>

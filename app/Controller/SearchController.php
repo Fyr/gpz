@@ -16,50 +16,68 @@ class SearchController extends AppController {
 	private $curlObj;
 	private $requestData;
 	
-	/*
-	protected function _beforeInit() {
-	    $this->components[] = 'RequestHandler';
-	}
-	*/
 	
 	public function index() {
 
 		$this->type = self::SEARCH;
 		
+		if(!isset($this->request->query['q']) or !$this->request->query['q']){
+			$this->setError('Введите текст в строку поиска');
+			return;
+		}
+		
 		$this->createRequest('http://www.zzap.ru/webservice/datasharing.asmx/GetSearchSuggest');
 		$response = curl_exec($this->curlObj);
 		$result = json_decode($response);
 		
-		$error = false;
-		if(!$response or !isset($result->d)){
-			$error = true;
-		}
-		$this->set('error', $error);
-		$this->set('result',  json_decode($result->d,true));
+		/*file_put_contents(WWW_ROOT.'api.log', date('d-m-Y H:i:s')." \n",FILE_APPEND);
+		file_put_contents(WWW_ROOT.'api.log', "Data RECIEVE \n",FILE_APPEND);
+		file_put_contents(WWW_ROOT.'api.log', $response,FILE_APPEND);*/
 		
+		if(!$response or !isset($result->d)){
+			$this->setError('Ошибка запроса');
+			return;
+		}
+		$this->setResult(json_decode($result->d,true));		
 	}
 	
 	public function price(){
-		$this->autoRender = false;
 		$this->type = self::PRICE;
+		
+		if(!isset($this->request->query['number']) or !$this->request->query['number'] 
+			or !isset($this->request->query['classman']) or !$this->request->query['classman']){
+			$this->setError('Неверный запрос');
+			return;
+		}
 		
 		$this->createRequest('http://www.zzap.ru/webservice/datasharing.asmx/GetSearchResult');
 		$response = curl_exec($this->curlObj);
 		$result = json_decode($response);
-
-		$errorText = 'Произошла ошибка';
+		
+		file_put_contents(ROOT.DS.APP_DIR.DS.'tmp'.DS.'logs'.DS.'api.log', date('d-m-Y H:i:s')." \n",FILE_APPEND);
+		file_put_contents(ROOT.DS.APP_DIR.DS.'tmp'.DS.'logs'.DS.'api.log', "Data RECIEVE \n",FILE_APPEND);
+		file_put_contents(ROOT.DS.APP_DIR.DS.'tmp'.DS.'logs'.DS.'api.log', $response."\n",FILE_APPEND);
+		
 		if(!$response or !isset($result->d)){
-			echo json_encode(array('error'=>true));
+			$this->setError('Ошибка Запроса');
 			return;
 		}
-		$result = json_decode($result->d,true);
-		if(!isset($result['table']) or $result['error']){
-			echo json_encode(array('error'=>true));
+		$content = json_decode($result->d,true);
+		if(!isset($content['table']) or $content['error']){
+			$this->setError('Неверный запрос');
 			return; 
 		}
-
-		$price = $this->getPrice($result['table']);
-		echo json_encode(array('error'=>false,'price'=>ceil($price*Configure::read('priceRatio'))));
+		if(!$content['table']){
+			$this->setError('Нет предложений');
+			return;
+		}
+		
+		$output['partnumber'] = $content['table'][0]['partnumber'];
+		$output['class_man'] = $content['table'][0]['class_man'];
+		$output['class_cat'] = $content['table'][0]['class_cat'];
+		$output['imagepath'] = $content['table'][0]['imagepath'];
+		$output['price'] = $this->getPrice($content['table']);
+		$this->setResult($output);
 	}
 
 	private function getPrice($priceResult){
@@ -88,19 +106,24 @@ class SearchController extends AppController {
 		curl_setopt($this->curlObj, CURLOPT_HTTPHEADER, array(                                                                          
 			'Content-Type: application/json',                                                                                
 			'Content-Length: ' . strlen($this->requestData))                                                                       
-		);                                                                                                                   
+		);  
+		
+		file_put_contents(ROOT.DS.APP_DIR.DS.'tmp'.DS.'logs'.DS.'api.log', date('d-m-Y H:i:s')." \n",FILE_APPEND);
+		file_put_contents(ROOT.DS.APP_DIR.DS.'tmp'.DS.'logs'.DS.'api.log', "Data SENT \n",FILE_APPEND);
+		file_put_contents(ROOT.DS.APP_DIR.DS.'tmp'.DS.'logs'.DS.'api.log', "$link \n",FILE_APPEND);
+		file_put_contents(ROOT.DS.APP_DIR.DS.'tmp'.DS.'logs'.DS.'api.log', $this->requestData,FILE_APPEND);
 	}
 	
 	private function buildRequestData(){
 		if($this->type == self::SEARCH){
-			$dataArray = array('search_text'=>$this->request->data('search'),
+			$dataArray = array('search_text'=>$this->request->query['q'],
 							'row_count'=>  self::MAX_ROW_SUGGEST,
 							'api_key'=>$this->key);
 		}else if($this->type == self::PRICE){
 			$dataArray = array('login'=>"",
 								'password'=>"",
-								'partnumber'=>$this->request->data('number'),
-								'class_man'=>$this->request->data('class_man'),
+								'partnumber'=>$this->request->query['number'],
+								'class_man'=>$this->request->query['classman'],
 								'location'=>"",
 								'row_count'=>  self::MAX_ROW_PRICE,
 								'api_key'=>$this->key);
@@ -108,4 +131,13 @@ class SearchController extends AppController {
 		
 		$this->requestData = json_encode($dataArray);
 	}
+	
+	private function setResult($result){
+		$this->set('output',array('result'=>true,'content'=>$result));
+	}
+	
+	private function setError($errorText = 'Произошла ошибка'){
+		$this->set('output',array('result'=>false,'errorText'=>$errorText));
+	}
+	
 }

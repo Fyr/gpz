@@ -65,11 +65,11 @@
 				</div>
 				<div class="wrapper">
 					<div class="searchShadow">
-						<form class="searchBlock">
+						<form class="searchBlock" action="<?=$this->Html->url(array('controller' => 'Search', 'action' => 'index'))?>" method="get">
 							<button class="submit">поиск</button>
 							<div class="outerSearch">
 								<span class="icon search"></span>
-								<input type="text" placeholder="Например V-200 alfa" />
+								<input type="text" name="q" value="<?=$this->request->query('q')?>"  placeholder="Например V-200 alfa" />
 							</div>
 						</form>
 					</div>

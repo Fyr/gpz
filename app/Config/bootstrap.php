@@ -20,6 +20,13 @@ Configure::write('Config.language', 'rus');
 
 CakePlugin::loadAll();
 
+Configure::write('ZzapApi', array(
+	'url' => 'http://www.zzap.ru/webservice/test/datasharing1.asmx/',
+	// 'url' => 'http://www.zzap.ru/webservice/datasharing.asmx/',
+	'key' => 'EAAAAOInZ5vBwkgYdsvhjHvBppQYdUTeJ640oUJJzxCoE2vglu4v2Wm5xwo77ZCTSXvOHA==',
+	'log' => ROOT.DS.APP_DIR.DS.'tmp'.DS.'logs'.DS.'zzap_api.log'
+));
+
 // Values from google recaptcha account
 define('RECAPTCHA_PUBLIC_KEY', '6Lezy-QSAAAAAJ_mJK5OTDYAvPEhU_l-EoBN7rxV');
 define('RECAPTCHA_PRIVATE_KEY', '6Lezy-QSAAAAACCM1hh6ceRr445OYU_D_uA79UFZ');

@@ -1,4 +1,6 @@
-<?=$this->element('title', array('title' => $output['content']['class_cat'].' '.$output['content']['partnumber']))?>
+<? if(isset($output['content'])){  
+	echo $this->element('title', array('title' => $output['content']['class_cat'].' '.$output['content']['partnumber']));
+}?>
 <div class="block clearfix">
 <?
 	if (!$output['result']) {

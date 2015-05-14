@@ -9,7 +9,7 @@
 	echo $this->element('Seo.seo_info', array('data' => $seo));
 	echo $this->Html->meta('icon');
 
-	echo $this->Html->css(array('style', 'fonts', 'extra'));
+	echo $this->Html->css(array('fonts', 'style', 'extra'));
 	
 	$aScripts = array(
 		'vendor/jquery/jquery-1.10.2.min',

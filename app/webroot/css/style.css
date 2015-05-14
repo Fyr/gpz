@@ -147,7 +147,7 @@ p { font-size: 15px; line-height: 20px;}
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fefefe', endColorstr='#ebeaea',GradientType=0 ); /* IE6-8 */
 }
 
-input[type=text], textarea { border: 1px solid #e7e7e7; background: #fff; padding: 0 5px 0 5px; border-radius: 3px; display: block; width: 100%; font-family: 'Open Sans'; font-size: 11px; margin: 0; height: 30px; outline: none; resize: none; color: #3d3d3d; }
+.searchBlock .outerSearch input[type=text], .input input[type=text], .input textarea { border: 1px solid #e7e7e7; background: #fff; padding: 0 5px 0 5px; border-radius: 3px; display: block; width: 100%; font-family: 'Open Sans'; font-size: 11px; margin: 0; height: 30px; outline: none; resize: none; color: #3d3d3d; }
 
 textarea { height: auto;}
 
@@ -266,4 +266,33 @@ textarea { height: auto;}
 @media (max-width: 470px) { 
 	.formItem .formName { float: none; widows: auto; }
 	.formItem .formField { margin-left: 0;}
+}
+
+
+.catalogPage {}
+	.catalogPage .leftSide { float: left; width: 300px; text-align: center; padding: 0; }
+	.catalogPage .leftSide a { display: block; text-decoration: none; border-top: 1px solid #ddd; padding: 5px 0; }
+	.catalogPage .leftSide a:first-child { border-top: none; border-radius: 5px 5px 0 0;}
+	.catalogPage .leftSide a:last-child { border-radius: 0 0 5px 5px;}
+	.catalogPage .leftSide a:hover, .catalogPage .leftSide a.active { background: #3f6d70; color: #fff;}
+
+	.catalogPage .mainContentCatalog { margin-left: 320px; }
+	.catalogPage .mainContentCatalog .alphabet { text-align: center; }
+	.catalogPage .mainContentCatalog .alphabet a { text-decoration: none; border: 1px solid #fff; display: inline-block; padding: 0 3px; }
+	.catalogPage .mainContentCatalog .alphabet a:hover { border: 1px solid #ddd; }
+
+	.catalogPage .mainContentCatalog .content { column-count:3; -moz-column-count:3; -webkit-column-count:3; column-gap:50px;
+-moz-column-gap:50px; -webkit-column-gap:50px; padding: 20px 0 0 0;}
+	.catalogPage .mainContentCatalog .content a { display: block; }
+	.catalogPage .mainContentCatalog .content .letter { text-align: center; background: #3f6d70; color: #fff; border: 1px solid #2a5154; margin: 30px 0 10px 0; padding: 3px 0;}
+	.catalogPage .mainContentCatalog .content .letter:first-child { margin-top: 0;}
+	
+
+@media (max-width: 767px) { 
+	.catalogPage .leftSide { float: none; width: auto;}
+	.catalogPage .mainContentCatalog { margin-left: 0;}
+}
+
+@media (max-width: 450px) { 
+	.catalogPage .mainContentCatalog .content { column-count:2; -moz-column-count:2; -webkit-column-count:2; column-gap:50px;}
 }

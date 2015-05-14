@@ -15,8 +15,8 @@ msgid "You must set your private recaptcha key using Cofigure::write('Recaptcha.
 msgstr "Vous devez définir votre clé privée Recaptcha en utilisant Configure::write('Recaptcha.privateKey', 'votre-clé'); !"
 
 #: /controllers/components/recaptcha.php:110
-msgid "Incorect captcha"
-msgstr "Captcha incorrect"
+msgid "Incorrect captcha"
+msgstr "Некорректный код для защиты от спама"
 
 #: /views/helpers/recaptcha.php:115
 msgid "To use reCAPTCHA Mailhide, you need to have the mcrypt php module installed."

@@ -1,29 +1,37 @@
+
 .breadCrumbs {
-	margin: 0 0 20px 0;
+    margin: 0 0 20px;
 }
 form.searchBlock {
-	margin-bottom: 20px;
+    margin-bottom: 20px;
 }
 .block {
-	padding: 20px;
+    padding: 20px;
 }
 .block p {
-	text-align: justify;
+    text-align: justify;
 }
 .block .title {
-	color: #3f6d70;
+    color: #3f6d70;
 }
 .block .more {
-	padding: 0;
-	margin-top: 5px;
+    margin-top: 5px;
+    padding: 0;
 }
 .block .more a {
-	background: #3f6d70;
+    background: none repeat scroll 0 0 #3f6d70;
 }
 .block .more a:hover {
-	background: #34a2a9;
+    background: none repeat scroll 0 0 #34a2a9;
 }
 .paging {
-	margin-top: 10px;
-	text-align: center;
+    margin-top: 10px;
+    text-align: center;
+}
+.error-message, .error {
+    color: #f00;
+    font-weight: bold;
+}
+.input.text, .input.textarea {
+    margin-bottom: 10px;
 }

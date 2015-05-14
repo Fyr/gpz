@@ -38,7 +38,7 @@ class AdminController extends AppController {
 			*/
 			'Settings' => array('label' => __('Settings'), 'href' => '', 'submenu' => array(
 				array('label' => __('System'), 'href' => array('controller' => 'AdminSettings', 'action' => 'index')),
-				array('label' => __('Sections'), 'href' => array('controller' => 'AdminSections', 'action' => 'index'))
+				// array('label' => __('Sections'), 'href' => array('controller' => 'AdminSections', 'action' => 'index'))
 			))
 		);
 		$this->aBottomLinks = $this->aNavBar;

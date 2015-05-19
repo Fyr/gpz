@@ -2,7 +2,7 @@
 App::uses('AppController', 'Controller');
 class PagesController extends AppController {
 	public $name = 'Pages';
-	public $uses = array('Page', 'Product', 'News', 'Media.Media');
+	public $uses = array('Page', 'CarType', 'News', 'Media.Media');
 	// public $helpers = array('ArticleVars');
 
 	public function home() {
@@ -18,12 +18,8 @@ class PagesController extends AppController {
 		$news = $this->News->find('all', compact('conditions', 'order', 'limit'));
 		$this->set('news', $news);
 		
-		/*
-		$conditions = array('object_type' => 'Slider');
-		$order = 'created';
-		$aSlider = $this->Media->find('all', compact('conditions', 'order'));
-		*/
-		// $this->set('aSlider', $this->Media->getObjectList('Slider'));
+		$aCarTypes = $this->CarType->find('all');
+		$this->set('aCarTypes', $aCarTypes);
 		$this->currMenu = 'Home';
 	}
 	

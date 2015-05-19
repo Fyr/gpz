@@ -7,7 +7,8 @@ class SiteRouterHelper extends AppHelper {
 		$aControllers = array(
 			'SiteArticle' => 'Articles',
 			'Product' => 'Products',
-			'News' => 'News'
+			'News' => 'News',
+			'CarType' => 'Car'
 		);
 		$controller = (isset($aControllers[$objectType])) ? $aControllers[$objectType] : 'Articles';
 		$url = array('controller' => $controller, 'action' => 'view');

@@ -17,8 +17,14 @@
 <? 
 	} else { 
 ?>
-		<p>Найдено <?=$output['content']['row_count'];?> результатов.</p> 
+		<p>Найдено <?=count($output['content']['table'])?> результатов.</p> 
+<?
+		if (count($output['content']['table']) > 20) {
+?>
 		<p>Для более конкретного результата уточните поиск в поле запроса</p>
+<?
+		}
+?>
 		<table align="left" class="grid table-bordered shadow" border="0" cellpadding="0" cellspacing="0">
 		<thead>
 		<tr class="first table-gradient">
@@ -59,8 +65,17 @@
 ?>
 				</td>
 				<td class="priceCell" nowrap="nowrap">
-					<a href="/search/price/?number=<?=$row['partnumber']?>&classman=<?=$row['class_man'];?>" class="showPrice">подробнее</a>
-					<span class="value"></span>
+					<!--<a href="/search/price/?number=<?=$row['partnumber']?>&classman=<?=$row['class_man'];?>" class="showPrice">подробнее</a>-->
+					<span class="value">
+<?					
+						if(isset($row['price']) and $row['price']){
+							$price = number_format($row['price'],0 ,"," ,Configure::read('Settings.int_div'));
+							echo Configure::read('Settings.price_prefix').$price.Configure::read('Settings.price_postfix');
+						}else{
+							echo 'Нет предложений';
+						}
+?>
+					</span>
 				</td>
 			</tr>
 <? 

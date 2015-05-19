@@ -21,7 +21,7 @@ class SearchController extends AppController {
 		$this->setResult($result);		
 	}
 	
-	public function price(){
+	/*public function price(){
 		
 		if(!isset($this->request->query['number']) or !$this->request->query['number'] 
 			or !isset($this->request->query['classman']) or !$this->request->query['classman']){
@@ -37,7 +37,7 @@ class SearchController extends AppController {
 		}
 		
 		$this->setResult($result);
-	}
+	}*/
 	
 	private function setResult($result){
 		$this->set('output',array('result'=>true,'content'=>$result));

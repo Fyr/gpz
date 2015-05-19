@@ -37,7 +37,7 @@ class AppController extends Controller {
 		$this->aNavBar = array(
 			'Home' => array('label' => __('Home'), 'href' => array('controller' => 'Pages', 'action' => 'home')),
 			'News' => array('label' => __('News'), 'href' => array('controller' => 'News', 'action' => 'index')),
-			'Products' => array('label' => __('Products'), 'href' => array('controller' => 'Products', 'action' => 'index')),
+			'Products' => array('label' => __('Products'), 'href' => '/'),
 			'Articles' => array('label' => __('Articles'), 'href' => array('controller' => 'Articles', 'action' => 'index')),
 			'about-us' => array('label' => __('About us'), 'href' => array('controller' => 'Pages', 'action' => 'view', 'about-us.html')),
 			'Contacts' => array('label' => __('Contacts'), 'href' => array('controller' => 'Contacts', 'action' => 'index'))

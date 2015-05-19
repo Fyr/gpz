@@ -35,3 +35,9 @@ form.searchBlock {
 .input.text, .input.textarea {
     margin-bottom: 10px;
 }
+
+.catalogPage .mainContentCatalog .content .letter a, 
+.catalogPage .mainContentCatalog .content .letter a:visited {
+	color: #fff;
+	text-decoration: none;
+}

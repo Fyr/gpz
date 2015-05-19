@@ -5,7 +5,7 @@ class ZzapApi extends AppModel {
 	
 	public $useTable = false;
 	
-	const MAX_ROW_SUGGEST = 100;
+	const MAX_ROW_SUGGEST = 10;
 	const MAX_ROW_PRICE = 300;
 	
 	private function createRequest($link, $data){
@@ -53,34 +53,34 @@ class ZzapApi extends AppModel {
 			'search_text' => $searchString,
 			'row_count'=>  self::MAX_ROW_SUGGEST
 		);
-		$content = $this->sendApiRequest('GetSearchSuggest', $dataArray);
-		return $content;
+		$this->content = $this->sendApiRequest('GetSearchSuggest', $dataArray);
+
+		if($this->content['table']){
+			//ограничение в АПИ не работает - поэтому срезаем
+			$this->content['table'] = array_slice($this->content['table'], 0, self::MAX_ROW_SUGGEST);
+			$this->multiCurlPrice($this->content['table']);
+			$this->content['table'] = Hash::sort($this->content['table'], '{n}.price', 'desc'); 
+		}
+		return $this->content;
 	}
 	
-	public function getResults($classman, $partnumber){
+	private function getSuggestPrice($priceResponse){
 		
-		$dataArray = array(
-			'login' => '',
-			'password'=> '',
-			'partnumber' => $partnumber,
-			'class_man' => $classman,
-			'location' => '',
-			'row_count'=> self::MAX_ROW_PRICE
-		);
-		
-		$content = $this->sendApiRequest('GetSearchResult', $dataArray);
-		
-		if(!$content['table']){
-			throw new Exception('Нет предложений');
+		if(!$priceResponse){
+			return 0; 
 		}
 		
-		$output['partnumber'] = $content['table'][0]['partnumber'];
-		$output['class_man'] = $content['table'][0]['class_man'];
-		$output['class_cat'] = $content['table'][0]['class_cat'];
-		$output['imagepath'] = $content['table'][0]['imagepath'];
-		$output['price'] = $this->getPrice($content['table']);
+		$priceContent = json_decode($priceResponse);
+		if(!$priceContent or !isset($priceContent->d)){
+			return 0;
+		}
 		
-		return $output;
+		$priceResult = json_decode($priceContent->d,true);	
+		if(!isset($priceResult['table']) or !$priceResult['table']){
+			return 0;
+		}
+		
+		return $this->getPrice($priceResult['table']);
 		
 	}
 	
@@ -97,11 +97,77 @@ class ZzapApi extends AppModel {
 		if(!$prices){
 			return 0;
 		}
-		return min($prices);
+		//переводим процент в десятичный коэффициент
+		$priceRatio = 1+(Configure::read('Settings.price_ratio')/100);
+		return round($priceRatio * Configure::read('Settings.xchg_rate') * min($prices),-2);
 	}
 	
 	private function writeLog($actionType, $data){
 		$string = date('d-m-Y H:i:s').' '.$actionType.' '.$data;
 		file_put_contents(Configure::read('ZzapApi.log'), $string."\r\n", FILE_APPEND);
+	}
+	
+	private function getRequestPriceBody($classman,$partnumber){
+		$dataArray = array(
+			'login' => '',
+			'password'=> '',
+			'partnumber' => $partnumber,
+			'class_man' => $classman,
+			'location' => '',
+			'row_count' => self::MAX_ROW_PRICE,
+			'api_key' => Configure::read('ZzapApi.key')
+		);
+		return json_encode($dataArray);
+	}
+
+
+	private function multiCurlPrice($suggestTable){
+
+		$url = Configure::read('ZzapApi.url').'GetSearchResult';
+		$multi = curl_multi_init();
+		$channels = array();
+		
+		foreach ($suggestTable as $id=>$suggest) {
+			$data[$id] = $this->getRequestPriceBody($suggest['class_man'], $suggest['partnumber']);
+			$curl = curl_init();  
+			curl_setopt($curl, CURLOPT_URL, $url );
+			curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");                                                                     
+			curl_setopt($curl, CURLOPT_POSTFIELDS, $data[$id]);
+			curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);                                                                      
+			curl_setopt($curl, CURLOPT_HTTPHEADER, array(                                                                          
+				'Content-Type: application/json',                                                                                
+				'Content-Length: ' . strlen($data[$id]))                                                                       
+			);
+ 
+			curl_multi_add_handle($multi, $curl);
+			$channels[$id] = $curl;
+		}
+		
+		$active = null;
+
+		do {
+			$mrc = curl_multi_exec($multi, $active);
+		}while ($mrc == CURLM_CALL_MULTI_PERFORM);
+ 
+		while ($active && ($mrc == CURLM_OK)) {
+			if (curl_multi_select($multi) != -1) {
+				do {
+					$mrc = curl_multi_exec($multi, $active);
+					$info = curl_multi_info_read($multi);
+					if ($info['msg'] == CURLMSG_DONE) {
+						$ch = $info['handle'];
+						$id = array_search($ch, $channels);
+						$this->writeLog('REQUEST', "URL: {$url}; DATA: {$data[$id]}");
+						$priceContent = curl_multi_getcontent($ch);
+						$this->writeLog('RESPONSE', $priceContent);
+						$this->content['table'][$id]['price'] = $this->getSuggestPrice($priceContent);
+						curl_multi_remove_handle($multi, $ch);
+						curl_close($ch);
+					}
+				}
+				while ($mrc == CURLM_CALL_MULTI_PERFORM);
+			}
+		}
+		curl_multi_close($multi);
 	}
 }

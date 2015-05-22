@@ -6,6 +6,7 @@ class ParserController extends AppController {
 	public $uses = array('ZzapParser');
 	
 	public function index() {
+		set_time_limit(600);
 		try{	
 			$this->ZzapParser->saveSubsections();
 			echo 'all info saved succesfully';exit();

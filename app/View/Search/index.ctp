@@ -44,6 +44,7 @@
 				<a class="grid-unsortable" href="javascript:void(0)">Изображение</a>
 			</th>
 			<th></th>
+			<th></th>
 		</tr>
 		</thead>
 		<tbody>
@@ -76,6 +77,9 @@
 						}
 ?>
 					</span>
+				</td>
+				<td>
+					<a href="/Search/?classman=<?=$row['class_man'];?>&number=<?=$row['partnumber'];?>">Подробнее</a>
 				</td>
 			</tr>
 <? 

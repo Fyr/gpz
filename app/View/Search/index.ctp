@@ -44,7 +44,7 @@
 				<a class="grid-unsortable" href="javascript:void(0)">Изображение</a>
 			</th>
 			<th></th>
-			<!--<th></th>-->
+			<th></th>
 		</tr>
 		</thead>
 		<tbody>
@@ -78,9 +78,9 @@
 ?>
 					</span>
 				</td>
-				<!--<td>
+				<td>
 					<a href="/Search/price?classman=<?=$row['class_man'];?>&number=<?=$row['partnumber'];?>">Подробнее</a>
-				</td>-->
+				</td>
 			</tr>
 <? 
 		}

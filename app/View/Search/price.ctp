@@ -28,7 +28,13 @@
 		</tr>
 		<tr>
 			<td class="header">Цена</td>
-			<td><?=(!$output['content']['price']) ? 'Нет предложений' : $output['content']['price'].' р.'?></td>	
+			<td><?php if(!$output['content']['price']) { 
+					echo 'Нет предложений';
+				}else{
+					$price = number_format($output['content']['price'],0 ,"," ,Configure::read('Settings.int_div'));
+					echo Configure::read('Settings.price_prefix').$price.Configure::read('Settings.price_postfix');
+				}?>
+		</td>	
 		</tr>
 	</table>
 <?

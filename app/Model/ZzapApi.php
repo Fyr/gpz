@@ -29,7 +29,6 @@ class ZzapApi extends AppModel {
 		$data['api_key'] = Configure::read('ZzapApi.key');
 		$data = json_encode($data);
 		$this->writeLog('REQUEST', "URL: {$url}; DATA: {$data}");
-		
 		$response = curl_exec($this->createRequest($url, $data));
 		$this->writeLog('RESPONSE', $response);
 		
@@ -169,5 +168,27 @@ class ZzapApi extends AppModel {
 			}
 		}
 		curl_multi_close($multi);
+	}
+	
+	public function getItemPrice($classman,$partnumber){
+		$data = array(
+			'login' => '',
+			'password'=> '',
+			'location' => '',
+			'class_man' => $classman,
+			'partnumber' => $partnumber,
+			'row_count'=>  self::MAX_ROW_PRICE
+		);
+		$content = $this->sendApiRequest('GetSearchResult', $data);
+		if(!$content['table']){
+			throw new Exception(__('API Server response error:'));
+		}
+		$output['class_cat'] = $content['table'][0]['class_cat'];
+		$output['class_man'] = $classman;
+		$output['partnumber'] = $partnumber;
+		$output['imagepath'] = $content['table'][0]['imagepath'];
+		$output['price'] = $this->getPrice($content['table']);
+		return $output;
+		
 	}
 }

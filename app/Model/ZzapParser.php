@@ -48,11 +48,13 @@ class ZzapParser extends AppModel {
 			
 			foreach ($sectionList as $section){
 				$section = trim($section);
-				$saveData[] = array('object_type'=>'CarSubsection','cat_id'=>$catId,'title'=>$section,'slug'=>Translit::convert($section,true));
+				$saveData = array('object_type'=>'CarSubsection','cat_id'=>$catId,'title'=>$section,'slug'=>Translit::convert($section,true));
+				$this->Article->save($saveData);
+				//$saveData[] = array('object_type'=>'CarSubsection','cat_id'=>$catId,'title'=>$section,'slug'=>Translit::convert($section,true));
 			}
-			if($saveData){
+			/*if($saveData){
 				$this->Article->saveAll($saveData);
-			}
+			}*/
 		}
 	}
 

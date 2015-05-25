@@ -3,7 +3,7 @@ App::uses('AdminController', 'Controller');
 class AdminContentController extends AdminController {
     public $name = 'AdminContent';
     public $components = array('Article.PCArticle');
-    public $uses = array('Article.Article', 'CategoryArticle', 'SubcategoryArticle', 'CarType');
+    public $uses = array('Article.Article', 'CategoryArticle', 'SubcategoryArticle', 'CarType', 'CarSubtype');
     public $helpers = array('ObjectType');
     
     public function index($objectType, $objectID = '') {
@@ -41,6 +41,7 @@ class AdminContentController extends AdminController {
         		'order' => array('CarSubtype.sorting' => 'ASC')
         	),
         	'CarSubsection' => array(
+        		'conditions' => array('CarSubsection.cat_id' => $objectID),
             	'fields' => array('id', 'title', 'sorting'),
             	'order' => array('CarSubsection.sorting' => 'ASC')
             ),
@@ -55,6 +56,8 @@ class AdminContentController extends AdminController {
         	$this->set('categoryArticle', $this->CategoryArticle->findById($objectID));
         } elseif ($objectType == 'CarSubtype') {
         	$this->set('carType', $this->CarType->findById($objectID));
+        } elseif ($objectType == 'CarSubsection') {
+        	$this->set('carSubtype', $this->CarSubtype->findById($objectID));
         }
         
         if (in_array($objectType, array('CarType', 'CarSubtype', 'CarSubsection'))) {
@@ -72,7 +75,7 @@ class AdminContentController extends AdminController {
 			$this->request->data('Seo.object_type', $objectType);
 		}
 		
-		if ($objectType == 'SubcategoryArticle' || $objectType == 'CarSubtype') {
+		if ($objectType == 'SubcategoryArticle' || $objectType == 'CarSubtype' || $objectType == 'CarSubsection') {
 			$this->request->data('Article.cat_id', $objectID);
 		}
 		
@@ -124,6 +127,10 @@ class AdminContentController extends AdminController {
 			$this->set('aCategoryOptions', $aCategoryOptions);
 		} elseif ($objectType == 'SubcategoryArticle') {
 			$this->set('categoryArticle', $this->CategoryArticle->findById($objectID));
+		} elseif ($objectType == 'CarSubtype') {
+			$this->set('carType', $this->CarType->findById($objectID));
+		} elseif ($objectType == 'CarSubsection') {
+			$this->set('carSubtype', $this->CarSubtype->findById($objectID));
 		}
 		
 		// $this->currMenu = 'Content';

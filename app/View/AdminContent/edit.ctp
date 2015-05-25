@@ -8,6 +8,12 @@
     if ($objectType == 'SubcategoryArticle') {
     	$objectID = $this->request->data('Article.cat_id');
 		$title = Hash::get($categoryArticle, 'CategoryArticle.title').': '.$title;
+	} elseif ($objectType == 'CarSubtype') {
+    	$objectID = $this->request->data('Article.cat_id');
+		$title = Hash::get($carType, 'CarType.title').': '.$title;
+	} elseif ($objectType == 'CarSubsection') {
+    	$objectID = $this->request->data('Article.cat_id');
+		$title = Hash::get($carSubtype, 'CarSubtype.title').': '.$title;
 	}
 ?>
 	<?=$this->element('admin_title', compact('title'))?>

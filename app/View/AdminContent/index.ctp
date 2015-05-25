@@ -4,6 +4,8 @@
 		$title = Hash::get($categoryArticle, 'CategoryArticle.title').': '.$title;
 	} elseif ($objectType == 'CarSubtype' && $objectID) {
 		$title = Hash::get($carType, 'CarType.title').': '.$title;
+	} elseif ($objectType == 'CarSubsection' && $objectID) {
+		$title = Hash::get($carSubtype, 'CarSubtype.title').': '.$title;
 	}
     $createURL = $this->Html->url(array('action' => 'edit', 0, $objectType, $objectID));
     $createTitle = $this->ObjectType->getTitle('create', $objectType);
@@ -24,6 +26,12 @@
     		'label' => $this->ObjectType->getTitle('index', 'CarSubtype'), 
     		'class' => 'icon-color icon-open-folder', 
     		'href' => $this->Html->url(array('action' => 'index', 'CarSubtype', '~id'))
+    	);
+    } elseif ($objectType == 'CarSubtype') {
+    	$actions['row'][] = array(
+    		'label' => $this->ObjectType->getTitle('index', 'CarSubsection'), 
+    		'class' => 'icon-color icon-open-folder', 
+    		'href' => $this->Html->url(array('action' => 'index', 'CarSubsection', '~id'))
     	);
     }
     

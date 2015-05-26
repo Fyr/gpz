@@ -2,6 +2,7 @@
 App::uses('AppModel', 'Model');
 App::uses('CarType', 'Model');
 App::uses('CarSubtype', 'Model');
+App::uses('CarSubsection', 'Model');
 App::uses('Article', 'Model');
 App::import('Vendor', 'simple_html_dom');
 App::uses('Translit', 'Article.Vendor');
@@ -10,73 +11,76 @@ class ZzapParser extends AppModel {
 	const MAX_CONNECTION = 10;
 	public $useTable = false;
 	
-	private $modelList;
-	
 	protected function _beforeInit() {
 		$this->loadModel('CarType');
 		$this->loadModel('CarSubtype');
+		$this->loadModel('CarSubsection');
 		$this->loadModel('Article');
 	}
 
-		private function getBrandUrls(){
+		private function getBrandUrl($brandId){
 		
-		$brandUrls = $this->CarType->find('list', array(
+		$brandUrl = $this->CarType->find('list', array(
 							'fields' => array('title', 'zzap_url'),
-							'conditions' => array('zzap_url !=' => NULL)
+							'conditions' => array('id'=>$brandId,'zzap_url !=' => NULL),
 						));
-		return $brandUrls;
+		return $brandUrl;
 	}
 	
-	private function getModelsList(){
+	private function getModelsListForBrand($brandId){
 		
 		$modelList = $this->CarSubtype->find('list', array(
 							'fields' => array('id', 'slug'),
+							'conditions'=>array('cat_id'=>$brandId)
 						));
 		return $modelList;
 	}
 	
+	private function getExistSubsections($catId){
+		$subsections = $this->CarSubsection->find('list', array(
+							'fields' => array('id', 'slug'),
+							'conditions'=>array('cat_id'=>$catId)
+						));
+		return $subsections;
+	}
+
+
 	private function saveSections($parsedSections,$brandId){
+		$modelList = $this->getModelsListForBrand($brandId);
 		foreach($parsedSections as $modelName=>$sectionList){
 			$modelName = trim($modelName);
 			$modelName = str_replace('&nbsp;', '', $modelName);
-			$catId = array_search(Translit::convert($modelName,true), $this->modelList);
-			if(!$catId){		
-				$this->Article->save(array('object_type'=>'CarSubtype','title'=>$modelName,'slug'=>Translit::convert($modelName,true),'cat_id'=>$brandId));
-				$catId = $this->Article->id;
+			$catId = array_search(Translit::convert($modelName,true), $modelList);
+			if(!$catId){
+				$data['CarSubtype'] = array('object_type'=>'CarSubtype','title'=>$modelName,'slug'=>Translit::convert($modelName,true),'cat_id'=>$brandId);
+				$this->CarSubtype->saveAll($data);
+				$catId = $this->CarSubtype->id;
 			}
-			$saveData = array();
 			
+			$existSubsection = $this->getExistSubsections($catId);
 			foreach ($sectionList as $section){
 				$section = trim($section);
-				$saveData = array('object_type'=>'CarSubsection','cat_id'=>$catId,'title'=>$section,'slug'=>Translit::convert($section,true));
-				$this->Article->save($saveData);
-				//$saveData[] = array('object_type'=>'CarSubsection','cat_id'=>$catId,'title'=>$section,'slug'=>Translit::convert($section,true));
+				$sectionId = array_search(Translit::convert($section,true), $existSubsection);
+				if(!$sectionId){
+					$saveData['CarSubsection'] = array('object_type'=>'CarSubsection','cat_id'=>$catId,'title'=>$section,'slug'=>Translit::convert($section,true));
+					$this->CarSubsection->saveAll($saveData);
+				}
 			}
-			/*if($saveData){
-				$this->Article->saveAll($saveData);
-			}*/
 		}
 	}
 
 
-	public function saveSubsections(){
-		$brandUrls = $this->getBrandUrls();
-		$brandHtmlContent = $this->doMulticurl($brandUrls);
+	public function saveSubsections($brandId){
+		$brandUrl = $this->getBrandUrl($brandId);
+		$brandHtmlContent = $this->doMulticurl($brandUrl);
 		$modelUrls = $this->parseModelList($brandHtmlContent);
 		if($modelUrls){
-			$this->modelList = $this->getModelsList();		
-			$this->cleanSections();
-			foreach ($modelUrls as $brand=>$urlCollection){
+			foreach ($modelUrls as $urlCollection){
 				$sections = $this->doMulticurl($urlCollection);
 				$parsedSections = $this->parseSections($sections);
-				$brandId = $this->Article->field('id',array('object_type'=>'CarType','slug'=>  Translit::convert($brand)));
 				$this->saveSections($parsedSections,$brandId);
 			}
 		}
-	}
-	
-	private function cleanSections(){
-		$this->Article->deleteAll(array('object_type'=>'CarSubsection'));
 	}
 
 	private function parseModelList($htmlContent){

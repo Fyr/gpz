@@ -31,7 +31,7 @@
     	$actions['row'][] = array(
     		'label' => $this->ObjectType->getTitle('index', 'CarSubsection'), 
     		'class' => 'icon-color icon-open-folder', 
-    		'href' => $this->Html->url(array('action' => 'index', 'CarSubsection', '~id'))
+    		'href' => $this->Html->url(array('controller' => 'AdminCarSubsections', 'action' => 'index', '~id'))
     	);
     }
     

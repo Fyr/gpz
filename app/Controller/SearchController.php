@@ -30,7 +30,7 @@ class SearchController extends AppController {
 		}
 		
 		try{
-			$result = $this->ZzapApi->getResults($this->request->query['classman'],$this->request->query['number']);
+			$result = $this->ZzapApi->getItemPrice($this->request->query['classman'],$this->request->query['number']);
 		}  catch (Exception $e){
 			$this->setError($e->getMessage());
 			return;

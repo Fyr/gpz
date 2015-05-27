@@ -79,7 +79,7 @@
 					</span>
 				</td>
 				<td>
-					<a href="/Search/?classman=<?=$row['class_man'];?>&number=<?=$row['partnumber'];?>">Подробнее</a>
+					<a href="/Search/price?classman=<?=$row['class_man'];?>&number=<?=$row['partnumber'];?>">Подробнее</a>
 				</td>
 			</tr>
 <? 

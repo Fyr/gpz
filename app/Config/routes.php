@@ -6,4 +6,20 @@ Router::connect('/', array('controller' => 'Pages', 'action' => 'home'));
 
 CakePlugin::routes();
 
+Router::connect('/car/:brand/:slug', 
+	array(
+		'controller' => 'Car', 
+		'action' => 'view',
+	)
+);
+
+Router::connect('/car/:brand/', 
+	array(
+		'controller' => 'Car', 
+		'action' => 'view',
+		// 
+	)
+);
+
+
 require CAKE.'Config'.DS.'routes.php';

@@ -6,6 +6,12 @@ App::uses('Seo', 'Seo.Model');
 class CarSubtype extends Article {
 	protected $objectType = 'CarSubtype';
 	
+	var $belongsTo = array(
+		'CarType' => array(
+			'foreignKey' => 'cat_id'
+		)
+	);
+	
 	var $hasOne = array(
 		'Media' => array(
 			'foreignKey' => 'object_id',

@@ -11,11 +11,15 @@ class SiteRouterHelper extends AppHelper {
 			'CarType' => 'Car'
 		);
 		$controller = (isset($aControllers[$objectType])) ? $aControllers[$objectType] : 'Articles';
-		$url = array('controller' => $controller, 'action' => 'view');
+		if ($objectType == 'CarType') {
+			return Router::url(array('controller' => 'Car', 'action' => 'view', 'brand' => $article['CarType']['slug'])).'/';
+		} elseif ($objectType == 'CarSubtype') {
+			return Router::url(array('controller' => 'Car', 'action' => 'view', 'brand' => $article['CarType']['slug'], 'slug' => $article['CarSubtype']['slug'], 'ext' => 'html'));
+		} else {
+			$url = array('controller' => $controller, 'action' => 'view');
+		}
 		if ($slug = $article[$objectType]['slug']) {
-			// $url['objectType'] = $objectType;
 			$url[] = $slug.'.html';
-			// $url['ext'] = 'html';
 		} else {
 			$url[] = $article[$objectType]['id'];
 		}

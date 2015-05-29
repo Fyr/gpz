@@ -15,9 +15,8 @@
 <?
 	foreach($aCarSubtypes as $_article) {
 		$this->ArticleVars->init($_article, $url, $title, $teaser, $src, '200x');
-?>
-		<a href="javascript: void(0)"><?=$title?></a>
-<?
+		$options = ($_article['CarSubtype']['slug'] == $this->request->param('slug')) ? array('class' => 'active') : null;
+		echo $this->Html->link($title, $url, $options);
 	}
 ?>
 	</div>
@@ -58,13 +57,6 @@
 <?=$this->ArticleVars->body($article)?>
 <script type="text/javascript">
 $(document).ready(function(){
-	$('.catalogPage .leftSide a:first').addClass('active');
-	
-	$('.catalogPage .leftSide a').click(function(){
-		$('.catalogPage .leftSide a').removeClass('active');
-		$(this).addClass('active');
-	});
-	
 	$('.carSubsection').click(function(){
 		$('.outerSearch input[type=text]').val($('.catalogPage .leftSide a.active').html() + ' ' + $(this).html());
 		$('form.searchBlock').submit();

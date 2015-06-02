@@ -30,14 +30,13 @@
 }
 */
 </style>
-<div class="block clearfix">
+<div class="block tableContent clearfix">
 <?
 	if (isset($errorText)) {
 ?>
 		<p class="error"><?=$errorText?></p>
 <?
-	}
-	if (isset($content) && isset($content['table']) && $content['table']) {
+	} elseif (isset($content) && isset($content['table']) && $content['table']) {
 		if (!isset($article)) {
 ?>
 		<p>Найдено <?=count($content['table'])?> результатов.</p> 
@@ -59,7 +58,7 @@
 				<a class="grid-unsortable" href="javascript:void(0)">Номер</a>
 			</th>
 			<th>
-				<a class="grid-unsortable" href="javascript:void(0)">Имя</a>
+				<a class="grid-unsortable" href="javascript:void(0)">Наименование</a>
 			</th>
 			<th>
 				<a class="grid-unsortable" href="javascript:void(0)">Код позиции</a>

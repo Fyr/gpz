@@ -291,6 +291,7 @@ textarea { height: auto;}
 @media (max-width: 767px) { 
 	.catalogPage .leftSide { float: none; width: auto;}
 	.catalogPage .mainContentCatalog { margin-left: 0;}
+	.tableContent { overflow: auto; padding-left: 0 !important; padding-right: 0 !important;}
 }
 
 @media (max-width: 450px) { 

@@ -50,7 +50,7 @@
 <?
 			}
 ?>
-				<a class="carSubsection" href="<?=SiteRouter::url(Hash::merge($_article, $carSubtype))?>"><?=$title?></a>
+				<a class="carSubsection showLoader" href="<?=SiteRouter::url(Hash::merge($_article, $carSubtype))?>"><?=$title?></a>
 <?
 		}
 ?>
@@ -66,11 +66,10 @@
 <?=$this->ArticleVars->body($article)?>
 <script type="text/javascript">
 $(document).ready(function(){
-	/*
 	$('.carSubsection').click(function(){
-		$('.outerSearch input[type=text]').val($('.catalogPage .leftSide a.active').html() + ' ' + $(this).html());
-		$('form.searchBlock').submit();
+		// $('.outerSearch input[type=text]').val($('.catalogPage .leftSide a.active').html() + ' ' + $(this).html());
+		// $('form.searchBlock').submit();
+		// showLoader();
 	});
-	*/
 });
 </script>

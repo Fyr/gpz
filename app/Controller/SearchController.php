@@ -1,50 +1,62 @@
 <?php
-
 App::uses('AppController', 'Controller');
-
+App::uses('SiteRouter', 'Vendor');
 class SearchController extends AppController {
 	public $name = 'Search';
 	public $uses = array('ZzapApi');
 	
+	protected $CarSubtype, $CarSubsection;
+	
 	public function index() {
-		
-		if(!isset($this->request->query['q']) or !$this->request->query['q']){
-			$this->setError('Введите текст в строку поиска');
-			return;
-		}
+		$q = '';
 		try{
-			$result = $this->ZzapApi->getSuggests($this->request->query['q']);
+			if (($carSubtype = $this->request->param('carSubtype')) && ($carSubsection = $this->request->param('slug'))) {
+				$this->loadModel('CarSubtype');
+				$this->loadModel('CarSubsection');
+				
+				$carSubtype = $this->CarSubtype->findBySlug($carSubtype);
+				$carSubsection = $this->CarSubsection->findBySlug($carSubsection);
+				if ($carSubtype && $carSubsection) {
+					$q = $carSubtype['CarSubtype']['title'].' '.$carSubsection['CarSubsection']['title'];
+					
+					$this->seo = $carSubsection['Seo'];
+					$this->set('article', Hash::merge($carSubsection, $carSubtype));
+				}
+			} else {
+				$q = $this->request->query('q');
+			}
+
+			if (!$q){
+				throw new Exception('Введите текст в строку поиска');
+			}
+
+			$this->setResult($this->ZzapApi->getSuggests($q));
 		}  catch (Exception $e){
 			$this->setError($e->getMessage());
-			return;
 		}		
-		$this->setResult($result);		
 	}
 	
 	public function price(){
-		
-		if(!isset($this->request->query['number']) or !$this->request->query['number'] 
-			or !isset($this->request->query['classman']) or !$this->request->query['classman']){
-			$this->setError('Неверный запрос');
-			return;
-		}
-		
 		try{
-			$result = $this->ZzapApi->getItemPrice($this->request->query['classman'],$this->request->query['number']);
+			$number = $this->request->query('number');
+			$classman = $this->request->query('classman');
+			
+			if (!($number && $classman)) {
+				throw new Exception('Неверный запрос');
+			}
+			
+			$this->setResult($this->ZzapApi->getItemPrice($classman, $number));
 		}  catch (Exception $e){
 			$this->setError($e->getMessage());
-			return;
 		}
-		
-		$this->setResult($result);
 	}
 	
 	private function setResult($result){
-		$this->set('output',array('result'=>true,'content'=>$result));
+		$this->set('content', $result);
 	}
 	
 	private function setError($errorText = 'Произошла ошибка'){
-		$this->set('output',array('result'=>false,'errorText'=>$errorText));
+		$this->set('errorText', $errorText);
 	}
 	
 }

@@ -1,28 +1,42 @@
+<?
+	$this->Html->css('/Table/css/grid', array('inline' => false));
+	$title = 'Результаты поиска';
+	if (isset($errorText)) {
+		$title = 'Ошибка!';
+	} elseif (isset($article)) {
+		$title = $article['CarSubsection']['title'];
+		$carType = array('CarType' => $article['CarType']);
+		$carSubtype = array('CarSubtype' => $article['CarSubtype'], 'CarType' => $article['CarType']);
+		echo $this->element('bread_crumbs', array('aBreadCrumbs' => array(
+			array('label' => $article['CarType']['title'], 'url' => SiteRouter::url($carType)),
+			array('label' => $article['CarSubtype']['title'], 'url' => SiteRouter::url($carSubtype)),
+			array('label' => $title)
+		)));
+	}
+	echo $this->element('title', compact('title'));
+?>
 <style type="text/css">
 .table-bordered th, .table-bordered td {
     border-left: 1px solid #dddddd;
 }
 </style>
-<?=$this->element('title', array('title' => 'Результаты поиска'))?>
 <div class="block clearfix">
 <?
-	$this->Html->css('/Table/css/grid', array('inline' => false));
-	if (!$output['result']) {
+	if (isset($errorText)) {
 ?>
-		<p><?=$output['errorText']?></p>
+		<p class="error"><?=$errorText?></p>
 <?
-	} elseif (!count($output['content']['table'])) {
+	}
+	if (isset($content) && isset($content['table']) && $content['table']) {
+		if (!isset($article)) {
 ?>
-		<p>Нет результатов</p>
-<? 
-	} else { 
-?>
-		<p>Найдено <?=count($output['content']['table'])?> результатов.</p> 
+		<p>Найдено <?=count($content['table'])?> результатов.</p> 
 <?
-		if (count($output['content']['table']) > 20) {
+			if (count($content['table']) > 20) {
 ?>
 		<p>Для более конкретного результата уточните поиск в поле запроса</p>
 <?
+			}
 		}
 ?>
 		<table align="left" class="grid table-bordered shadow" border="0" cellpadding="0" cellspacing="0">
@@ -43,13 +57,17 @@
 			<th>
 				<a class="grid-unsortable" href="javascript:void(0)">Изображение</a>
 			</th>
-			<th></th>
-			<th></th>
+			<th>
+				<a class="grid-unsortable" href="javascript:void(0)">Цена</a>
+			</th>
+			<th>
+				<a class="grid-unsortable" href="javascript:void(0)">Ссылка</a>
+			</th>
 		</tr>
 		</thead>
 		<tbody>
 <? 
-		foreach ($output['content']['table'] as $id => $row) {
+		foreach ($content['table'] as $id => $row) {
 ?>
 			<tr class="grid-row">
 				<td><?=$row['class_man'];?></td>
@@ -86,8 +104,16 @@
 		}
 ?>
 		</tbody>
-		</table>	
+		</table>
+		<br />
 <?
+	} else {
+		echo '<p>По данному запросу результатов не найдено</p>';
 	}
 ?>
 </div>
+<?
+	if (isset($article)) {
+		echo $this->ArticleVars->body($article);
+	}
+?>

@@ -21,8 +21,8 @@ Configure::write('Config.language', 'rus');
 CakePlugin::loadAll();
 
 Configure::write('ZzapApi', array(
-	'url' => 'http://www.zzap.ru/webservice/test/datasharing1.asmx/',
-	// 'url' => 'http://www.zzap.ru/webservice/datasharing.asmx/',
+	// 'url' => 'http://www.zzap.ru/webservice/test/datasharing1.asmx/',
+	'url' => 'http://www.zzap.ru/webservice/datasharing.asmx/',
 	'key' => 'EAAAAOInZ5vBwkgYdsvhjHvBppQYdUTeJ640oUJJzxCoE2vglu4v2Wm5xwo77ZCTSXvOHA==',
 	'log' => ROOT.DS.APP_DIR.DS.'tmp'.DS.'logs'.DS.'zzap_api.log'
 ));

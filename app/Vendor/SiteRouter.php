@@ -1,9 +1,14 @@
 <?php
-App::uses('AppHelper', 'View/Helper');
-class SiteRouterHelper extends AppHelper {
+App::uses('Router', 'Cake/Routing');
+class SiteRouter extends Router {
 
-	public function url($article) {
-		$objectType = $this->getObjectType($article);
+	static public function getObjectType($article) {
+		list($objectType) = array_keys($article);
+		return $objectType;
+	}
+	
+	static public function url($article) {
+		$objectType = self::getObjectType($article);
 		$aControllers = array(
 			'SiteArticle' => 'Articles',
 			'Product' => 'Products',
@@ -15,6 +20,8 @@ class SiteRouterHelper extends AppHelper {
 			return Router::url(array('controller' => 'Car', 'action' => 'viewCarType', 'carType' => $article['CarType']['slug'])).'/';
 		} elseif ($objectType == 'CarSubtype') {
 			return Router::url(array('controller' => 'Car', 'action' => 'view', 'carType' => $article['CarType']['slug'], 'carSubtype' => $article['CarSubtype']['slug'])).'/';	
+		} elseif ($objectType == 'CarSubsection') {
+			return Router::url(array('controller' => 'Search', 'action' => 'index', 'carType' => $article['CarType']['slug'], 'carSubtype' => $article['CarSubtype']['slug'], 'slug' => $article['CarSubsection']['slug'], 'ext' => 'html'));	
 		} else {
 			$url = array('controller' => $controller, 'action' => 'view');
 		}

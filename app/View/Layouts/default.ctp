@@ -66,7 +66,7 @@
 				<div class="wrapper">
 					<div class="searchShadow">
 						<form class="searchBlock" action="<?=$this->Html->url(array('controller' => 'Search', 'action' => 'index'))?>" method="get">
-							<button class="submit">поиск</button>
+							<button type="button" class="submit" onclick="showLoader(); $('form.searchBlock').submit()">поиск</button>
 							<div class="outerSearch">
 								<span class="icon search"></span>
 								<input type="text" name="q" value="<?=$this->request->query('q')?>"  placeholder="Например V-200 alfa" />
@@ -119,6 +119,10 @@
 				</div>
 				<div class="footerLine"></div>
 			</div>
+		</div>
+		<div id="loader">
+			<img src="/img/ajax-loader-big.gif" alt="" /><br />
+			Обработка запроса...
 		</div>
 	</body>
 </html>

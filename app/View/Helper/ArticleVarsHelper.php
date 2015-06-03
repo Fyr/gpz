@@ -1,13 +1,14 @@
 <?php
 App::uses('AppHelper', 'View/Helper');
+App::uses('SiteRouter', 'Vendor');
 class ArticleVarsHelper extends AppHelper {
 	public $helpers = array('Media', 'SiteRouter');
 
 	public function init($article, &$url, &$title, &$teaser = '', &$src = '', $size = 'noresize', &$featured = false, &$id = '') {
-		$objectType = $this->getObjectType($article);
+		$objectType = SiteRouter::getObjectType($article);
 		$id = $article[$objectType]['id'];
 		
-		$url = $this->SiteRouter->url($article);
+		$url = SiteRouter::url($article);
 		
 		$title = $article[$objectType]['title'];
 		$teaser = nl2br($article[$objectType]['teaser']);
@@ -17,6 +18,6 @@ class ArticleVarsHelper extends AppHelper {
 	}
 
 	public function body($article) {
-		return $article[$this->getObjectType($article)]['body'];
+		return $article[SiteRouter::getObjectType($article)]['body'];
 	}
 }

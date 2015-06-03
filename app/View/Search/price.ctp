@@ -1,37 +1,39 @@
-<? if(isset($output['content'])){  
-	echo $this->element('title', array('title' => $output['content']['class_cat'].' '.$output['content']['partnumber']));
-}?>
+<? 
+	if (isset($content)){  
+		echo $this->element('title', array('title' => $content['class_cat'].' '.$content['partnumber']));
+	}
+?>
 <div class="block clearfix">
 <?
-	if (!$output['result']) {
+	if (isset($errorText)) {
 ?>
-	<p><?=$output['errorText']?></p>
+		<p class="error"><?=$errorText?></p>
 <?
 	} else {
 ?>
 	<table id="itemTable">
 		<tr>
 			<td class="header">Наименование:</td>
-			<td><?=$output['content']['class_cat']?></td>	
+			<td><?=$content['class_cat']?></td>	
 		</tr>
 		<tr>
 			<td class="header">Номер Детали:</td>
-			<td><?=$output['content']['partnumber']?></td>	
+			<td><?=$content['partnumber']?></td>	
 		</tr>
 		<tr>
 			<td class="header">Производитель:</td>
-			<td><?=$output['content']['class_man']?></td>	
+			<td><?=$content['class_man']?></td>	
 		</tr>
 		<tr>
 			<td class="header">Изображение:</td>
-			<td><?=($output['content']['imagepath']) ? $this->Html->image($output['content']['imagepath']) : 'Нет изображения'?></td>
+			<td><?=($content['imagepath']) ? $this->Html->image($content['imagepath']) : 'Нет изображения'?></td>
 		</tr>
 		<tr>
 			<td class="header">Цена</td>
-			<td><?php if(!$output['content']['price']) { 
+			<td><?php if(!$content['price']) { 
 					echo 'Нет предложений';
 				}else{
-					$price = number_format($output['content']['price'],0 ,"," ,Configure::read('Settings.int_div'));
+					$price = number_format($content['price'],0 ,"," ,Configure::read('Settings.int_div'));
 					echo Configure::read('Settings.price_prefix').$price.Configure::read('Settings.price_postfix');
 				}?>
 		</td>	

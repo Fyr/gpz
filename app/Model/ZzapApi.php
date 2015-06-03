@@ -187,6 +187,7 @@ class ZzapApi extends AppModel {
 		$output['class_man'] = $classman;
 		$output['partnumber'] = $partnumber;
 		$output['imagepath'] = $content['table'][0]['imagepath'];
+		$output['shipping'] = $content['table'][0]['descr_qty'];
 		$output['price'] = $this->getPrice($content['table']);
 		return $output;
 		

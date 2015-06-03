@@ -29,6 +29,16 @@
 			<td><?=($content['imagepath']) ? $this->Html->image($content['imagepath']) : 'Нет изображения'?></td>
 		</tr>
 		<tr>
+			<td class="header">Срок поставки</td>
+			<td><?php if(!$content['shipping']) { 
+					echo '-';
+				}else{	
+					echo $content['shipping'];
+				}?>
+		</td>
+		</tr>
+
+		<tr>
 			<td class="header">Цена</td>
 			<td><?php if(!$content['price']) { 
 					echo 'Нет предложений';
@@ -38,6 +48,7 @@
 				}?>
 		</td>	
 		</tr>
+	
 	</table>
 <?
 	}

@@ -63,7 +63,7 @@ class ZzapApi extends AppModel {
 		return $this->content;
 	}
 	
-	private function getSuggestPrice($priceResponse){
+	private function getSuggestPriceAndShipping($priceResponse){
 		
 		if(!$priceResponse){
 			return 0; 
@@ -79,26 +79,34 @@ class ZzapApi extends AppModel {
 			return 0;
 		}
 		
-		return $this->getPrice($priceResult['table']);
+		return $this->getPriceAndShipping($priceResult['table']);
 		
 	}
 	
-	private function getPrice($priceResult){
+	private function getPriceAndShipping($priceResult){
 		$prices = array();
-		foreach ($priceResult as $priceRow){
+		$result['shipping'] = false;
+		$result['price'] = 0;
+		foreach ($priceResult as $id=>$priceRow){
 			$priceRow['price'] = preg_replace('/\D/', '', $priceRow['price']);
 			$priceRow['qty'] = preg_replace('/\D/', '', $priceRow['qty']);
 			
 			if($priceRow['price']>0 and $priceRow['qty']>0){
-				$prices[] = $priceRow['price'];
+				$prices[$id] = $priceRow['price'];
 			}
 		}
 		if(!$prices){
-			return 0;
+			return $result;
 		}
 		//переводим процент в десятичный коэффициент
+		$minPrice = min($prices);
+		$rowId = array_search($minPrice, $prices);
+		$shipping = $priceResult[$rowId]['descr_qty']; 
+		
 		$priceRatio = 1+(Configure::read('Settings.price_ratio')/100);
-		return round($priceRatio * Configure::read('Settings.xchg_rate') * min($prices),-2);
+		$result['price'] = round($priceRatio * Configure::read('Settings.xchg_rate') * min($prices),-2);
+		$result['shipping'] = $shipping;
+		return $result;
 	}
 	
 	private function writeLog($actionType, $data){
@@ -159,7 +167,9 @@ class ZzapApi extends AppModel {
 						$this->writeLog('REQUEST', "URL: {$url}; DATA: {$data[$id]}");
 						$priceContent = curl_multi_getcontent($ch);
 						$this->writeLog('RESPONSE', $priceContent);
-						$this->content['table'][$id]['price'] = $this->getSuggestPrice($priceContent);
+						$priceShippingResult = $this->getSuggestPriceAndShipping($priceContent);
+						$this->content['table'][$id]['price'] = $priceShippingResult['price'];
+						$this->content['table'][$id]['shipping'] = $priceShippingResult['shipping'];
 						curl_multi_remove_handle($multi, $ch);
 						curl_close($ch);
 					}
@@ -188,7 +198,9 @@ class ZzapApi extends AppModel {
 		$output['partnumber'] = $partnumber;
 		$output['imagepath'] = $content['table'][0]['imagepath'];
 		$output['shipping'] = $content['table'][0]['descr_qty'];
-		$output['price'] = $this->getPrice($content['table']);
+		$parseShippingResult = $this->getPriceAndShipping($content['table']);
+		$output['price'] = $parseShippingResult['price'];
+		$output['shipping'] = $parseShippingResult['shipping'];
 		return $output;
 		
 	}

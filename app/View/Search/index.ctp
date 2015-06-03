@@ -70,6 +70,9 @@
 				<a class="grid-unsortable" href="javascript:void(0)">Цена</a>
 			</th>
 			<th>
+				<a class="grid-unsortable" href="javascript:void(0)">Срок поставки</a>
+			</th>
+			<th>
 				<a class="grid-unsortable" href="javascript:void(0)">Ссылка</a>
 			</th>
 		</tr>
@@ -104,6 +107,9 @@
 						}
 ?>
 					</span>
+				</td>
+				<td>
+					<?php if(!$row['shipping']){echo '-';}else{echo $row['shipping'];}?>
 				</td>
 				<td>
 					<a class="showLoader" href="/Search/price?classman=<?=$row['class_man'];?>&number=<?=$row['partnumber'];?>">Подробнее</a>

@@ -7,7 +7,7 @@ class SiteRouter extends Router {
 		return $objectType;
 	}
 	
-	static public function url($article) {
+	static public function url($article = null, $full = false) {
 		$objectType = self::getObjectType($article);
 		$aControllers = array(
 			'SiteArticle' => 'Articles',

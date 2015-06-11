@@ -8,7 +8,7 @@ class ParserController extends AppController {
 	
 	public function index() {
 		set_time_limit(6000);
-		try{
+
 			
 			if(!isset($this->request->query['brand']) or !$this->request->query['brand']){
 				echo 'Укажите производителя';exit();
@@ -18,7 +18,7 @@ class ParserController extends AppController {
 			if(!$id){
 				echo 'Производитель не найден'; exit();
 			}
-			
+		try{
 			$this->ZzapParser->saveSubsections($id);
 			echo 'all info saved succesfully';exit();
 		}catch(Exception $e){

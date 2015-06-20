@@ -61,16 +61,10 @@
 				<a class="grid-unsortable" href="javascript:void(0)">Наименование</a>
 			</th>
 			<th>
-				<a class="grid-unsortable" href="javascript:void(0)">Код позиции</a>
-			</th>
-			<th>
 				<a class="grid-unsortable" href="javascript:void(0)">Изображение</a>
 			</th>
 			<th>
 				<a class="grid-unsortable" href="javascript:void(0)">Цена</a>
-			</th>
-			<th>
-				<a class="grid-unsortable" href="javascript:void(0)">Срок поставки</a>
 			</th>
 			<th>
 				<a class="grid-unsortable" href="javascript:void(0)">Ссылка</a>
@@ -80,12 +74,12 @@
 		<tbody>
 <? 
 		foreach ($content['table'] as $id => $row) {
+			$price = (isset($row['price_min']) && $row['price_min']) ? $this->Price->format($row['price_min']) : 'Нет предложений';
 ?>
 			<tr class="grid-row">
 				<td><?=$row['class_man'];?></td>
 				<td><?=$row['partnumber'];?></td>
 				<td><?=$row['class_cat'];?></td>
-				<td><?=$row['code_cat'];?></td>
 				<td style="text-align:center;">
 <?
 			if ($row['imagepath']) {
@@ -97,19 +91,7 @@
 				</td>
 				<td class="priceCell" nowrap="nowrap">
 					<!--<a href="/search/price/?number=<?=$row['partnumber']?>&classman=<?=$row['class_man'];?>" class="showPrice">подробнее</a>-->
-					<span class="value">
-<?					
-						if(isset($row['price']) and $row['price']){
-							$price = number_format($row['price'],0 ,"," ,Configure::read('Settings.int_div'));
-							echo Configure::read('Settings.price_prefix').$price.Configure::read('Settings.price_postfix');
-						}else{
-							echo 'Нет предложений';
-						}
-?>
-					</span>
-				</td>
-				<td>
-					<?php if(!$row['shipping']){echo '-';}else{echo $row['shipping'];}?>
+					<span class="value"><?=$price?></span>
 				</td>
 				<td>
 					<a class="showLoader" href="/Search/price?classman=<?=$row['class_man'];?>&number=<?=$row['partnumber'];?>">Подробнее</a>

@@ -1,6 +1,6 @@
 <?php
 App::uses('AppModel', 'Model');
-
+App::uses('IpLog', 'Model');
 class ZzapApi extends AppModel {
 	
 	public $useTable = false;
@@ -8,16 +8,25 @@ class ZzapApi extends AppModel {
 	const MAX_ROW_SUGGEST = 10;
 	const MAX_ROW_PRICE = 300;
 	
+	protected $IpLog;
+	
 	private function createRequest($link, $data){
-		
-		$curl = curl_init($link);                                                                      
+		$curl = curl_init($link);
 		curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");                                                                     
 		curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);                                                                      
 		curl_setopt($curl, CURLOPT_HTTPHEADER, array(                                                                          
 			'Content-Type: application/json',                                                                                
 			'Content-Length: ' . strlen($data))                                                                       
-		);  
+		);
+		
+		$ip = $_SERVER['REMOTE_ADDR'];
+		$blackIps = Configure::read('ip.black_list');
+		if (in_array($ip, $blackIps)) {
+			$aProxy = Configure::read('proxy.list');
+			$proxy = $aProxy[array_rand($aProxy)];
+			curl_setopt($curl, CURLOPT_PROXY, $proxy);
+		}
 		return $curl;
 	}
 	
@@ -31,6 +40,8 @@ class ZzapApi extends AppModel {
 		$this->writeLog('REQUEST', "URL: {$url}; DATA: {$data}");
 		$response = curl_exec($this->createRequest($url, $data));
 		$this->writeLog('RESPONSE', $response);
+		
+		
 		
 		$result = json_decode($response);
 		if(!$response or !isset($result->d)){
@@ -46,8 +57,8 @@ class ZzapApi extends AppModel {
 		return $content;
 	}
 	
+	/* // Старый метод получения всех цен
 	public function getSuggests($searchString) {
-		
 		$dataArray = array(
 			'search_text' => $searchString,
 			'row_count'=>  self::MAX_ROW_SUGGEST
@@ -61,6 +72,46 @@ class ZzapApi extends AppModel {
 			$this->content['table'] = Hash::sort($this->content['table'], '{n}.price', 'desc'); 
 		}
 		return $this->content;
+	}
+	*/
+	public function getSuggests($searchString) {
+		$data = array(
+			'search_text' => $searchString,
+			'row_count'=>  self::MAX_ROW_SUGGEST
+		);
+		$this->content = $this->sendApiRequest('GetSearchSuggest', $data);
+		if($this->content['table']){
+			//ограничение в АПИ не работает - поэтому срезаем
+			$this->content['table'] = array_slice($this->content['table'], 0, self::MAX_ROW_SUGGEST);
+			$aCodes = Hash::extract($this->content['table'], '{n}.code_cat');
+			$aPrices = $this->getStatPrices($aCodes);
+			$this->content['table'] = Hash::combine($this->content['table'], '{n}.code_cat', '{n}');
+			$this->content['table'] = Hash::merge($this->content['table'], $aPrices);
+			$this->content['table'] = Hash::sort(array_values($this->content['table']), '{n}.price_min', 'desc'); // сортируем по min.цене
+		}
+		return $this->content;
+	}
+	
+	private function getStatPrices($aCodes) {
+		$data = array(
+			'codes_cat' => implode(';', $aCodes),
+			'code_region' => 1,
+			'instock' => 1,
+			'wholesale' => '0'
+		);
+		$response = $this->sendApiRequest('GetStatPrices', $data);
+		$prices = Hash::combine($response['table'], '{n}.code_cat', '{n}'); // Берем min.цену
+		
+		$data = array(
+			'codes_cat' => implode(';', $aCodes),
+			'code_region' => 1,
+			'instock' => 0,
+			'wholesale' => '0'
+		);
+		$response = $this->sendApiRequest('GetStatPrices', $data);
+		$prices2 = Hash::combine($response['table'], '{n}.code_cat', '{n}');
+		
+		return Hash::merge($prices, $prices2);
 	}
 	
 	private function getSuggestPriceAndShipping($priceResponse){
@@ -100,16 +151,14 @@ class ZzapApi extends AppModel {
 		}
 		//переводим процент в десятичный коэффициент
 		$minPrice = min($prices);
+		$result['price'] = $minPrice;
 		$rowId = array_search($minPrice, $prices);
-		$shipping = $priceResult[$rowId]['descr_qty']; 
+		$result['shipping'] = $priceResult[$rowId]['descr_qty']; 
 		
-		$priceRatio = 1+(Configure::read('Settings.price_ratio')/100);
-		$result['price'] = round($priceRatio * Configure::read('Settings.xchg_rate') * min($prices),-2);
-		$result['shipping'] = $shipping;
 		return $result;
 	}
 	
-	private function writeLog($actionType, $data){
+	private function writeLog($actionType, $data = ''){
 		$string = date('d-m-Y H:i:s').' '.$actionType.' '.$data;
 		file_put_contents(Configure::read('ZzapApi.log'), $string."\r\n", FILE_APPEND);
 	}
@@ -127,27 +176,32 @@ class ZzapApi extends AppModel {
 		return json_encode($dataArray);
 	}
 
-
 	private function multiCurlPrice($suggestTable){
-
 		$url = Configure::read('ZzapApi.url').'GetSearchResult';
 		$multi = curl_multi_init();
 		$channels = array();
 		
-		foreach ($suggestTable as $id=>$suggest) {
-			$data[$id] = $this->getRequestPriceBody($suggest['class_man'], $suggest['partnumber']);
+		$aProxy = Configure::read('proxy.list');
+		foreach ($suggestTable as $i => $suggest) {
+			$data[$i] = $this->getRequestPriceBody($suggest['class_man'], $suggest['partnumber']);
 			$curl = curl_init();  
-			curl_setopt($curl, CURLOPT_URL, $url );
-			curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");                                                                     
-			curl_setopt($curl, CURLOPT_POSTFIELDS, $data[$id]);
-			curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);                                                                      
-			curl_setopt($curl, CURLOPT_HTTPHEADER, array(                                                                          
-				'Content-Type: application/json',                                                                                
-				'Content-Length: ' . strlen($data[$id]))                                                                       
+			curl_setopt($curl, CURLOPT_URL, $url);
+			curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
+			curl_setopt($curl, CURLOPT_POSTFIELDS, $data[$i]);
+			curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+				'Content-Type: application/json',
+				'Content-Length: ' . strlen($data[$i]))
 			);
  
+			// add proxy server to get different IP
+			$proxy = trim($aProxy[$i]);
+			curl_setopt($curl, CURLOPT_PROXY, $proxy);
+			
 			curl_multi_add_handle($multi, $curl);
-			$channels[$id] = $curl;
+			$channels[$i] = $curl;
+			
+			$i++;
 		}
 		
 		$active = null;
@@ -163,13 +217,22 @@ class ZzapApi extends AppModel {
 					$info = curl_multi_info_read($multi);
 					if ($info['msg'] == CURLMSG_DONE) {
 						$ch = $info['handle'];
-						$id = array_search($ch, $channels);
-						$this->writeLog('REQUEST', "URL: {$url}; DATA: {$data[$id]}");
+						$i = array_search($ch, $channels);
+						$proxy = trim($aProxy[$i]);
+						$this->writeLog('REQUEST', "URL: {$url}; PROXY: {$proxy} DATA: {$data[$i]}");
 						$priceContent = curl_multi_getcontent($ch);
 						$this->writeLog('RESPONSE', $priceContent);
 						$priceShippingResult = $this->getSuggestPriceAndShipping($priceContent);
-						$this->content['table'][$id]['price'] = $priceShippingResult['price'];
-						$this->content['table'][$id]['shipping'] = $priceShippingResult['shipping'];
+						
+						if (!$priceShippingResult) {
+							$this->writeLog('PROXY FAILED', $proxy);
+							
+							$proxyLog = Configure::read('proxy.logs').'proxy_failed.log';
+							file_put_contents($proxyLog, trim($aProxy[$i])."\r\n", FILE_APPEND);
+						}
+						
+						$this->content['table'][$i]['price'] = $priceShippingResult['price'];
+						$this->content['table'][$i]['shipping'] = $priceShippingResult['shipping'];
 						curl_multi_remove_handle($multi, $ch);
 						curl_close($ch);
 					}
@@ -190,17 +253,22 @@ class ZzapApi extends AppModel {
 			'row_count'=>  self::MAX_ROW_PRICE
 		);
 		$content = $this->sendApiRequest('GetSearchResult', $data);
-		if(!$content['table']){
-			throw new Exception(__('API Server response error:'));
-		}
+		
+		$aPrices = array_values($this->getStatPrices(array($content['table'][0]['code_cat'])));
+		$output = Hash::merge($content['table'][0], ($aPrices) ? $aPrices[0] : array());
+		
 		$output['class_cat'] = $content['table'][0]['class_cat'];
 		$output['class_man'] = $classman;
 		$output['partnumber'] = $partnumber;
 		$output['imagepath'] = $content['table'][0]['imagepath'];
 		$output['shipping'] = $content['table'][0]['descr_qty'];
+		
+		/*
+		fdebug($content['table']);
 		$parseShippingResult = $this->getPriceAndShipping($content['table']);
 		$output['price'] = $parseShippingResult['price'];
 		$output['shipping'] = $parseShippingResult['shipping'];
+		*/
 		return $output;
 		
 	}

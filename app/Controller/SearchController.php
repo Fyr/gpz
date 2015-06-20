@@ -3,9 +3,14 @@ App::uses('AppController', 'Controller');
 App::uses('SiteRouter', 'Vendor');
 class SearchController extends AppController {
 	public $name = 'Search';
-	public $uses = array('ZzapApi');
+	public $uses = array('ZzapApi', 'IpStats', 'IpLog');
 	
 	protected $CarSubtype, $CarSubsection;
+	
+	public function beforeFilter() {
+		parent::beforeFilter();
+		$this->IpLog->save(array('ip' => $_SERVER['REMOTE_ADDR'], 'comment' => serialize($_SERVER)));
+	}
 	
 	public function index() {
 		$q = '';

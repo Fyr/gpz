@@ -6,7 +6,7 @@
 App::uses('FormHelper', 'View/Helper');
 class PHFormHelper extends FormHelper {
 	// var $helpers = array('Form', 'Html');
-	public function create($model, $options = array()) {
+	public function create($model = null, $options = array()) {
 		$options['class'] = (isset($options['class']) && $options['class']) ? $options['class'] : 'form-horizontal';
 		$options['inputDefaults'] = (isset($options['inputDefaults']) && $options['inputDefaults']) ? $options['inputDefaults'] : array(
 			'div' => 'control-group',

@@ -27,6 +27,24 @@ Configure::write('ZzapApi', array(
 	'log' => ROOT.DS.APP_DIR.DS.'tmp'.DS.'logs'.DS.'zzap_api.log'
 ));
 
+Configure::write('proxy', array(
+	'list' => file(ROOT.DS.APP_DIR.DS.'Config'.DS.'proxy.txt'),
+	'logs' => ROOT.DS.APP_DIR.DS.'tmp'.DS.'logs'.DS
+));
+
+Configure::write('ip', array(
+	'black_list' => array(
+		'95.108.158.244', 
+		'5.255.253.118', 
+		'5.255.253.45', 
+		'5.45.254.225',
+		'178.154.243.117', // паук яндекса
+		'5.255.253.146', // паук яндекса
+		'5.255.253.240', // паук яндекса
+		'95.108.158.235' // паук яндекса
+	),
+));
+
 // Values from google recaptcha account
 define('RECAPTCHA_PUBLIC_KEY', '6Lezy-QSAAAAAJ_mJK5OTDYAvPEhU_l-EoBN7rxV');
 define('RECAPTCHA_PRIVATE_KEY', '6Lezy-QSAAAAACCM1hh6ceRr445OYU_D_uA79UFZ');

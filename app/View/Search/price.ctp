@@ -10,6 +10,7 @@
 		<p class="error"><?=$errorText?></p>
 <?
 	} else {
+		$price = (isset($content['price_min']) && $content['price_min']) ? $this->Price->format($content['price_min']) : 'Нет предложений';
 ?>
 	<table id="itemTable">
 		<tr>
@@ -35,18 +36,11 @@
 				}else{	
 					echo $content['shipping'];
 				}?>
-		</td>
+			</td>
 		</tr>
-
 		<tr>
 			<td class="header">Цена</td>
-			<td><?php if(!$content['price']) { 
-					echo 'Нет предложений';
-				}else{
-					$price = number_format($content['price'],0 ,"," ,Configure::read('Settings.int_div'));
-					echo Configure::read('Settings.price_prefix').$price.Configure::read('Settings.price_postfix');
-				}?>
-		</td>	
+			<td><?=$price?></td>	
 		</tr>
 	
 	</table>

@@ -480,3 +480,9 @@ msgstr "Отправить сообщение"
 
 msgid "Your message"
 msgstr "Ваше сообщение"
+
+msgid "Incoming IP stats"
+msgstr "Статистика по входящим IP"
+
+msgid "Amount"
+msgstr "Кол-во"

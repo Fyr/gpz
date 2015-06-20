@@ -124,5 +124,10 @@
 			<img src="/img/ajax-loader-big.gif" alt="" /><br />
 			Обработка запроса...
 		</div>
+<?
+	if (TEST_ENV) {
+		echo $this->element('sql_dump');
+	}
+?>
 	</body>
 </html>

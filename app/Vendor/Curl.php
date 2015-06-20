@@ -15,6 +15,7 @@ class Curl {
 	private $logFile = '';
 	private $method, $format;
 	private $params = array();
+	private $status = array();
 	
 	public function __construct($sUrl = '', $aCurlOpts = array()) {
 		$this->setUrl($sUrl);
@@ -25,7 +26,6 @@ class Curl {
 		if (!$aCurlOpts) {
 			$aCurlOpts = array(
 				CURLOPT_HEADER => false,
-				CURLOPT_FOLLOWLOCATION => 1,
 				CURLOPT_RETURNTRANSFER => 1,
 				CURLOPT_TIMEOUT => 60
 			);
@@ -90,19 +90,22 @@ class Curl {
 		}
 		
 		$response = curl_exec($curl);
-		$errCode = curl_errno($curl);
-		$errMsg = curl_error($curl);
-		$info = curl_getinfo($curl);
+		$this->status['errCode'] = curl_errno($curl);
+		$this->status['errMsg'] = curl_error($curl);
+		$this->status['info'] = curl_getinfo($curl);
 		curl_close($curl);
-		fdebug(compact('errCode', 'errMsg', 'info'));
-		if ($errMsg) {
-	    	throw new Exception($errMsg, $errCode);
+		if ($this->status['errMsg']) {
+	    	throw new Exception($this->status['errMsg'], $this->status['errCode']);
 		}
 		
 		if (strpos($response, 'HTTP/1.1 404 Not Found') !== false) {
 			throw new Exception('HTTP/1.1 404 Not Found', 404);
 		}
 		return $this->processResponse($response);
+	}
+	
+	public function getStatus() {
+		return $this->status;
 	}
 	
 	private function processParams() {
@@ -128,12 +131,14 @@ class Curl {
 	}
 	
 	private function processResponse($response) {
+		/*
 		if ($this->format == self::JSON) {
 			if (!trim($response)) {
 				throw new Exception('Incorrect JSON response', 0);
 			}
 			$response = json_decode($response, true);
 		}
+		*/
 		return $response;
 	}
 

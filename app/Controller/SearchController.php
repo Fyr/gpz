@@ -7,11 +7,6 @@ class SearchController extends AppController {
 	
 	protected $CarSubtype, $CarSubsection;
 	
-	public function beforeFilter() {
-		parent::beforeFilter();
-		$this->IpLog->save(array('ip' => $_SERVER['REMOTE_ADDR'], 'comment' => serialize($_SERVER)));
-	}
-	
 	public function index() {
 		$q = '';
 		try{
@@ -50,7 +45,7 @@ class SearchController extends AppController {
 				throw new Exception('Неверный запрос');
 			}
 			
-			$this->setResult($this->ZzapApi->getItemPrice($classman, $number));
+			$this->setResult($this->ZzapApi->getItemInfo($classman, $number));
 		}  catch (Exception $e){
 			$this->setError($e->getMessage());
 		}

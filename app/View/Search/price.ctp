@@ -10,7 +10,15 @@
 		<p class="error"><?=$errorText?></p>
 <?
 	} else {
-		$price = (isset($content['price_min']) && $content['price_min']) ? $this->Price->format($content['price_min']) : 'Нет предложений';
+		// $price = (isset($content['price_min']) && $content['price_min']) ? $this->Price->format($content['price_min']) : 'Нет предложений';
+		// $price = $this->Price->format($content['price']);
+		$src = ($content['imagepath']) ? $content['imagepath'] : '';
+		if ($src) {
+			echo $this->Html->image($content['imagepath'], array(
+				'alt' => $content['class_cat'].' '.$content['partnumber'],
+				'class' => 'pull-right'
+			)).'<br/>';
+		}
 ?>
 	<table id="itemTable">
 		<tr>
@@ -26,21 +34,12 @@
 			<td><?=$content['class_man']?></td>	
 		</tr>
 		<tr>
-			<td class="header">Изображение:</td>
-			<td><?=($content['imagepath']) ? $this->Html->image($content['imagepath']) : 'Нет изображения'?></td>
-		</tr>
-		<tr>
 			<td class="header">Срок поставки</td>
-			<td><?php if(!$content['shipping']) { 
-					echo '-';
-				}else{	
-					echo $content['shipping'];
-				}?>
-			</td>
+			<td><?=$content['descr_qty']?></td>
 		</tr>
 		<tr>
 			<td class="header">Цена</td>
-			<td><?=$price?></td>	
+			<td><?=$this->Price->format($content['price'])?></td>	
 		</tr>
 	
 	</table>

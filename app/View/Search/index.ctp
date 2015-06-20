@@ -63,9 +63,9 @@
 			<th>
 				<a class="grid-unsortable" href="javascript:void(0)">Изображение</a>
 			</th>
-			<th>
+			<!--th>
 				<a class="grid-unsortable" href="javascript:void(0)">Цена</a>
-			</th>
+			</th-->
 			<th>
 				<a class="grid-unsortable" href="javascript:void(0)">Ссылка</a>
 			</th>
@@ -74,7 +74,7 @@
 		<tbody>
 <? 
 		foreach ($content['table'] as $id => $row) {
-			$price = (isset($row['price_min']) && $row['price_min']) ? $this->Price->format($row['price_min']) : 'Нет предложений';
+			// $price = (isset($row['price_min']) && $row['price_min']) ? $this->Price->format($row['price_min']) : 'Нет предложений';
 ?>
 			<tr class="grid-row">
 				<td><?=$row['class_man'];?></td>
@@ -89,10 +89,9 @@
 			}
 ?>
 				</td>
-				<td class="priceCell" nowrap="nowrap">
-					<!--<a href="/search/price/?number=<?=$row['partnumber']?>&classman=<?=$row['class_man'];?>" class="showPrice">подробнее</a>-->
-					<span class="value"><?=$price?></span>
-				</td>
+				<!--td class="priceCell" nowrap="nowrap">
+					<span class="value"></span>
+				</td-->
 				<td>
 					<a class="showLoader" href="/Search/price?classman=<?=$row['class_man'];?>&number=<?=$row['partnumber'];?>">Подробнее</a>
 				</td>

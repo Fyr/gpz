@@ -1,6 +1,9 @@
 <?php
 App::uses('AppModel', 'Model');
-App::uses('IpLog', 'Model');
+App::uses('ProxyUse', 'Model');
+App::uses('ZzapCache', 'Model');
+App::uses('Curl', 'Vendor');
+
 class ZzapApi extends AppModel {
 	
 	public $useTable = false;
@@ -8,50 +11,104 @@ class ZzapApi extends AppModel {
 	const MAX_ROW_SUGGEST = 10;
 	const MAX_ROW_PRICE = 300;
 	
-	protected $IpLog;
-	
-	private function createRequest($link, $data){
-		$curl = curl_init($link);
-		curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");                                                                     
-		curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
-		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);                                                                      
-		curl_setopt($curl, CURLOPT_HTTPHEADER, array(                                                                          
-			'Content-Type: application/json',                                                                                
-			'Content-Length: ' . strlen($data))                                                                       
-		);
-		
-		$ip = $_SERVER['REMOTE_ADDR'];
-		$blackIps = Configure::read('ip.black_list');
-		if (in_array($ip, $blackIps)) {
-			$aProxy = Configure::read('proxy.list');
-			$proxy = $aProxy[array_rand($aProxy)];
-			curl_setopt($curl, CURLOPT_PROXY, $proxy);
-		}
-		return $curl;
+	private function isBot($ip) {
+		$hostname = gethostbyaddr($ip);
+		return ($hostname === 'spider-'.str_replace('.', '-', $ip).'.yandex.com') 
+			|| ($hostname === 'crawl-'.str_replace('.', '-', $ip).'.googlebot.com');
 	}
 	
+	private function writeLog($actionType, $data = ''){
+		$string = date('d-m-Y H:i:s').' '.$actionType.' '.$data;
+		file_put_contents(Configure::read('ZzapApi.log'), $string."\r\n", FILE_APPEND);
+	}
 	
 	private function sendApiRequest($method, $data){
-		
 		$url = Configure::read('ZzapApi.url').$method;
-		
 		$data['api_key'] = Configure::read('ZzapApi.key');
-		$data = json_encode($data);
-		$this->writeLog('REQUEST', "URL: {$url}; DATA: {$data}");
-		$response = curl_exec($this->createRequest($url, $data));
-		$this->writeLog('RESPONSE', $response);
 		
+		$curl = new Curl($url);
+		$curl->setParams($data)
+			->setMethod(Curl::POST)
+			->setFormat(Curl::JSON);
+		// этого уже достаточно чтобы отправить запрос
 		
+		$request = json_encode($data);
 		
-		$result = json_decode($response);
-		if(!$response or !isset($result->d)){
-			throw new Exception(__('API Server error'));
+		// Определяем идет ли это запрос от поискового бота
+		// если да - перенаправляем на др.прокси-сервера
+		$ip = $_SERVER['REMOTE_ADDR'];
+		$proxy_type = ($this->isBot($ip)) ? 'Bot' : 'Site';
+		$proxy = $this->initModel('ProxyUse')->getProxy($proxy_type);
+		$this->initModel('ProxyUse')->useProxy($proxy['ProxyUse']['host'], $method, $request);
+		
+		$curl->setOption(CURLOPT_PROXY, $proxy['ProxyUse']['host'])
+			->setOption(CURLOPT_PROXYUSERPWD, $proxy['ProxyUse']['login'].':'.$proxy['ProxyUse']['password']);
+		
+		$responseType = 'OK';
+		try {
+			// перед запросом - логируем
+			$this->writeLog('REQUEST', "PROXY: {$proxy['ProxyUse']['host']} URL: {$url}; DATA: {$request}");
+			
+			$response = $_response = $curl->sendRequest();
+			
+			// логируем сразу после запроса
+			$this->writeLog('RESPONSE', "PROXY: {$proxy['ProxyUse']['host']} DATA: {$_response}");
+			
+		} catch (Exception $e) {
+			// отдельно логируем ошибки Curl
+			$status = json_encode($curl->getStatus());
+			$this->writeLog('ERROR', "PROXY: {$proxy['ProxyUse']['host']} STATUS: {$status}");
+			$responseType = 'ERROR';
 		}
 		
-		$content = json_decode($result->d,true);
+		$cache_used = false;
+		$cache = '';
+		$e = null;
+		try {
+			$response = json_decode($response, true);
+			if (!$response || !isset($response['d'])) {
+				throw new Exception(__('API Server error'));
+			}
+			
+			$content = json_decode($response['d'], true);
+			
+			if (!isset($content['table']) || $content['error']){
+				throw new Exception(__('API Server response error: %s', $content['error'])); 
+			}
+			
+			// если все хорошо - сохраняем ответ в кэше
+			$this->initModel('ZzapCache')->setCache($method, $request, $response['d']);
+		} catch (Exception $e) {
+			// пытаемся достать ответ из кэша
+			$cache = $this->initModel('ZzapCache')->getCache($method, $request);
+			if ($cache) {
+				$cache_used = true;
+				$this->writeLog('LOAD CACHE', "PROXY: {$proxy['ProxyUse']['host']} DATA: {$cache}");
+				$content = json_decode($cache, true);
+				$e = null; // сбрасываем ошибку - мы восттановили инфу из кэша
+			} else {
+				$content = array();
+			}
+		}
 		
-		if (!isset($content['table']) || $content['error']){
-			throw new Exception(__('API Server response error: %s', $content['error'])); 
+		// Логируем всю инфу для статистики
+		$this->initModel('ZzapLog')->clear();
+		$this->initModel('ZzapLog')->save(array(
+			'ip' => $ip,
+			'host' => gethostbyaddr($ip),
+			'ip_details' => json_encode($_SERVER),
+			'proxy_used' => $proxy['ProxyUse']['host'],
+			'method' => $method,
+			'request' => $request,
+			'response_type' => $responseType,
+			'response_status' => json_encode($curl->getStatus()),
+			'response' => $_response,
+			'cache_used' => $cache_used,
+			'cache' => $cache
+		));
+		
+		if ($e) {
+			throw $e; // повторно кидаем ошибку чтоб ее показать
 		}
 		
 		return $content;
@@ -84,10 +141,10 @@ class ZzapApi extends AppModel {
 			//ограничение в АПИ не работает - поэтому срезаем
 			$this->content['table'] = array_slice($this->content['table'], 0, self::MAX_ROW_SUGGEST);
 			$aCodes = Hash::extract($this->content['table'], '{n}.code_cat');
-			$aPrices = $this->getStatPrices($aCodes);
+			// $aPrices = $this->getStatPrices($aCodes);
 			$this->content['table'] = Hash::combine($this->content['table'], '{n}.code_cat', '{n}');
-			$this->content['table'] = Hash::merge($this->content['table'], $aPrices);
-			$this->content['table'] = Hash::sort(array_values($this->content['table']), '{n}.price_min', 'desc'); // сортируем по min.цене
+			// $this->content['table'] = Hash::merge($this->content['table'], $aPrices);
+			// $this->content['table'] = Hash::sort(array_values($this->content['table']), '{n}.price_min', 'desc'); // сортируем по min.цене
 		}
 		return $this->content;
 	}
@@ -113,7 +170,7 @@ class ZzapApi extends AppModel {
 		
 		return Hash::merge($prices, $prices2);
 	}
-	
+	/*
 	private function getSuggestPriceAndShipping($priceResponse){
 		
 		if(!$priceResponse){
@@ -158,10 +215,6 @@ class ZzapApi extends AppModel {
 		return $result;
 	}
 	
-	private function writeLog($actionType, $data = ''){
-		$string = date('d-m-Y H:i:s').' '.$actionType.' '.$data;
-		file_put_contents(Configure::read('ZzapApi.log'), $string."\r\n", FILE_APPEND);
-	}
 	
 	private function getRequestPriceBody($classman,$partnumber){
 		$dataArray = array(
@@ -242,8 +295,8 @@ class ZzapApi extends AppModel {
 		}
 		curl_multi_close($multi);
 	}
-	
-	public function getItemPrice($classman,$partnumber){
+	*/
+	public function getItemInfo($classman,$partnumber){
 		$data = array(
 			'login' => '',
 			'password'=> '',
@@ -254,22 +307,36 @@ class ZzapApi extends AppModel {
 		);
 		$content = $this->sendApiRequest('GetSearchResult', $data);
 		
-		$aPrices = array_values($this->getStatPrices(array($content['table'][0]['code_cat'])));
-		$output = Hash::merge($content['table'][0], ($aPrices) ? $aPrices[0] : array());
-		
+		fdebug($content);
+		// $aPrices = array_values($this->getStatPrices(array($content['table'][0]['code_cat'])));
+		// $output = Hash::merge($content['table'][0], ($aPrices) ? $aPrices[0] : array());
+		/*
 		$output['class_cat'] = $content['table'][0]['class_cat'];
 		$output['class_man'] = $classman;
 		$output['partnumber'] = $partnumber;
 		$output['imagepath'] = $content['table'][0]['imagepath'];
 		$output['shipping'] = $content['table'][0]['descr_qty'];
-		
+		*/
 		/*
 		fdebug($content['table']);
 		$parseShippingResult = $this->getPriceAndShipping($content['table']);
 		$output['price'] = $parseShippingResult['price'];
 		$output['shipping'] = $parseShippingResult['shipping'];
 		*/
-		return $output;
-		
+		return $this->getBestPriceItem($content['table']);
+	}
+	
+	/*
+		Ищем лучший товар по мин.цене
+	*/
+	private function getBestPriceItem($table) {
+		$min = 0;
+		foreach($table as $i => &$item) {
+			$item['price'] = preg_replace('/\D/', '', $item['price']);
+			if ($item['price'] < $table[$min]['price']) {
+				$min = $i;
+			}
+		}
+		return $table[$min];
 	}
 }

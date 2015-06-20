@@ -44,6 +44,17 @@ class AppModel extends Model {
 		}
 	}
 
+	public function initModel($model, $id = null) {
+		list($plugin, $modelClass) = pluginSplit($model, true);
+
+		$modelClass = ClassRegistry::init(array(
+			'class' => $plugin . $modelClass, 'alias' => $modelClass, 'id' => $id
+		)); // $this->{$modelClass}
+		if (!$modelClass) {
+			throw new MissingModelException($modelClass);
+		}
+		return $modelClass;
+	}
 	
 	private function _getObjectConditions($objectType = '', $objectID = '') {
 		$conditions = array();
@@ -85,5 +96,17 @@ class AppModel extends Model {
 		$date1 = date('Y-m-d H:i:s', strtotime($date1));
 		$date2 = date('Y-m-d H:i:s', strtotime($date2));
 		return array($field.' >= ' => $date1, $field.' <= ' => $date2);
+	}
+	
+	public function trxBegin() {
+		$this->getDataSource()->begin();
+	}
+	
+	public function trxCommit() {
+		$this->getDataSource()->commit();
+	}
+	
+	public function trxRollback() {
+		$this->getDataSource()->rollback();
 	}
 }

@@ -323,6 +323,9 @@ class ZzapApi extends AppModel {
 		$output['price'] = $parseShippingResult['price'];
 		$output['shipping'] = $parseShippingResult['shipping'];
 		*/
+		if (AuthComponent::user('id')) {
+			return array('table' => Hash::sort($content['table'], '{n}.price', 'asc'));
+		}
 		return $this->getBestPriceItem($content['table']);
 	}
 	

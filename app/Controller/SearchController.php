@@ -2,10 +2,16 @@
 App::uses('AppController', 'Controller');
 App::uses('SiteRouter', 'Vendor');
 class SearchController extends AppController {
+	public $components = array('Auth');
 	public $name = 'Search';
 	public $uses = array('ZzapApi', 'IpStats', 'IpLog');
 	
 	protected $CarSubtype, $CarSubsection;
+	
+	public function beforeFilter() {
+		$this->Auth->allow(array('index', 'price'));
+		parent::beforeFilter();
+	}
 	
 	public function index() {
 		$q = '';

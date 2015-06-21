@@ -61,12 +61,6 @@
 				<a class="grid-unsortable" href="javascript:void(0)">Наименование</a>
 			</th>
 			<th>
-				<a class="grid-unsortable" href="javascript:void(0)">Изображение</a>
-			</th>
-			<!--th>
-				<a class="grid-unsortable" href="javascript:void(0)">Цена</a>
-			</th-->
-			<th>
 				<a class="grid-unsortable" href="javascript:void(0)">Ссылка</a>
 			</th>
 		</tr>
@@ -77,21 +71,15 @@
 			// $price = (isset($row['price_min']) && $row['price_min']) ? $this->Price->format($row['price_min']) : 'Нет предложений';
 ?>
 			<tr class="grid-row">
-				<td><?=$row['class_man'];?></td>
-				<td><?=$row['partnumber'];?></td>
-				<td><?=$row['class_cat'];?></td>
-				<td style="text-align:center;">
-<?
-			if ($row['imagepath']) {
-?>
-				<img src="<?=$row['imagepath'];?>" />
-<?
-			}
-?>
+				<td>
+					<?=($row['logopath']) ? $this->Html->image($row['logopath']) : ''?>
+					<?=$row['class_man'];?>
 				</td>
-				<!--td class="priceCell" nowrap="nowrap">
-					<span class="value"></span>
-				</td-->
+				<td><?=$row['partnumber'];?></td>
+				<td>
+					<?=($row['imagepath']) ? $this->Html->image($row['imagepath'], array('style' => 'float: left; margin: 0 5px 5px 0')) : ''?>
+					<?=$row['class_cat']?>
+				</td>
 				<td>
 					<a class="showLoader" href="/Search/price?classman=<?=$row['class_man'];?>&number=<?=$row['partnumber'];?>">Подробнее</a>
 				</td>

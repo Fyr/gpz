@@ -1,4 +1,6 @@
 $(document).ready(function(){
+	hideLoader();
+	
     $('.menu li a').click(function(){
         $(".header .menu li ul").stop().slideUp();
         if ( $(this).next().is('ul') ) {
@@ -15,12 +17,24 @@ $(document).ready(function(){
 		}
 	});
 	
+	$('form.searchBlock').submit(function(){
+		showLoader();
+	});
+	
 	$('.showLoader').on('click touchstart', function(){
 		window.scrollTo(0, 0);
 		showLoader();
+		if ($(this).prop('href')) {
+			window.location.href = $(this).prop('href');
+			return false;
+		}
 	});
 });
 
 function showLoader() {
 	$('#loader').show();
+}
+
+function hideLoader() {
+	$('#loader').hide();
 }

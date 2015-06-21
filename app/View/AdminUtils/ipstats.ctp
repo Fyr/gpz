@@ -11,10 +11,10 @@
 				<a class="grid-unsortable" href="javascript:void(0)">IP</a>
 			</th>
 			<th class="nowrap">
-				<a class="grid-unsortable" href="javascript:void(0)"><?=__('Amount')?></a>
+				<a class="grid-unsortable" href="javascript:void(0)"><?=__('Server name')?></a>
 			</th>
 			<th class="nowrap">
-				<a class="grid-unsortable" href="javascript:void(0)"><?=__('Server name')?></a>
+				<a class="grid-unsortable" href="javascript:void(0)"><?=__('Amount')?></a>
 			</th>
 		</tr>
 	</thead>
@@ -25,9 +25,9 @@
 		$class = ($class == 'even') ? 'odd' : 'even';
 ?>
 		<tr class="grid-row">
-			<td class="<?=$class?>"><?=$row['IpLog']['ip']?></td>
+			<td class="<?=$class?>"><?=$row['ZzapLog']['ip']?></td>
+			<td class="<?=$class?>"><?=$row['ZzapLog']['host']?></td>
 			<td class="<?=$class?> text-right"><?=$row[0]['count']?></td>
-			<td class="<?=$class?>"><?=gethostbyaddr($row['IpLog']['ip'])?></td>
 		</tr>
 
 <?

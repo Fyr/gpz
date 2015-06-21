@@ -94,6 +94,7 @@ class ZzapApi extends AppModel {
 		// Логируем всю инфу для статистики
 		$this->initModel('ZzapLog')->clear();
 		$this->initModel('ZzapLog')->save(array(
+			'ip_type' => $proxy_type,
 			'ip' => $ip,
 			'host' => gethostbyaddr($ip),
 			'ip_details' => json_encode($_SERVER),
@@ -307,7 +308,6 @@ class ZzapApi extends AppModel {
 		);
 		$content = $this->sendApiRequest('GetSearchResult', $data);
 		
-		fdebug($content);
 		// $aPrices = array_values($this->getStatPrices(array($content['table'][0]['code_cat'])));
 		// $output = Hash::merge($content['table'][0], ($aPrices) ? $aPrices[0] : array());
 		/*

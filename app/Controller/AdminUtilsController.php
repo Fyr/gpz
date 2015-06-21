@@ -2,7 +2,7 @@
 App::uses('AdminController', 'Controller');
 class AdminUtilsController extends AdminController {
     public $name = 'AdminUtils';
-    public $uses = array('IpLog');
+    public $uses = array('ZzapLog');
     
     public function beforeFilter() {
 		if (!$this->isAdmin()) {
@@ -35,10 +35,11 @@ class AdminUtilsController extends AdminController {
     }
     
     public function ipstats() {
-    	$fields = array('ip', 'COUNT(*) AS count');
+    	$fields = array('ip', 'host', 'COUNT(*) AS count');
     	$group = 'ip';
     	$order = 'count DESC';
-    	$rows = $this->IpLog->find('all', compact('fields', 'group', 'order'));
+    	$rows = $this->ZzapLog->find('all', compact('fields', 'group', 'order'));
+    	// SELECT ip, host, COUNT(*) AS count FROM `zzap_logs` GROUP BY ip ORDER BY count DESC
     	$this->set('rows', $rows);
     }
 }

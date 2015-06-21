@@ -187,7 +187,7 @@ textarea { height: auto;}
 
 
 .footer { background: #e8e9e9; padding: 30px 0 50px 0; margin-top: 40px; font-size: 13px; }
-    .footer .logo { background: url("../img/logo.png") no-repeat left top; display: block; height: 51px; width: 184px; background-size: cover;}
+    .footer .logo { background: url("../img/logo.png") no-repeat left top; display: block; height: 54px; width: 184px; background-size: cover;}
 	.footer .leftSide { float:left; margin-top: -15px;}
     .footer .menu { width: 300px; float: left; margin-left: 70px;}
         .footer .menu li {font-size: 13px; padding-bottom: 3px; float: left; width: 150px;}

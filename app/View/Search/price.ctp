@@ -1,10 +1,6 @@
 <? 
-	if (isset($content)){ 
-		if (isset($content['table']) && is_array($content['table'])) {
-			echo $this->element('title', array('title' => $content['table'][0]['class_cat'].' '.$content['table'][0]['partnumber']));
-		} else {
-			echo $this->element('title', array('title' => $content['class_cat'].' '.$content['partnumber']));
-		}
+	if (isset($content['header'])){ 
+		echo $this->element('title', array('title' => $content['header']));
 	}
 ?>
 <div class="block clearfix">
@@ -16,8 +12,7 @@
 	} else {
 		// $price = (isset($content['price_min']) && $content['price_min']) ? $this->Price->format($content['price_min']) : 'Нет предложений';
 		// $price = $this->Price->format($content['price']);
-		if (isset($content['table']) && is_array($content['table'])) {
-			$this->Html->css('/Table/css/grid', array('inline' => false));
+		$this->Html->css('/Table/css/grid', array('inline' => false));
 			
 ?>
 <style type="text/css">
@@ -53,14 +48,30 @@
 			<th>
 				<a class="grid-unsortable" href="javascript:void(0)">Цена</a>
 			</th>
+<?
+		if ($lFullInfo) {
+?>
 			<th>
 				<a class="grid-unsortable" href="javascript:void(0)">Продавец</a>
 			</th>
+<?
+		}
+?>
 		</tr>
 		</thead>
 		<tbody>
 <?
-			foreach($content['table'] as $row) {
+		$colspan = ($lFullInfo) ? 6 : 5;
+		foreach($content['table'] as $descr_type => $brands) {
+?>
+			<tr>
+				<td colspan="<?=$colspan?>" style="background: #ddd; padding: 10px 0 5px 0;">
+					<b><?=$descr_type?></b>
+				</td>
+			</tr>
+<?
+			foreach($brands as $brand => $rows) {
+				foreach($rows as $row) {
 ?>
 			<tr class="grid-row">
 				<td>
@@ -77,56 +88,38 @@
 					<?=$row['descr_qty']?>
 				</td>
 				<td align="right">
+<?
+					if ($lFullInfo) {
+?>
 					<b><?=$row['price']?></b><br/>
 					<?=$row['descr_price']?>
+<?
+					} else {
+						echo '<b>'.$this->Price->format($row['price_clean']).'</b>';
+					}
+?>
 				</td>
+<?
+					if ($lFullInfo) {
+?>
 				<td>
 					<?=$row['class_user']?><br />
 					<?=$row['descr_address']?><br />
 					<?=$row['phone1']?>
 				</td>
+<?
+					}
+?>
 			</tr>
 <?
+				}
 			}
+		}
 ?>
 		</tbody>
 		</table>
 		<br />
 <?
-		} else {
-			$src = ($content['imagepath']) ? $content['imagepath'] : '';
-			if ($src) {
-				echo $this->Html->image($content['imagepath'], array(
-					'alt' => $content['class_cat'].' '.$content['partnumber'],
-					'class' => 'pull-right'
-				)).'<br/>';
-			}
-?>
-	<table id="itemTable">
-		<tr>
-			<td class="header">Наименование:</td>
-			<td><?=$content['class_cat']?></td>	
-		</tr>
-		<tr>
-			<td class="header">Номер Детали:</td>
-			<td><?=$content['partnumber']?></td>	
-		</tr>
-		<tr>
-			<td class="header">Производитель:</td>
-			<td><?=$content['class_man']?></td>	
-		</tr>
-		<tr>
-			<td class="header">Срок поставки</td>
-			<td><?=$content['descr_qty']?></td>
-		</tr>
-		<tr>
-			<td class="header">Цена</td>
-			<td><?=$this->Price->format($content['price_clean'])?></td>	
-		</tr>
-	
-	</table>
-<?
-		}
 	}
 ?>
 </div>

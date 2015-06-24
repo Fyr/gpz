@@ -13,7 +13,7 @@ class ZzapCache extends AppModel {
 			if ($row) {
 				$this->save(array('id' => $row['ZzapCache']['id'], 'response' => $response, 'used' => $row['ZzapCache']['used'] + 1));
 			} else {
-				$used = 1;
+				$used = 0;
 				$this->save(compact('method', 'request', 'response', 'used'));
 			}
 			

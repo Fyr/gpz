@@ -30,7 +30,7 @@ class ZzapApi extends AppModel {
 		// Определяем идет ли это запрос от поискового бота
 		$ip = $_SERVER['REMOTE_ADDR'];
 		$proxy_type = ($this->isBot($ip)) ? 'Bot' : 'Site';
-		if ($proxy_type == 'Bot') {
+		if ($proxy_type == 'Bot' || TEST_ENV) {
 			// пытаемся достать инфу из кэша без запроса на API - так быстрее и не нужно юзать прокси
 			$_cache = $this->initModel('ZzapCache')->getCache($method, $request);
 			if ($_cache) {
@@ -323,7 +323,7 @@ class ZzapApi extends AppModel {
 		curl_multi_close($multi);
 	}
 	*/
-	public function getItemInfo($classman,$partnumber){
+	public function getItemInfo($classman, $partnumber, $lFullInfo){
 		$data = array(
 			'login' => '',
 			'password'=> '',
@@ -333,19 +333,54 @@ class ZzapApi extends AppModel {
 			'row_count'=>  self::MAX_ROW_PRICE
 		);
 		$content = $this->sendApiRequest('GetSearchResult', $data);
+		// проще определить заголовок тут
+		$content['header'] = (isset($content['table']) && $content['table']) ? $content['table'][0]['class_cat'].' '.$content['table'][0]['partnumber'] : '';
+		$content['table'] = $this->processPriceTable($content['table'], $lFullInfo);
 		
-		$content['table'] = $this->processPriceTable($content['table']);
-		$content['table'] = Hash::sort($content['table'], '{n}.price_clean', 'asc');
-		if (AuthComponent::user('id')) {
-			return $content;
-		}
-		return $content['table'][0];
+		return $content;
 	}
 	
-	private function processPriceTable($table) {
+	private function processPriceTable($table, $lFullInfo) {
 		foreach($table as $i => &$item) {
-			$item['price_clean'] = preg_replace('/\D/', '', $item['price']);
+			$item['price_clean'] = intval(preg_replace('/\D/', '', $item['price']));
 		}
+		$table = Hash::sort($table, '{n}.descr_type_search', 'desc');
+		$_table = array();
+		foreach($table as $item) {
+			$_table[$item['descr_type_search']][] = $item;
+		}
+		foreach($_table as $descr_type_search => &$rows) {
+			$rows = Hash::sort($rows, '{n}.class_man', 'asc');
+			$_rows = array();
+			/*
+			foreach($rows as $item) {
+				$instock = (mb_strpos($item['qty'], 'шт') !== false || mb_strpos($item['qty'], 'Есть') !== false) ? 0 : 1;
+				if (!isset($_rows[$item['class_man']])) {
+					$_rows[$item['class_man']] = array(0 => array(), 1 => array());
+				}
+				$_rows[$item['class_man']][$instock][] = $item;
+			}
+			foreach($_rows as $class_man => &$instock) {
+				foreach($instock as &$items) {
+					$items = Hash::sort($items, '{n}.price_clean', 'asc');
+					if (!$lFullInfo) {
+						$items = array($items[0]);
+					}
+				}
+			}
+			*/
+			foreach($rows as $item) {
+				$_rows[$item['class_man']][] = $item;
+			}
+			foreach($_rows as $class_man => &$items) {
+				$items = Hash::sort($items, '{n}.price_clean', 'asc');
+				if (!$lFullInfo) {
+					$items = array($items[0]);
+				}
+			}
+			$rows = $_rows;
+		}
+		$table = $_table;
 		return $table;
 	}
 	

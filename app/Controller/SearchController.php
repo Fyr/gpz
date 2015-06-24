@@ -43,6 +43,7 @@ class SearchController extends AppController {
 	}
 	
 	public function price(){
+		$lFullInfo = $this->Auth->loggedIn();
 		try{
 			$number = $this->request->query('number');
 			$classman = $this->request->query('classman');
@@ -51,7 +52,8 @@ class SearchController extends AppController {
 				throw new Exception('Неверный запрос');
 			}
 			
-			$this->setResult($this->ZzapApi->getItemInfo($classman, $number));
+			$this->setResult($this->ZzapApi->getItemInfo($classman, $number, $lFullInfo));
+			$this->set('lFullInfo', $lFullInfo);
 		}  catch (Exception $e){
 			$this->setError($e->getMessage());
 		}

@@ -8,8 +8,8 @@ class ZzapApi extends AppModel {
 	
 	public $useTable = false;
 	
-	const MAX_ROW_SUGGEST = 10;
-	const MAX_ROW_PRICE = 300;
+	const MAX_ROW_SUGGEST = 20;
+	const MAX_ROW_PRICE = 100;
 	
 	private function isBot($ip) {
 		$hostname = gethostbyaddr($ip);
@@ -25,6 +25,30 @@ class ZzapApi extends AppModel {
 	private function sendApiRequest($method, $data){
 		$url = Configure::read('ZzapApi.url').$method;
 		$data['api_key'] = Configure::read('ZzapApi.key');
+		$request = json_encode($data);
+		
+		// Определяем идет ли это запрос от поискового бота
+		$ip = $_SERVER['REMOTE_ADDR'];
+		$proxy_type = ($this->isBot($ip)) ? 'Bot' : 'Site';
+		if ($proxy_type == 'Bot') {
+			// пытаемся достать инфу из кэша без запроса на API - так быстрее и не нужно юзать прокси
+			$_cache = $this->initModel('ZzapCache')->getCache($method, $request);
+			if ($_cache) {
+				$this->initModel('ZzapLog')->clear();
+				$this->initModel('ZzapLog')->save(array(
+					'ip_type' => $proxy_type,
+					'ip' => $ip,
+					'host' => gethostbyaddr($ip),
+					'ip_details' => json_encode($_SERVER),
+					'method' => $method,
+					'request' => $request,
+					'response_type' => 'CACHE',
+					'cache_id' => $_cache['ZzapCache']['id'],
+					'cache' => $_cache['ZzapCache']['response']
+				));
+				return json_decode($_cache['ZzapCache']['response'], true);
+			}
+		}
 		
 		$curl = new Curl($url);
 		$curl->setParams($data)
@@ -32,18 +56,14 @@ class ZzapApi extends AppModel {
 			->setFormat(Curl::JSON);
 		// этого уже достаточно чтобы отправить запрос
 		
-		$request = json_encode($data);
-		
-		// Определяем идет ли это запрос от поискового бота
-		// если да - перенаправляем на др.прокси-сервера
-		$ip = $_SERVER['REMOTE_ADDR'];
-		$proxy_type = ($this->isBot($ip)) ? 'Bot' : 'Site';
+		// если бот - перенаправляем на др.прокси-сервера для ботов - снимаем нагрузку с прокси для сайта
 		$proxy = $this->initModel('ProxyUse')->getProxy($proxy_type);
 		$this->initModel('ProxyUse')->useProxy($proxy['ProxyUse']['host'], $method, $request);
 		
 		$curl->setOption(CURLOPT_PROXY, $proxy['ProxyUse']['host'])
 			->setOption(CURLOPT_PROXYUSERPWD, $proxy['ProxyUse']['login'].':'.$proxy['ProxyUse']['password']);
 		
+		$response = $_response = '';
 		$responseType = 'OK';
 		try {
 			// перед запросом - логируем
@@ -61,7 +81,7 @@ class ZzapApi extends AppModel {
 			$responseType = 'ERROR';
 		}
 		
-		$cache_used = false;
+		$cache_id = null;
 		$cache = '';
 		$e = null;
 		try {
@@ -79,12 +99,18 @@ class ZzapApi extends AppModel {
 			// если все хорошо - сохраняем ответ в кэше
 			$this->initModel('ZzapCache')->setCache($method, $request, $response['d']);
 		} catch (Exception $e) {
+			if ($responseType == 'OK') {
+				// была ошибка ответа
+				$responseType = 'RESPONSE_ERROR';
+			}
 			// пытаемся достать ответ из кэша
-			$cache = $this->initModel('ZzapCache')->getCache($method, $request);
-			if ($cache) {
-				$cache_used = true;
+			$_cache = $this->initModel('ZzapCache')->getCache($method, $request);
+			if ($_cache) {
+				$cache_id = $_cache['ZzapCache']['id'];
+				$cache = $_cache['ZzapCache']['response'];
 				$this->writeLog('LOAD CACHE', "PROXY: {$proxy['ProxyUse']['host']} DATA: {$cache}");
 				$content = json_decode($cache, true);
+				
 				$e = null; // сбрасываем ошибку - мы восттановили инфу из кэша
 			} else {
 				$content = array();
@@ -104,7 +130,7 @@ class ZzapApi extends AppModel {
 			'response_type' => $responseType,
 			'response_status' => json_encode($curl->getStatus()),
 			'response' => $_response,
-			'cache_used' => $cache_used,
+			'cache_id' => $cache_id,
 			'cache' => $cache
 		));
 		
@@ -308,25 +334,19 @@ class ZzapApi extends AppModel {
 		);
 		$content = $this->sendApiRequest('GetSearchResult', $data);
 		
-		// $aPrices = array_values($this->getStatPrices(array($content['table'][0]['code_cat'])));
-		// $output = Hash::merge($content['table'][0], ($aPrices) ? $aPrices[0] : array());
-		/*
-		$output['class_cat'] = $content['table'][0]['class_cat'];
-		$output['class_man'] = $classman;
-		$output['partnumber'] = $partnumber;
-		$output['imagepath'] = $content['table'][0]['imagepath'];
-		$output['shipping'] = $content['table'][0]['descr_qty'];
-		*/
-		/*
-		fdebug($content['table']);
-		$parseShippingResult = $this->getPriceAndShipping($content['table']);
-		$output['price'] = $parseShippingResult['price'];
-		$output['shipping'] = $parseShippingResult['shipping'];
-		*/
+		$content['table'] = $this->processPriceTable($content['table']);
+		$content['table'] = Hash::sort($content['table'], '{n}.price_clean', 'asc');
 		if (AuthComponent::user('id')) {
-			return array('table' => Hash::sort($content['table'], '{n}.price', 'asc'));
+			return $content;
 		}
-		return $this->getBestPriceItem($content['table']);
+		return $content['table'][0];
+	}
+	
+	private function processPriceTable($table) {
+		foreach($table as $i => &$item) {
+			$item['price_clean'] = preg_replace('/\D/', '', $item['price']);
+		}
+		return $table;
 	}
 	
 	/*

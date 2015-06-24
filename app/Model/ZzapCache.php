@@ -26,6 +26,6 @@ class ZzapCache extends AppModel {
 	public function getCache($method, $request) {
 		$conditions = compact('method', 'request');
 		$row = $this->find('first', compact('conditions'));
-		return ($row) ? $row['ZzapCache']['response'] : '';
+		return $row;
 	}
 }

@@ -7,7 +7,7 @@ class Prices {
 	}
 	
 	public static function format($price) {
-		$price = number_format($price, 0, ',', Configure::read('Settings.int_div'));
+		$price = number_format($price, 0, '.', Configure::read('Settings.int_div'));
 		return Configure::read('Settings.price_prefix').$price.Configure::read('Settings.price_postfix');
 	}
 	

@@ -121,7 +121,7 @@
 		</tr>
 		<tr>
 			<td class="header">Цена</td>
-			<td><?=$this->Price->format($content['price'])?></td>	
+			<td><?=$this->Price->format($content['price_clean'])?></td>	
 		</tr>
 	
 	</table>

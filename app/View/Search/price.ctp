@@ -91,7 +91,7 @@
 <?
 					if ($lFullInfo) {
 ?>
-					<b><?=$row['price']?></b><br/>
+					<b><?=$row['price']?></b>(<?=$this->Price->format($row['price_clean'])?>)<br/>
 					<?=$row['descr_price']?>
 <?
 					} else {

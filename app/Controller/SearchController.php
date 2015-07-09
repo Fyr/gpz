@@ -15,47 +15,50 @@ class SearchController extends AppController {
 	
 	public function index() {
 		$q = '';
-		try{
-			if (($carSubtype = $this->request->param('carSubtype')) && ($carSubsection = $this->request->param('slug'))) {
-				$this->loadModel('CarSubtype');
-				$this->loadModel('CarSubsection');
+		if (($carSubtype = $this->request->param('carSubtype')) && ($carSubsection = $this->request->param('slug'))) {
+			$this->loadModel('CarSubtype');
+			$this->loadModel('CarSubsection');
+			
+			$carSubtype = $this->CarSubtype->findBySlug($carSubtype);
+			$carSubsection = $this->CarSubsection->findBySlug($carSubsection);
+			if ($carSubtype && $carSubsection) {
+				$q = $carSubtype['CarSubtype']['title'].' '.$carSubsection['CarSubsection']['title'];
 				
-				$carSubtype = $this->CarSubtype->findBySlug($carSubtype);
-				$carSubsection = $this->CarSubsection->findBySlug($carSubsection);
-				if ($carSubtype && $carSubsection) {
-					$q = $carSubtype['CarSubtype']['title'].' '.$carSubsection['CarSubsection']['title'];
-					
-					$this->seo = $carSubsection['Seo'];
-					$this->set('article', Hash::merge($carSubsection, $carSubtype));
-				}
-			} else {
-				$q = $this->request->query('q');
+				$this->seo = $carSubsection['Seo'];
+				$this->set('article', Hash::merge($carSubsection, $carSubtype));
 			}
+		} else {
+			$q = $this->request->query('q');
+		}
 
-			if (!$q){
-				throw new Exception('Введите текст в строку поиска');
-			}
-
+		if (!$q){
+			return $this->setError('Введите текст в строку поиска');
+		}
+			
+		try {
 			$this->setResult($this->ZzapApi->getSuggests($q));
 		}  catch (Exception $e){
-			$this->setError($e->getMessage());
+			// $this->setError($e->getMessage());
+			$this->redirect($_SERVER['REQUEST_URI']);
 		}		
 	}
 	
 	public function price(){
 		$lFullInfo = $this->Auth->loggedIn();
-		try{
-			$number = $this->request->query('number');
-			$classman = $this->request->query('classman');
+		
+		$number = $this->request->query('number');
+		$classman = $this->request->query('classman');
+		
+		if (!($number && $classman)) {
+			return $this->setError('Неверный запрос');
+		}
 			
-			if (!($number && $classman)) {
-				throw new Exception('Неверный запрос');
-			}
-			
+		try {	
 			$this->setResult($this->ZzapApi->getItemInfo($classman, $number, $lFullInfo));
 			$this->set('lFullInfo', $lFullInfo);
 		}  catch (Exception $e){
-			$this->setError($e->getMessage());
+			// $this->setError($e->getMessage());
+			$this->redirect($_SERVER['REQUEST_URI']);
 		}
 	}
 	

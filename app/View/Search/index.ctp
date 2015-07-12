@@ -15,21 +15,6 @@
 	}
 	echo $this->element('title', compact('title'));
 ?>
-<style type="text/css">
-.table-bordered th, .table-bordered td {
-    border-left: 1px solid #dddddd;
-}
-.table-gradient {
-    background-color: #3f6d70;
-    background-image: linear-gradient(to bottom, #5a8f92 0%, #326263 100%);
-}
-/*
-.grid .grid-row:nth-child(2n+1) td {
-    background: none repeat scroll 0 0 #edfefe;
-    border-left: 1px solid #fff;
-}
-*/
-</style>
 <div class="block tableContent clearfix">
 <?
 	if (isset($errorText)) {
@@ -72,12 +57,12 @@
 ?>
 			<tr class="grid-row">
 				<td>
-					<?=($row['logopath']) ? $this->Html->image($row['logopath']) : ''?>
+					<?=($row['logopath']) ? $this->Html->image($row['logopath'], array('class' => 'brand-logo')) : ''?>
 					<?=$row['class_man'];?>
 				</td>
 				<td><?=$row['partnumber'];?></td>
 				<td>
-					<?=($row['imagepath']) ? $this->Html->image($row['imagepath'], array('style' => 'float: left; margin: 0 5px 5px 0')) : ''?>
+					<?=($row['imagepath']) ? $this->Html->image($row['imagepath'], array('class' => 'product-img')) : ''?>
 					<?=$row['class_cat']?>
 				</td>
 				<td>

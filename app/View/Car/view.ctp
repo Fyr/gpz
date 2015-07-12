@@ -41,13 +41,9 @@
 		foreach($aCarSubsections as $_article) {
 			$title = $_article['CarSubsection']['title'];
 			$letter = mb_substr($title, 0, 1);
-			if ($letter != $currLetter) {
+			if ($letter !== $currLetter) {
 				$currLetter = $letter;
-?>
-				<div class="letter">
-					<a name="<?=Translit::convert($currLetter)?>"><?=$currLetter?></a>
-				</div>
-<?
+				echo $this->element('letter_div', array('anchor' => Translit::convert($currLetter), 'title' => $currLetter));
 			}
 ?>
 				<a class="carSubsection showLoader" href="<?=SiteRouter::url(Hash::merge($_article, $carSubtype))?>"><?=$title?></a>

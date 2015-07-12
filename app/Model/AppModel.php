@@ -80,10 +80,6 @@ class AppModel extends Model {
 		return $this->find('all', compact('conditions', 'order'));
 	}
 	
-	public function getTableName() {
-		return $this->getDataSource()->fullTableName($this);
-	}
-	
 	public function dateRange($field, $date1, $date2 = '') {
 		// TODO: implement for free date2
 		$date1 = date('Y-m-d 00:00:00', strtotime($date1));
@@ -109,4 +105,13 @@ class AppModel extends Model {
 	public function trxRollback() {
 		$this->getDataSource()->rollback();
 	}
+	
+	public function getTableName() {
+		return $this->getDataSource()->fullTableName($this);
+	}
+	
+	public function setTableName($table) {
+		$this->setSource($table);
+	}
+	
 }

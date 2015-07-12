@@ -27,6 +27,24 @@ Configure::write('ZzapApi', array(
 	'log' => ROOT.DS.APP_DIR.DS.'tmp'.DS.'logs'.DS.'zzap_api.log'
 ));
 
+Configure::write('ElcatsApi', array(
+	'url' => 'http://www.elcats.ru/',
+	'cookie' => ROOT.DS.APP_DIR.DS.'config'.DS.'cookie_jar.txt',
+	'log' => ROOT.DS.APP_DIR.DS.'tmp'.DS.'logs'.DS.'zzap_api.log'
+));
+
+Configure::write('TechDocApi', array(
+	'url' => 'http://pilot.api.iauto.by/get/',
+	'key' => '6e8d6e800a22725dd2fc31b172a98401',
+	'log' => ROOT.DS.APP_DIR.DS.'tmp'.DS.'logs'.DS.'techdoc_api.log'
+));
+Cache::config('techdoc', array(
+	'engine' => 'DbTable',
+	'storage' => 'cache_techdoc',
+	'lock' => false,
+	'serialize' => true,
+));
+
 // Values from google recaptcha account
 define('RECAPTCHA_PUBLIC_KEY', '6Lezy-QSAAAAAJ_mJK5OTDYAvPEhU_l-EoBN7rxV');
 define('RECAPTCHA_PRIVATE_KEY', '6Lezy-QSAAAAACCM1hh6ceRr445OYU_D_uA79UFZ');

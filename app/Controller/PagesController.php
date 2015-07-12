@@ -2,7 +2,7 @@
 App::uses('AppController', 'Controller');
 class PagesController extends AppController {
 	public $name = 'Pages';
-	public $uses = array('Page', 'CarType', 'News', 'Media.Media');
+	public $uses = array('Page', 'CarType', 'News', 'Media.Media', 'TechDocApi', 'DbCache');
 	// public $helpers = array('ArticleVars');
 
 	public function home() {
@@ -21,6 +21,10 @@ class PagesController extends AppController {
 		$aCarTypes = $this->CarType->find('all');
 		$this->set('aCarTypes', $aCarTypes);
 		$this->currMenu = 'Home';
+
+		
+		$aCatalog['TechDoc']['brands'] = $this->TechDocApi->getMarks();
+		$this->set('aCatalog', $aCatalog);
 	}
 	
 	public function view($slug) {

@@ -297,3 +297,10 @@ textarea { height: auto;}
 @media (max-width: 450px) { 
 	.catalogPage .mainContentCatalog .content { column-count:2; -moz-column-count:2; -webkit-column-count:2; column-gap:50px;}
 }
+
+.banners a > img { display: block; float: right; max-width: 49%; height: auto; margin: 0 auto 20px auto; }
+.banners a:first-child > img { float: left; }
+
+@media (max-width: 767px) { 
+	.banners a > img { float: none !important; max-width: 100% !important; }
+}

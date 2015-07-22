@@ -73,12 +73,12 @@
 							</div>
 						</form>
 					</div>
-					<div class="clearfix">
+					<div class="banners clearfix">
 						<a href="<?=$this->Html->url(array('controller' => 'Techdoc', 'action' => 'index'))?>">
-							<img src="/img/tecdoc.png" alt="Поиск по TecDoc каталогу" style="display: block; float: left; max-width: 49%; height: auto; margin: 0 auto 20px auto;"/>
+							<img src="/img/tecdoc.png" alt="Поиск по TecDoc каталогу" />
 						</a>
 						<a href="<?=$this->Html->url(array('controller' => 'Techdoc', 'action' => 'index'))?>">
-							<img src="/img/tecdoc.png" alt="Поиск по TecDoc каталогу" style="display: block; float: right; max-width: 49%; height: auto; margin: 0 auto 20px auto;"/>
+							<img src="/img/tecdoc.png" alt="Поиск по TecDoc каталогу" style=""/>
 						</a>
 					</div>
 <?

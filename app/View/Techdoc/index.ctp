@@ -1,31 +1,31 @@
-<?
-	// App::uses('Translit', 'Article.Vendor');
-/*
-	$title = $carSubtype['CarSubtype']['title'];
-	echo $this->element('bread_crumbs', array('aBreadCrumbs' => array(
-		array('label' => $carSubtype['CarType']['title'], 'url' => SiteRouter::url($carType)),
-		array('label' => $title)
-	)));
-	echo $this->element('title', compact('title'));
-*/
-	$mark_id = $this->request->pass[0];
-?>
-
-<div class="catalogPage clearfix">
+<?=$this->element('title', array('title' => 'TechDoc каталог'))?>
+<div class="catalogPage">
 	<div class="block mainContentCatalog" style="margin-left: 0">
-		<div class="content">
+		<div class="alphabet">
 <?
-	foreach($aModels as $title => $aSubModels) {
-		echo $this->element('letter_div', array('anchor' => '', 'title' => $title));
-		foreach($aSubModels as $submodel) {
-			$_title = substr($submodel['year_from'], 0, 4).'/'.substr($submodel['year_from'], 4);
-			if (isset($submodel['year_to'])) {
-				$_title.= ' - '.substr($submodel['year_to'], 0, 4).'/'.substr($submodel['year_to'], 4);
-			}
-			echo $this->Html->link($_title, array('action' => 'model', $mark_id, $submodel['id']));
-		}
+	$aLetters = array();
+	foreach($aCatalog as $row) {
+		$letter = $row['Brand']['title'][0];
+		$aLetters[$letter] = $letter;
+	}
+	foreach($aLetters as $letter) {
+		echo $this->Html->link($letter, '#techdoc_'.$letter);
 	}
 ?>
+		</div>
+		<div class="content">
+<?
+	$currLetter = '';
+	foreach($aCatalog as $row) {
+		$letter = $row['Brand']['title'][0];
+		if ($currLetter !== $letter) {
+			$currLetter = $letter;
+			echo $this->element('letter_div', array('anchor' => 'techdoc_'.$currLetter, 'title' => $currLetter));
+		}
+		echo $this->Html->link($row['Brand']['title'], array('controller' => 'Techdoc', 'action' => 'brand', $row['Brand']['id']));
+	}
+?>
+			
 		</div>
 	</div>
 </div>

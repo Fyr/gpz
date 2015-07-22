@@ -385,7 +385,7 @@ class ZzapApi extends AppModel {
 	 * Оригинальная цена в BYR без наценки
 	 */
 	private function getPrice($item) {
-		$price = floatval(str_replace('р.', '', $item['price']));
+		$price = floatval(str_replace(array('р.', ' '), '', $item['price']));
 		return round(Configure::read('Settings.xchg_rate') * $price, -2); // переводим в BYR по курсу из настроек
 	}
 	

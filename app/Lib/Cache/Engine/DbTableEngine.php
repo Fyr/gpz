@@ -121,7 +121,7 @@ class DbTableEngine extends CacheEngine {
 			$conditions = array('expires IS NOT NULL', 'expires <' => date('Y-m-d H:i:s'));
 		}
 		*/
-		$this->getModel()->deleteAll($conditions, false, false);
+		// $this->getModel()->deleteAll($conditions, false, false);
 		return true;
 	}
 

@@ -5,7 +5,11 @@ class TechdocController extends AppController {
 	public $uses = array('TechDocApi');
 	public $helpers = array('ObjectType');
 	
-	public function index($mark_id) {
+	public function index() {
+		$this->set('aCatalog', $this->TechDocApi->getMarks());
+	}
+	
+	public function brand($mark_id) {
 		$aModels = $this->TechDocApi->getModels($mark_id);
 		$this->set('aModels', $aModels);
 	}

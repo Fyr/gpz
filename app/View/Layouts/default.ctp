@@ -73,6 +73,9 @@
 							</div>
 						</form>
 					</div>
+					<a href="<?=$this->Html->url(array('controller' => 'Techdoc', 'action' => 'index'))?>">
+						<img src="/img/techdoc.png" alt="Поиск по TechDoc каталогу" style="display: block; max-width: 100%; height: auto; margin: 0 auto 20px auto;"/>
+					</a>
 <?
 	if ($aBreadCrumbs) {
 		echo $this->element('bread_crumbs');

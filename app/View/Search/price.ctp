@@ -111,7 +111,7 @@
 <?
 					if ($lFullInfo) {
 ?>
-				<td align="center"><?=$row['provider']?></td>
+				<td align="center"><?=($row['provider'] == 'Zzap') ? 'ZAP' : $row['provider']?></td>
 				<td><?=$row['provider_descr']?></td>
 <?
 					}

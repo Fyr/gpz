@@ -5,14 +5,18 @@ Router::connect('/', array('controller' => 'Pages', 'action' => 'home'));
 // Router::connect('/', array('controller' => 'Admin', 'action' => 'index'));
 
 CakePlugin::routes();
-/*
-Router::connect('/car/:brand/:slug', 
+
+Router::connect('/TecDoc', 
 	array(
-		'controller' => 'Car', 
-		'action' => 'view',
+		'controller' => 'Techdoc',
+		'action' => 'index'
 	)
 );
-*/
+Router::connect('/TecDoc/:action/*', 
+	array(
+		'controller' => 'Techdoc'
+	)
+);
 
 Router::connect('/car/:carType/:carSubtype/:slug', 
 	array(

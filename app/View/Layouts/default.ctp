@@ -73,9 +73,14 @@
 							</div>
 						</form>
 					</div>
-					<a href="<?=$this->Html->url(array('controller' => 'Techdoc', 'action' => 'index'))?>">
-						<img src="/img/techdoc.png" alt="Поиск по TechDoc каталогу" style="display: block; max-width: 100%; height: auto; margin: 0 auto 20px auto;"/>
-					</a>
+					<div class="clearfix">
+						<a href="<?=$this->Html->url(array('controller' => 'Techdoc', 'action' => 'index'))?>">
+							<img src="/img/tecdoc.png" alt="Поиск по TecDoc каталогу" style="display: block; float: left; max-width: 49%; height: auto; margin: 0 auto 20px auto;"/>
+						</a>
+						<a href="<?=$this->Html->url(array('controller' => 'Techdoc', 'action' => 'index'))?>">
+							<img src="/img/tecdoc.png" alt="Поиск по TecDoc каталогу" style="display: block; float: right; max-width: 49%; height: auto; margin: 0 auto 20px auto;"/>
+						</a>
+					</div>
 <?
 	if ($aBreadCrumbs) {
 		echo $this->element('bread_crumbs');

@@ -1,4 +1,4 @@
-<?=$this->element('title', array('title' => 'TechDoc каталог'))?>
+<?=$this->element('title', array('title' => 'TecDoc каталог'))?>
 <div class="catalogPage">
 	<div class="block mainContentCatalog" style="margin-left: 0">
 		<div class="alphabet">

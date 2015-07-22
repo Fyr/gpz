@@ -2,6 +2,7 @@
 App::uses('AppModel', 'Model');
 App::uses('ProxyUse', 'Model');
 App::uses('ZzapCache', 'Model');
+App::uses('GpzOffer', 'Model');
 App::uses('Curl', 'Vendor');
 
 class ZzapApi extends AppModel {
@@ -163,17 +164,31 @@ class ZzapApi extends AppModel {
 			'search_text' => $searchString,
 			'row_count'=>  self::MAX_ROW_SUGGEST
 		);
-		$this->content = $this->sendApiRequest('GetSearchSuggest', $data);
-		if($this->content['table']){
+		$response = $this->sendApiRequest('GetSearchSuggest', $data);
+		if ($response['table']){
 			//ограничение в АПИ не работает - поэтому срезаем
-			$this->content['table'] = array_slice($this->content['table'], 0, self::MAX_ROW_SUGGEST);
-			$aCodes = Hash::extract($this->content['table'], '{n}.code_cat');
-			// $aPrices = $this->getStatPrices($aCodes);
-			$this->content['table'] = Hash::combine($this->content['table'], '{n}.code_cat', '{n}');
-			// $this->content['table'] = Hash::merge($this->content['table'], $aPrices);
-			// $this->content['table'] = Hash::sort(array_values($this->content['table']), '{n}.price_min', 'desc'); // сортируем по min.цене
+			// $content['table'] = array_slice($content['table'], 0, self::MAX_ROW_SUGGEST);
+			// $content = Hash::combine($this->content['table'], '{n}.code_cat', '{n}');
+			return $this->processSuggests($response['table']);
 		}
-		return $this->content;
+		return array();
+	}
+	
+	private function processSuggests($table) {
+		$aData = array();
+		foreach($table as $i => $item) {
+			$aData[] = array(
+				'provider' => 'Zzap',
+				'provider_data' => $item,
+				'brand' => $item['class_man'],
+				'brand_logo' => $item['logopath'],
+				'partnumber' => $item['partnumber'],
+				'image' => $item['imagepath'],
+				'title' => $item['class_cat'],
+				'title_descr' => ''
+			);
+		}
+		return $aData;
 	}
 	
 	private function getStatPrices($aCodes) {
@@ -323,7 +338,7 @@ class ZzapApi extends AppModel {
 		curl_multi_close($multi);
 	}
 	*/
-	public function getItemInfo($classman, $partnumber, $lFullInfo){
+	public function getItemInfo($classman, $partnumber){
 		$data = array(
 			'login' => '',
 			'password'=> '',
@@ -332,69 +347,53 @@ class ZzapApi extends AppModel {
 			'partnumber' => $partnumber,
 			'row_count'=>  self::MAX_ROW_PRICE
 		);
-		$content = $this->sendApiRequest('GetSearchResult', $data);
-		// проще определить заголовок тут
-		$content['header'] = (isset($content['table']) && $content['table']) ? $content['table'][0]['class_cat'].' '.$content['table'][0]['partnumber'] : '';
-		$content['table'] = $this->processPriceTable($content['table'], $lFullInfo);
-		
-		return $content;
+		$response = $this->sendApiRequest('GetSearchResult', $data);
+		return $this->processPriceTable($response['table'], $partnumber);
 	}
 	
-	private function processPriceTable($table, $lFullInfo) {
-		foreach($table as $i => &$item) {
-			$item['price_clean'] = intval(preg_replace('/\D/', '', $item['price']));
+	private function processPriceTable($table, $partnumber) {
+		$aData = array();
+		foreach($table as $i => $item) {
+			$offerType = GpzOffer::ANALOG;
+			if ($item['partnumber'] === $partnumber) {
+				$offerType = ($item['descr_type_search'] == 'Запрошенный номер (cпец. предложения)') ? GpzOffer::FEATURED_ORIGINAL : GpzOffer::ORIGINAL;
+			}
+			$price = intval(preg_replace('/\D/', '', $item['price']));
+			$aData[] = array(
+				'provider' => 'Zzap',
+				'provider_data' => $item,
+				'offer_type' => $offerType,
+				'brand' => $item['class_man'],
+				'brand_logo' => $item['logopath'],
+				'partnumber' => $item['partnumber'],
+				'image' => $item['imagepath'],
+				'title' => $item['class_cat'],
+				'title_descr' => '',
+				'qty' => $item['qty'],
+				'qty_descr' => $item['descr_qty'],
+				'price' => $this->getPrice($item),
+				'price2' => $this->getPrice2($item),
+				'price_orig' => $item['price'],
+				'price_descr' => $item['descr_price'],
+				'provider_descr' => implode('<br/>', array($item['class_user'], $item['descr_address'], $item['phone1']))
+			);
 		}
-		$table = Hash::sort($table, '{n}.descr_type_search', 'desc');
-		$_table = array();
-		foreach($table as $item) {
-			$_table[$item['descr_type_search']][] = $item;
-		}
-		foreach($_table as $descr_type_search => &$rows) {
-			$rows = Hash::sort($rows, '{n}.class_man', 'asc');
-			$_rows = array();
-			/*
-			foreach($rows as $item) {
-				$instock = (mb_strpos($item['qty'], 'шт') !== false || mb_strpos($item['qty'], 'Есть') !== false) ? 0 : 1;
-				if (!isset($_rows[$item['class_man']])) {
-					$_rows[$item['class_man']] = array(0 => array(), 1 => array());
-				}
-				$_rows[$item['class_man']][$instock][] = $item;
-			}
-			foreach($_rows as $class_man => &$instock) {
-				foreach($instock as &$items) {
-					$items = Hash::sort($items, '{n}.price_clean', 'asc');
-					if (!$lFullInfo) {
-						$items = array($items[0]);
-					}
-				}
-			}
-			*/
-			foreach($rows as $item) {
-				$_rows[$item['class_man']][] = $item;
-			}
-			foreach($_rows as $class_man => &$items) {
-				$items = Hash::sort($items, '{n}.price_clean', 'asc');
-				if (!$lFullInfo) {
-					$items = array($items[0]);
-				}
-			}
-			$rows = $_rows;
-		}
-		$table = $_table;
-		return $table;
+		return $aData;
 	}
 	
-	/*
-		Ищем лучший товар по мин.цене
-	*/
-	private function getBestPriceItem($table) {
-		$min = 0;
-		foreach($table as $i => &$item) {
-			$item['price'] = preg_replace('/\D/', '', $item['price']);
-			if ($item['price'] < $table[$min]['price']) {
-				$min = $i;
-			}
-		}
-		return $table[$min];
+	/**
+	 * Оригинальная цена в BYR без наценки
+	 */
+	private function getPrice($item) {
+		$price = floatval(str_replace('р.', '', $item['price']));
+		return round(Configure::read('Settings.xchg_rate') * $price, -2); // переводим в BYR по курсу из настроек
+	}
+	
+	/**
+	 * Цена в BYR с наценкой
+	 */
+	private function getPrice2($item) {
+		$priceRatio = 1 + (Configure::read('Settings.price_ratio')/100);
+		return round($priceRatio * $this->getPrice($item), -2);
 	}
 }

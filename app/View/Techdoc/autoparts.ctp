@@ -38,7 +38,7 @@
 				$descr[] = $item['key'].': '.$item['value'];
 			}
 			
-			$params = array('classman' => $row['brand'], 'number' => $row['article']);
+			$params = array('brand' => $row['brand'], 'number' => $row['article']);
 ?>
 			<tr class="grid-row">
 				<td>

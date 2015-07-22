@@ -29,13 +29,3 @@
 		</div>
 	</div>
 </div>
-
-<script type="text/javascript">
-$(document).ready(function(){
-	$('.carSubsection').click(function(){
-		// $('.outerSearch input[type=text]').val($('.catalogPage .leftSide a.active').html() + ' ' + $(this).html());
-		// $('form.searchBlock').submit();
-		// showLoader();
-	});
-});
-</script>

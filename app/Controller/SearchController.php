@@ -4,7 +4,7 @@ App::uses('SiteRouter', 'Vendor');
 class SearchController extends AppController {
 	public $components = array('Auth');
 	public $name = 'Search';
-	public $uses = array('ZzapApi', 'IpStats', 'IpLog');
+	public $uses = array('GpzApi', 'GpzOffer');
 	
 	protected $CarSubtype, $CarSubsection;
 	
@@ -36,10 +36,10 @@ class SearchController extends AppController {
 		}
 			
 		try {
-			$this->setResult($this->ZzapApi->getSuggests($q));
+			$this->setResult($this->GpzApi->search($q));
 		}  catch (Exception $e){
-			// $this->setError($e->getMessage());
-			$this->redirect($_SERVER['REQUEST_URI']);
+			$this->setError($e->getMessage());
+			// $this->redirect($_SERVER['REQUEST_URI']);
 		}		
 	}
 	
@@ -47,15 +47,15 @@ class SearchController extends AppController {
 		$lFullInfo = $this->Auth->loggedIn();
 		
 		$number = $this->request->query('number');
-		$classman = $this->request->query('classman');
+		$brand = $this->request->query('brand');
 		
-		if (!($number && $classman)) {
+		if (!($number && $brand)) {
 			return $this->setError('Неверный запрос');
 		}
-			
 		try {	
-			$this->setResult($this->ZzapApi->getItemInfo($classman, $number, $lFullInfo));
+			$this->setResult($this->GpzApi->getPrices($brand, $number, $lFullInfo));
 			$this->set('lFullInfo', $lFullInfo);
+			$this->set('aOfferTypeOptions', GpzOffer::options());
 		}  catch (Exception $e){
 			// $this->setError($e->getMessage());
 			$this->redirect($_SERVER['REQUEST_URI']);

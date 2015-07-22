@@ -21,12 +21,12 @@
 ?>
 		<p class="error"><?=$errorText?></p>
 <?
-	} elseif (isset($content) && isset($content['table']) && $content['table']) {
+	} elseif (isset($content)) {
 		if (!isset($article)) {
 ?>
-		<p>Найдено <?=count($content['table'])?> результатов.</p> 
+		<p>Найдено <?=count($content)?> результатов.</p> 
 <?
-			if (count($content['table']) > 20) {
+			if (count($content) > 20) {
 ?>
 		<p>Для более конкретного результата уточните поиск в поле запроса</p>
 <?
@@ -52,21 +52,21 @@
 		</thead>
 		<tbody>
 <? 
-		foreach ($content['table'] as $id => $row) {
-			// $price = (isset($row['price_min']) && $row['price_min']) ? $this->Price->format($row['price_min']) : 'Нет предложений';
+		foreach ($content as $row) {
 ?>
 			<tr class="grid-row">
 				<td>
-					<?=($row['logopath']) ? $this->Html->image($row['logopath'], array('class' => 'brand-logo')) : ''?>
-					<?=$row['class_man'];?>
+					<?=($row['brand_logo']) ? $this->Html->image($row['brand_logo'], array('class' => 'brand-logo')) : ''?>
+					<?=$row['brand'];?>
 				</td>
-				<td><?=$row['partnumber'];?></td>
+				<td nowrap="nowrap"><?=$row['partnumber'];?></td>
 				<td>
-					<?=($row['imagepath']) ? $this->Html->image($row['imagepath'], array('class' => 'product-img')) : ''?>
-					<?=$row['class_cat']?>
+					<?=($row['image']) ? $this->Html->image($row['image'], array('class' => 'product-img')) : ''?>
+					<?=$row['title']?><br/>
+					<?=$row['title_descr']?>
 				</td>
 				<td>
-					<a class="showLoader" href="/Search/price?classman=<?=$row['class_man'];?>&number=<?=$row['partnumber'];?>">Подробнее</a>
+					<a class="showLoader" href="/Search/price?brand=<?=$row['brand'];?>&number=<?=$row['partnumber'];?>">Цены и замены</a>
 				</td>
 			</tr>
 <? 

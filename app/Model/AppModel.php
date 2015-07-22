@@ -31,17 +31,12 @@ class AppModel extends Model {
 		return $query;
 	}
 	
-	public function loadModel($models) {
-		if (!is_array($models)) {
-			$models = array($models);
-		}
-		foreach($models as $model) {
-			App::import('Model', $model);
-			if (strpos($model, '.') !== false) {
-				list($plugin, $model) = explode('.', $model);
-			}
-			$this->$model = new $model();
-		}
+	public function loadModel($model) {
+		// Проверить что лучше - loadModel или правильнее initModel
+		App::import('Model', $model);
+		list($plugin, $modelClass) = pluginSplit($model, true);
+		$this->$model = new $modelClass();
+		return $this->$model;
 	}
 
 	public function initModel($model, $id = null) {

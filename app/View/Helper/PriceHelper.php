@@ -1,9 +1,9 @@
 <?php
 App::uses('AppHelper', 'View/Helper');
-App::uses('Prices', 'Vendor');
 class PriceHelper extends AppHelper {
 	
 	public function format($price) {
-		return Prices::format(Prices::calc($price));
+		$price = number_format($price, 0, '.', Configure::read('Settings.int_div'));
+		return Configure::read('Settings.price_prefix').$price.Configure::read('Settings.price_postfix');
 	}
 }

@@ -11,7 +11,7 @@ class TechDocApi extends AppModel {
 	}
 	
 	private function sendRequest($method, $data = array()) {
-		$data['method'] = $method;
+		$data = array_merge(compact('method'), $data);
 		$cache_key = http_build_query($data); // to cache all params except api_key
 		$data['key'] = Configure::read('TechDocApi.key');
 		
@@ -33,7 +33,12 @@ class TechDocApi extends AppModel {
 			throw new Exception('TechDoc API: No response from server');
 		}
 		
+		if (strpos($response, 'no data by this request')) {
+			return array();
+		}
+		
 		$response = json_decode($response, true);
+		
 		if (isset($response['error']) && $response['error']) {
 			throw new Exception($response['error']);
 		}
@@ -66,18 +71,98 @@ class TechDocApi extends AppModel {
 	}
 
 	public function getModelSections($mark_id, $model_id) {
-		$response = $this->sendRequest('types', compact('mark_id', 'model_id'));
-		return $response;
+		return $this->sendRequest('types', compact('mark_id', 'model_id'));
 	}
 	
 	public function getModelSubsections($mark_id, $model_id, $type_id) {
 		$node_id = 0;
-		$response = $this->sendRequest('searchtree', compact('mark_id', 'model_id', 'type_id', 'node_id'));
-		return $response;
+		return $this->sendRequest('searchtree', compact('mark_id', 'model_id', 'type_id', 'node_id'));
 	}
 	
 	public function getAutoparts($mark_id, $model_id, $type_id, $node_id) {
-		$response = $this->sendRequest('searchtree_data', compact('mark_id', 'model_id', 'type_id', 'node_id'));
-		return $response;
+		return $this->sendRequest('searchtree_data', compact('mark_id', 'model_id', 'type_id', 'node_id'));
+	}
+	
+	public function getSuggests($article) {
+		$data = $this->sendRequest('search_groups', compact('article'));
+		$aData = array();
+		foreach($data as $item) {
+			$title_descr = array();
+			foreach($item['criteria'] as $row) {
+				$title_descr[] = $row['key'].': '.$row['value'];
+			}
+			$aData[] = array(
+				'provider' => 'TechDoc',
+				'provider_data' => $item,
+				'brand' => $item['brand'],
+				'brand_logo' => $item['logo'],
+				'partnumber' => $item['article'],
+				'image' => $item['image'],
+				'title' => $item['name'],
+				'title_descr' => implode(' / ', $title_descr)
+			);
+		}
+		return $aData;
+	}
+	
+	/**
+	 * Получить цены поставщиков
+	 *
+	 * @param string $article - номер детали
+	 * @param int $brand - ID производителя (brand_id)
+	 * @return array
+	 */
+	public function getPrices($article, $brand_id) {
+		$brand = $brand_id;
+		$data = $this->sendRequest('search_articles', compact('article', 'brand'));
+		$aData = array();
+		foreach($data as $item) {
+			$offerType = GpzOffer::ANALOG;
+			if ($item['article'] === $article) {
+				$offerType = GpzOffer::ORIGINAL;
+			}
+			$title_descr = array();
+			foreach($item['criteria'] as $row) {
+				$title_descr[] = $row['key'].': '.$row['value'];
+			}
+			foreach($item['prices'] as $price) {
+				// $item['descr_price'] = 'Поставщик: '.$price['provider'];
+				$_item = array_merge($item, array('prices' => $price));
+				$aData[] = array(
+					'provider' => 'TechDoc',
+					'provider_data' => $_item,
+					'offer_type' => $offerType,
+					'brand' => $item['brand'],
+					'brand_logo' => $item['logo'],
+					'partnumber' => $item['article'],
+					'image' => $item['image'],
+					'title' => $item['name'],
+					'title_descr' => implode(' / ', $title_descr),
+					'qty' => $price['box'],
+					'qty_descr' => '',
+					'price' => $this->getPrice($price), // цена уже в BYR - просто округляем
+					'price2' => $this->getPrice2($price),
+					'price_orig' => $price['price'].' BYR',
+					'price_descr' => 'Цены поставщиков в BYR',
+					'provider_descr' => 'Поставщик: '.$price['provider']
+				);
+			}
+		}
+		return $aData;
+	}
+	
+	/**
+	 * Оригинальная цена в BYR без наценки
+	 */
+	private function getPrice($item) {
+		return round(floatval($item['price']), -2); // цена уже в BYR - просто округляем
+	}
+	
+	/**
+	 * Цена в BYR с наценкой
+	 */
+	private function getPrice2($item) {
+		$priceRatio = 1 + (Configure::read('Settings.td_price_ratio')/100);
+		return round($priceRatio * $this->getPrice($item), -2);
 	}
 }

@@ -15,10 +15,12 @@ class TechDocApi extends AppModel {
 		$cache_key = http_build_query($data); // to cache all params except api_key
 		$data['key'] = Configure::read('TechDocApi.key');
 		
-		$response = Cache::read($cache_key, 'techdoc');
-		if ($response) {
-			return $response;
-		}
+		// if ($method !== 'search_articles') { // не кешируем цены
+			$response = Cache::read($cache_key, 'techdoc');
+			if ($response) {
+				return $response;
+			}
+		// }
 		
 		$url = Configure::read('TechDocApi.url').'?'.http_build_query($data);
 		$curl = new Curl($url);
@@ -57,21 +59,40 @@ class TechDocApi extends AppModel {
 	}
 	
 	public function processMarks($e) {
-		return array('Brand' => array('id' => $e['id'], 'title' => $e['mark']));
+		return array('id' => $e['id'], 'title' => $e['mark']);
 	}
 	
 	public function getModels($mark_id) {
 		$response = $this->sendRequest('models', compact('mark_id'));
+		return array_map(array($this, 'processModels'), $response);
+	}
+	
+	public function processModels($e) {
+		$e['title'] = $e['model'];
+		$e['date_from'] = substr($e['year_from'], 4).'.'.substr($e['year_from'], 0, 4);
+		$e['date_to'] = (isset($e['year_to'])) ? substr($e['year_to'], 4).'.'.substr($e['year_to'], 0, 4) : '';
 		
-		$aModels = array();
-		foreach($response as $row) {
-			$aModels[$row['model']][] = $row;
+		$e['date_issue'] = $e['date_from'];
+		if ($e['date_to']) {
+			$e['date_issue'].= ' - '.$e['date_to'];
 		}
-		return $aModels;
+		return $e;
 	}
 
 	public function getModelSections($mark_id, $model_id) {
-		return $this->sendRequest('types', compact('mark_id', 'model_id'));
+		$response = $this->sendRequest('types', compact('mark_id', 'model_id'));
+		return array_map(array($this, 'processModelSections'), $response);
+	}
+	
+	public function processModelSections($e) {
+		$e['date_from'] = substr($e['year_from'], 4).'.'.substr($e['year_from'], 0, 4);
+		$e['date_to'] = (isset($e['year_to'])) ? substr($e['year_to'], 4).'.'.substr($e['year_to'], 0, 4) : '';
+		
+		$e['date_issue'] = $e['date_from'];
+		if ($e['date_to']) {
+			$e['date_issue'].= ' - '.$e['date_to'];
+		}
+		return $e;
 	}
 	
 	public function getModelSubsections($mark_id, $model_id, $type_id) {
@@ -142,8 +163,8 @@ class TechDocApi extends AppModel {
 					'qty_descr' => '',
 					'price' => $this->getPrice($price), // цена уже в BYR - просто округляем
 					'price2' => $this->getPrice2($price),
-					'price_orig' => $price['price'].' BYR',
-					'price_descr' => 'Цены поставщиков в BYR',
+					'price_orig' => $price['price'].' '.$price['currency'],
+					'price_descr' => 'Цены поставщиков в '.$price['currency'].' по курсу '.$price['rate'],
 					'provider_descr' => 'Поставщик: '.$price['provider']
 				);
 			}
@@ -154,15 +175,23 @@ class TechDocApi extends AppModel {
 	/**
 	 * Оригинальная цена в BYR без наценки
 	 */
-	private function getPrice($item) {
-		return round(floatval($item['price']), -2); // цена уже в BYR - просто округляем
+	private function getPrice($price) {
+		$currency = strtolower($price['currency']);
+		if (in_array($currency, array('rur', 'usd', 'eur'))) {
+			$rate = Configure::read('Settings.xchg_'.$currency);
+		} else {
+			$rate = 1;
+		}
+		
+		$_item['_rate'] = $rate;
+		return round(floatval($price['price']) * $rate, -2);
 	}
 	
 	/**
 	 * Цена в BYR с наценкой
 	 */
-	private function getPrice2($item) {
+	private function getPrice2($price) {
 		$priceRatio = 1 + (Configure::read('Settings.td_price_ratio')/100);
-		return round($priceRatio * $this->getPrice($item), -2);
+		return round($priceRatio * $this->getPrice($price), -2);
 	}
 }

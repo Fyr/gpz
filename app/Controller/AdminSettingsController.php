@@ -16,7 +16,18 @@ class AdminSettingsController extends AdminController {
         if ($this->request->is('post') || $this->request->is('put')) {
         	$this->request->data('Settings.id', 1);
         	$this->Settings->save($this->request->data);
-        	$this->redirect(array('action' => 'index', '?' => array('sucess' => 1)));
+        	$this->setFlash(__('Settings are saved'), 'success');
+        	$this->redirect(array('action' => 'index'));
+        }
+        $this->request->data = $this->Settings->getData();
+    }
+    
+    public function prices() {
+        if ($this->request->is('post') || $this->request->is('put')) {
+        	$this->request->data('Settings.id', 1);
+        	$this->Settings->save($this->request->data);
+        	$this->setFlash(__('Settings are saved'), 'success');
+        	$this->redirect(array('action' => 'prices'));
         }
         $this->request->data = $this->Settings->getData();
     }

@@ -65,3 +65,21 @@ form.searchBlock {
 
 .brand-logo { width: 30px; }
 .product-img { float: left; margin: 0 5px 5px 0; width: 60px; }
+
+.table-bordered th, .table-bordered td {
+    border-left: 1px solid #dddddd;
+}
+.table-gradient {
+    background-color: #3f6d70;
+    background-image: linear-gradient(to bottom, #5a8f92 0%, #326263 100%);
+}
+
+.grid .subheader {
+	background: #ddd; padding: 10px 0 5px 10px; font-weight: bold; font-size: 14px;
+}
+
+.show-mobile { display: none;}
+@media (max-width: 767px) { 
+  .show-mobile { display: block;}
+  .show-desktop { display: none;}
+}

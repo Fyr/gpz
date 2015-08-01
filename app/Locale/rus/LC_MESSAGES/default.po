@@ -486,3 +486,12 @@ msgstr "Статистика по входящим IP"
 
 msgid "Amount"
 msgstr "Кол-во"
+
+msgid "Adress / Contacts"
+msgstr "Адрес / Контакты"
+
+msgid "Prices / Exchange"
+msgstr "Цены / Курсы"
+
+msgid "Settings are saved"
+msgstr "Настройки сохранены"

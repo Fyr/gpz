@@ -1,18 +1,16 @@
 <? 
+	$title = '';
 	if (isset($errorText)) {
 		$title = 'Ошибка!';
 	} else {
-		$title = '';
-		foreach($aOfferTypeOptions as $offer_type => $offer_title) {
-			if (isset($content[$offer_type])) {
-				$brands = array_values($content[$offer_type]);
-				$title = $brands[0][0]['title'];
+		foreach($content as $row) {
+			if ($row['title'] != '(БЕЗ НАЗВАНИЯ)' && $title = $row['title']) {
 				break;
 			}
 		}
-		if (!$title) {
-			$title = 'Результаты поиска';
-		}
+	}
+	if (!$title) {
+		$title = 'Результаты поиска';
 	}
 	echo $this->element('title', compact('title'));
 ?>
@@ -26,15 +24,6 @@
 		$this->Html->css('/Table/css/grid', array('inline' => false));
 			
 ?>
-<style type="text/css">
-.table-bordered th, .table-bordered td {
-    border-left: 1px solid #dddddd;
-}
-.table-gradient {
-    background-color: #3f6d70;
-    background-image: linear-gradient(to bottom, #5a8f92 0%, #326263 100%);
-}
-</style>
 		<table align="left" width="100%" class="grid table-bordered shadow" border="0" cellpadding="0" cellspacing="0">
 		<thead>
 		<tr class="first table-gradient">
@@ -64,22 +53,19 @@
 			</th>
 <?
 		}
+		$colspan = ($lFullInfo) ? 7 : 5;
 ?>
 		</tr>
 		</thead>
 		<tbody>
-<?
-		$colspan = ($lFullInfo) ? 7 : 5;
-		foreach($content as $descr_type => $brands) {
-?>
 			<tr>
-				<td colspan="<?=$colspan?>" style="background: #ddd; padding: 10px 0 5px 10px;">
-					<b><?=$aOfferTypeOptions[$descr_type]?></b>
+				<td colspan="<?=$colspan?>" class="subheader">
+					<b>Запрашиваемый номер и возможные замены (кроссы)</b>
 				</td>
 			</tr>
 <?
-			foreach($brands as $brand => $rows) {
-				foreach($rows as $row) {
+		
+		foreach($content as $row) {
 ?>
 			<tr class="grid-row">
 				<td>
@@ -118,8 +104,6 @@
 ?>
 			</tr>
 <?
-				}
-			}
 		}
 ?>
 		</tbody>

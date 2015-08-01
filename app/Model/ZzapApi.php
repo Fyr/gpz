@@ -386,7 +386,7 @@ class ZzapApi extends AppModel {
 	 */
 	private function getPrice($item) {
 		$price = floatval(str_replace(array('р.', ' '), '', $item['price']));
-		return round(Configure::read('Settings.xchg_rate') * $price, -2); // переводим в BYR по курсу из настроек
+		return round(Configure::read('Settings.xchg_rur') * $price, -2); // переводим в BYR по курсу из настроек
 	}
 	
 	/**

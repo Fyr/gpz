@@ -67,4 +67,14 @@ class AppController extends Controller {
 		$this->set('aBreadCrumbs', $this->aBreadCrumbs);
 	}
 
+	/**
+	 * Sets flashing message
+	 *
+	 * @param str $msg
+	 * @param str $type - must be 'success', 'error' or empty
+	 */
+	protected function setFlash($msg, $type = 'info') {
+		$this->Session->setFlash($msg, 'default', array(), $type);
+	}
+
 }

@@ -8,7 +8,7 @@ class AdminController extends AppController {
 
 	public function _beforeInit() {
 	    // auto-add included modules - did not included if child controller extends AdminController
-	    $this->components = array_merge(array('Auth', 'Core.PCAuth', 'Table.PCTableGrid'), $this->components);
+	    $this->components = array_merge(array('Session', 'Auth', 'Core.PCAuth', 'Table.PCTableGrid'), $this->components);
 	    $this->helpers = array_merge(array('Html', 'Table.PHTableGrid', 'Form.PHForm'), $this->helpers);
 	    
 		$this->aNavBar = array(
@@ -37,8 +37,8 @@ class AdminController extends AppController {
 			)),
 			*/
 			'Settings' => array('label' => __('Settings'), 'href' => '', 'submenu' => array(
-				array('label' => __('System'), 'href' => array('controller' => 'AdminSettings', 'action' => 'index')),
-				// array('label' => __('Sections'), 'href' => array('controller' => 'AdminSections', 'action' => 'index'))
+				array('label' => __('Adress / Contacts'), 'href' => array('controller' => 'AdminSettings', 'action' => 'index')),
+				array('label' => __('Prices / Exchange'), 'href' => array('controller' => 'AdminSettings', 'action' => 'prices'))
 			))
 		);
 		$this->aBottomLinks = $this->aNavBar;

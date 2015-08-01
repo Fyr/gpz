@@ -1,17 +1,17 @@
 <?
 	$this->Html->css('zTreeStyle/zTreeStyle', array('inline' => false));
 	$this->Html->script('vendor/jquery/jquery.ztree.core-3.5.min', array('inline' => false));
-/*
-		$title = $article['CarSubsection']['title'];
-		$carType = array('CarType' => $article['CarType']);
-		$carSubtype = array('CarSubtype' => $article['CarSubtype'], 'CarType' => $article['CarType']);
-		echo $this->element('bread_crumbs', array('aBreadCrumbs' => array(
-			array('label' => $article['CarType']['title'], 'url' => SiteRouter::url($carType)),
-			array('label' => $article['CarSubtype']['title'], 'url' => SiteRouter::url($carSubtype)),
-			array('label' => $title)
-		)));
+	
+	echo $this->element('bread_crumbs', array('aBreadCrumbs' => array(
+		array('label' => 'TecDoc', 'url' => $this->Html->url(array('action' => 'index'))),
+		array('label' => $mark['title'], 'url' => array('controller' => 'Techdoc', 'action' => 'brand', $mark['id'])),
+		array('label' => $model['title'], 'url' => array('action' => 'model', $mark['id'], $model['id'])),
+		array('label' => $submodel['type'])
+	)));
+	
+	$title = $mark['title'].' '.$model['title'].' '.$submodel['type'].' '.$model['date_issue'];
 	echo $this->element('title', compact('title'));
-	*/
+	
 	$aParent = Hash::extract($aSubsections, '{n}.parent');
 	foreach($aSubsections as &$item) {
 		if (!in_array($item['id'], $aParent)) {

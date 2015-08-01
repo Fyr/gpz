@@ -1,16 +1,14 @@
 <?
 	$this->Html->css('/Table/css/grid', array('inline' => false));
-	/*
-		$title = $article['CarSubsection']['title'];
-		$carType = array('CarType' => $article['CarType']);
-		$carSubtype = array('CarSubtype' => $article['CarSubtype'], 'CarType' => $article['CarType']);
-		echo $this->element('bread_crumbs', array('aBreadCrumbs' => array(
-			array('label' => $article['CarType']['title'], 'url' => SiteRouter::url($carType)),
-			array('label' => $article['CarSubtype']['title'], 'url' => SiteRouter::url($carSubtype)),
-			array('label' => $title)
-		)));
+	echo $this->element('bread_crumbs', array('aBreadCrumbs' => array(
+		array('label' => 'TecDoc', 'url' => $this->Html->url(array('action' => 'index'))),
+		array('label' => $mark['title'], 'url' => array('controller' => 'Techdoc', 'action' => 'brand', $mark['id'])),
+		array('label' => $model['title'], 'url' => array('action' => 'model', $mark['id'], $model['id'])),
+		array('label' => $submodel['type'], 'url' => array('action' => 'subsections', $mark['id'], $model['id'])),
+		array('label' => $subsection['name'])
+	)));
+	$title = $subsection['name'].' для '.$mark['title'].' '.$model['title'].' '.$submodel['type'].' '.$model['date_issue'];
 	echo $this->element('title', compact('title'));
-	*/
 ?>
 <div class="block tableContent clearfix">
 		<table align="left" width="100%" class="grid table-bordered shadow" border="0" cellpadding="0" cellspacing="0">

@@ -8,6 +8,7 @@ class GpzApi extends AppModel {
 		$this->ZzapApi = $this->loadModel('ZzapApi');
 		$this->TechDocApi = $this->loadModel('TechDocApi');
 		
+		$e = null;
 		$tdData = array();
 		try {
 			$tdData = $this->TechDocApi->getSuggests($q);
@@ -22,7 +23,9 @@ class GpzApi extends AppModel {
 		}
 		
 		if (!$zzapData && !$tdData) {
-			throw $e;
+			if ($e) {
+				throw $e;
+			}
 		}
 		
 		return array_merge($tdData, $zzapData);
@@ -53,8 +56,8 @@ class GpzApi extends AppModel {
 		
 		return $this->processPrices(array_merge($zzapData, $tdData), $lFullInfo);
 	}
-	 
-	private function processPrices($table, $lFullInfo) {
+	
+	private function processPricesByOfferType($table, $lFullInfo) {
 		$table = Hash::sort($table, '{n}.offer_type', 'asc');
 		$_table = array();
 		foreach($table as $item) {
@@ -79,6 +82,11 @@ class GpzApi extends AppModel {
 			$rows = $_rows;
 		}
 		return $_table;
+	}
+	
+	private function processPrices($table, $lFullInfo) {
+		$table = Hash::sort($table, '{n}.price', 'asc');
+		return $table;
 	}
 	
 	private function getTechDocBrandId($brand, $partnumber) {

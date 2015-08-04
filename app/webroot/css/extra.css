@@ -83,3 +83,6 @@ form.searchBlock {
   .show-mobile { display: block;}
   .show-desktop { display: none;}
 }
+
+.show-mobile table { width: 100%; border-spacing: 0; }
+.show-mobile tbody a { color: #777 !important; text-shadow: none; }

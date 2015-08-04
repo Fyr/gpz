@@ -1,22 +1,22 @@
 <? 
-	$this->Html->css(array('/Icons/css/icons', 'the-modal'), array('inline' => false));
-	$this->Html->script('vendor/jquery/jquery.the-modal', array('inline' => false));
-	$title = '';
 	if (isset($errorText)) {
 		$title = 'Ошибка!';
 	} else {
-		foreach($content as $row) {
-			if ($row['title'] != '(БЕЗ НАЗВАНИЯ)' && $title = $row['title']) {
+		$title = '';
+		foreach($aOfferTypeOptions as $offer_type => $offer_title) {
+			if (isset($content[$offer_type])) {
+				$brands = array_values($content[$offer_type]);
+				$title = $brands[0][0]['title'];
 				break;
 			}
 		}
-	}
-	if (!$title) {
-		$title = 'Результаты поиска';
+		if (!$title) {
+			$title = 'Результаты поиска';
+		}
 	}
 	echo $this->element('title', compact('title'));
 ?>
-<div class="block tableContent clearfix">
+<div class="block clearfix">
 <?
 	if (isset($errorText)) {
 ?>
@@ -26,10 +26,18 @@
 		$this->Html->css('/Table/css/grid', array('inline' => false));
 			
 ?>
+<style type="text/css">
+.table-bordered th, .table-bordered td {
+    border-left: 1px solid #dddddd;
+}
+.table-gradient {
+    background-color: #3f6d70;
+    background-image: linear-gradient(to bottom, #5a8f92 0%, #326263 100%);
+}
+</style>
 		<table align="left" width="100%" class="grid table-bordered shadow" border="0" cellpadding="0" cellspacing="0">
 		<thead>
 		<tr class="first table-gradient">
-			<th></th>
 			<th>
 				<a class="grid-unsortable" href="javascript:void(0)">Производитель</a>
 			</th>
@@ -56,57 +64,37 @@
 			</th>
 <?
 		}
-		$colspan = ($lFullInfo) ? 8 : 6;
 ?>
 		</tr>
 		</thead>
 		<tbody>
+<?
+		$colspan = ($lFullInfo) ? 7 : 5;
+		foreach($content as $descr_type => $brands) {
+?>
 			<tr>
-				<td colspan="<?=$colspan?>" class="subheader">
-					<b>Запрашиваемый номер и возможные замены (кроссы)</b>
+				<td colspan="<?=$colspan?>" style="background: #ddd; padding: 10px 0 5px 10px;">
+					<b><?=$aOfferTypeOptions[$descr_type]?></b>
 				</td>
 			</tr>
 <?
-		foreach($content as $i => $row) {
+			foreach($brands as $brand => $rows) {
+				foreach($rows as $row) {
 ?>
 			<tr class="grid-row">
-				<td>
-<?
-			if ($row['provider'] == 'TechDoc' && isset($row['provider_data']['criteria']) && $params = $row['provider_data']['criteria']) {
-?>
-					<a class="icon-color icon-info popup-trigger" href="javascript:void(0)" onclick="$('#partnumber<?=$i?>').modal().open();"></a>
-					<div class="modal" id="partnumber<?=$i?>" style="display: none">
-						<span class="popup-close">&times;</span>
-						<h3><?=$row['partnumber']?> <?=$row['title']?> </h3>
-						<div align="center" style="margin: 10px 0">
-							<?=($row['image']) ? $this->Html->image($row['image'], array('alt' => h($row['title']), 'style' => 'max-width: 75%')) : ''?>
-						</div>
-						<b>Технические характеристики</b><br/>
-<?
-				foreach($params as $param) {
-?>
-						<?=$param['key']?>: <?=$param['value']?><br/>
-<?
-				}
-?>
-					</div>
-<?
-			}
-?>
-				</td>
 				<td>
 					<?=($row['brand_logo']) ? $this->Html->image($row['brand_logo'], array('class' => 'brand-logo')) : ''?>
 					<?=$row['brand'];?>
 				</td>
-				<td nowrap="nowrap"><?=$row['partnumber']?></td>
+				<td nowrap="nowrap"><?=$row['partnumber'];?></td>
 				<td>
-					<?//($row['image']) ? $this->Html->image($row['image'], array('class' => 'product-img')) : ''?>
-					<?=$row['title']?>
-					<?//$row['title_descr']?>
+					<?=($row['image']) ? $this->Html->image($row['image'], array('class' => 'product-img')) : ''?>
+					<?=$row['title']?><br/>
+					<?=$row['title_descr']?>
 				</td>
 				<td>
-					<b><?=$row['qty']?></b>
-					<?=(trim($row['qty_descr'])) ? $row['qty_descr'].'<br/>' : ''?>
+					<b><?=$row['qty']?></b><br/>
+					<?=$row['qty_descr']?>
 				</td>
 				<td align="right">
 					<b><?=$this->Price->format($row['price2'])?></b>
@@ -130,12 +118,14 @@
 ?>
 			</tr>
 <?
+				}
+			}
 		}
 ?>
 		</tbody>
 		</table>
+		<br />
 <?
 	}
 ?>
 </div>
-

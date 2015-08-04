@@ -85,7 +85,7 @@ class GpzApi extends AppModel {
 	}
 	
 	private function processPrices($table, $lFullInfo) {
-		$table = Hash::sort($table, '{n}.price', 'asc');
+		$table = Hash::sort($table, '{n}.price2', 'asc');
 		return $table;
 	}
 	

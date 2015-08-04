@@ -29,6 +29,31 @@ $(document).ready(function(){
 			return false;
 		}
 	});
+	
+	$('.popup-close').on('click', function(e){
+		$.modal().close();
+	});
+	
+	$('table.grid').wrap('<div class="show-desktop"/>');
+	$('.show-desktop').parent().append('<div class="show-mobile"/>');
+	$('.show-mobile').append('<table class="grid table-bordered shadow"><tbody></tbody></table>');
+	
+	var aHeaders = [];
+	$('.show-desktop .first th').each(function(){
+		aHeaders.push($(this).html().trim());
+	});
+	// $('.-show-mobile .first').append('<th>' + aHeaders.join(',') + '</th>');
+	$('.show-desktop .grid-row').each(function(){
+		var html = '';
+		if ($('td', this).length > 1) {
+			$('td', this).each(function(i){
+				if (!$(this).hasClass('subheader')) {
+					html+= (aHeaders[i] ? aHeaders[i] + ': ' : '') + $(this).html() + '<br/>';
+				}
+			});
+			$('.show-mobile table > tbody').append('<tr class="grid-row"><td>' + html + '</td></tr>');
+		}
+	});
 });
 
 function showLoader() {

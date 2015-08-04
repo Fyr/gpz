@@ -47,7 +47,7 @@ class PCArticleComponent extends Component {
 		return $this->model()->alias.'.'.$fieldName;
 	}
 	
-	public function edit($id = 0, $lSaved = false) {
+	public function edit(&$id = 0, &$lSaved = false) {
 		$aFlags = array('published', 'featured');
 		$article = $this->model()->findById($id);
 		if ($this->_->request->is(array('post', 'put'))) {

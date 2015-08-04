@@ -85,4 +85,5 @@ form.searchBlock {
 }
 
 .show-mobile table { width: 100%; border-spacing: 0; }
-.show-mobile tbody a { color: #777 !important; text-shadow: none; }
+.show-mobile tbody a { color: #f00 !important; text-shadow: none; }
+.show-mobile tbody a.grid-unsortable { color: #777 !important; text-shadow: none; }

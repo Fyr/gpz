@@ -43,7 +43,9 @@ $(document).ready(function(){
 		aHeaders.push($(this).html().trim());
 	});
 	// $('.-show-mobile .first').append('<th>' + aHeaders.join(',') + '</th>');
-	$('.show-desktop .grid-row').each(function(){
+	
+	$('.show-desktop tbody > tr').each(function(){
+		console.log($('td', this).length);
 		var html = '';
 		if ($('td', this).length > 1) {
 			$('td', this).each(function(i){
@@ -52,6 +54,9 @@ $(document).ready(function(){
 				}
 			});
 			$('.show-mobile table > tbody').append('<tr class="grid-row"><td>' + html + '</td></tr>');
+		} else {
+			console.log(this);
+			$('.show-mobile table > tbody').append('<tr class="grid-row"><td class="subheader">' + $('td', this).html() + '</td></tr>');
 		}
 	});
 });

@@ -46,8 +46,7 @@
 				<td nowrap="nowrap"><?=$row['article']?></td>
 				<td>
 					<?=($row['image']) ? $this->Html->image($row['image'], array('class' => 'product-img')) : ''?>
-					<?=$row['name']?><br />
-					<?=implode(' / ', $descr)?>
+					<?=$row['name']?>
 				</td>
 				<td nowrap="nowrap">
 					<?=$this->Html->link('Цены и замены', array('controller' => 'Search', 'action' => 'price', '?' => $params))?>

@@ -62,8 +62,7 @@
 				<td nowrap="nowrap"><?=$row['partnumber'];?></td>
 				<td>
 					<?=($row['image']) ? $this->Html->image($row['image'], array('class' => 'product-img')) : ''?>
-					<?=$row['title']?><br/>
-					<?=$row['title_descr']?>
+					<?=$row['title']?>
 				</td>
 				<td>
 					<a class="showLoader" href="/Search/price?brand=<?=$row['brand'];?>&number=<?=$row['partnumber'];?>">Цены и замены</a>

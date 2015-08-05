@@ -14,7 +14,6 @@
 	$model_id = $this->request->pass[1];
 ?>
 <div class="block tableContent clearfix">
-	<div class="show-desktop">
 		<table align="left" width="100%" class="grid table-bordered shadow" border="0" cellpadding="0" cellspacing="0">
 		<thead>
 		<tr class="first table-gradient">
@@ -82,31 +81,5 @@
 ?>
 		</tbody>
 		</table>
-	</div>
-	<div class="show-mobile">
-		<table align="left" width="100%" class="grid table-bordered shadow" border="0" cellpadding="0" cellspacing="0">
-		<tbody>
-		</tbody>
-		</table>
-	</div>
 </div>
-<script type="text/javascript">
-$(function(){
-	var aHeaders = [];
-	$('.show-desktop .first th').each(function(){
-		aHeaders.push($(this).html().trim());
-	});
-	// $('.-show-mobile .first').append('<th>' + aHeaders.join(',') + '</th>');
-	$('.show-desktop .grid-row').each(function(){
-		var html = '';
-		if ($('td', this).length > 1) {
-			$('td', this).each(function(i){
-				if (!$(this).hasClass('subheader')) {
-					html+= (aHeaders[i] ? aHeaders[i] + ': ' : '') + $(this).html() + '<br/>';
-				}
-			});
-			$('.show-mobile table > tbody').append('<tr class="grid-row"><td>' + html + '</td></tr>');
-		}
-	});
-});
-</script>
+

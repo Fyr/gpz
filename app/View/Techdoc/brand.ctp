@@ -12,24 +12,6 @@
 	$mark_id = $this->request->pass[0];
 ?>
 
-<!--div class="catalogPage clearfix">
-	<div class="block mainContentCatalog" style="margin-left: 0">
-		<div class="content">
-<?
-	foreach($aModels as $title => $aSubModels) {
-		echo $this->element('letter_div', array('anchor' => '', 'title' => $title));
-		foreach($aSubModels as $submodel) {
-			$_title = $submodel['year_from'];
-			if ($submodel['year_to']) {
-				$_title.= ' - '.$submodel['year_to'];
-			}
-			echo $this->Html->link($_title, array('action' => 'model', $mark_id, $submodel['id']));
-		}
-	}
-?>
-		</div>
-	</div>
-</div-->
 	<div class="block tableContent clearfix">
 		<table align="left" width="100%" class="grid table-bordered shadow" border="0" cellpadding="0" cellspacing="0">
 		<thead>
@@ -40,6 +22,9 @@
 			<th>
 				<a class="grid-unsortable" href="javascript:void(0)">Год выпуска</a>
 			</th>
+			<th>
+				<a class="grid-unsortable" href="javascript:void(0)">Ссылка</a>
+			</th>
 		</tr>
 		</thead>
 		<tbody>
@@ -49,6 +34,7 @@ $models = array();
 foreach($aModels as $row) {
 	$models[$row['title']][] = $row;
 }
+unset($aModels);
 // делаем группировку по первому слову модели
 $_aModels = array();
 foreach($models as $title => $aSubModels) {
@@ -59,7 +45,7 @@ foreach($_aModels as $mod => $aModels) {
 	
 ?>
 			<tr class="grid-row">
-				<td colspan="2" class="subheader">
+				<td colspan="3" class="subheader">
 					<?=$mod?>
 				</td>
 			</tr>
@@ -71,9 +57,12 @@ foreach($_aModels as $mod => $aModels) {
 ?>
 			<tr class="grid-row">
 				<td>
-					<?=$this->Html->link($title, array('action' => 'model', $mark_id, $submodel['id']));?>
+					<?=$title//$this->Html->link($title, array('action' => 'model', $mark_id, $submodel['id']));?>
 				</td>
-				<td nowrap="nowrap" align="center"><?=$this->Html->link($submodel['date_issue'], array('action' => 'model', $mark_id, $submodel['id']))?></td>
+				<td nowrap="nowrap" align="center"><?=$submodel['date_issue']//$this->Html->link($submodel['date_issue'], array('action' => 'model', $mark_id, $submodel['id']))?></td>
+				<td align="center">
+					<?=$this->Html->link('подробнее', array('action' => 'model', $mark_id, $submodel['id']));?>
+				</td>
 			</tr>
 <?
 		}

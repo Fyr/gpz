@@ -28,7 +28,69 @@ class GpzApi extends AppModel {
 			}
 		}
 		
-		return array_merge($tdData, $zzapData);
+		return $this->processSuggests(array_merge($tdData, $zzapData));
+	}
+	
+	/**
+	 * Обьединяем детали по одинаковому номеру и производителю
+	 */
+	private function processSuggests($data) {
+		// Шаг 1. Находим все лексемы и прибиваем все к нижнему регистру
+		$aData = array();
+		$aWords = array();
+		foreach($data as &$row) {
+			// Приводим номера к одному виду - удаляем пробелы, дефисы, подчеркивания, нули
+			$row['partnumber'] = str_replace(array(' ', '-', '_'), '', $row['partnumber']);
+			
+			$row['_title'] = mb_strtolower($row['title']);
+			$row['_words'] = explode(' ', $row['_title']);
+			$aWords = array_unique(array_merge($aWords, $row['_words']));
+			$aData[$row['brand'].$row['partnumber']][] = $row;
+		}
+		
+		// Шаг 2. Вычищаем односимвольные лексемы и вычисляем их вес (кол-во повторений)
+		$aWeight =  array();
+		$totalWeight = 0;
+		foreach($aWords as $i => $word) {
+			if (mb_strlen($word) <= 1) {
+				unset($aWords[$i]);
+			} else {
+				foreach($data as $row) {
+					if (in_array($word, $row['_words'])) {
+						if (!isset($aWeight[$word])) {
+							$aWeight[$word] = 0;
+						}
+						$aWeight[$word]++;
+						$totalWeight++;
+					}
+				}
+			}
+		}
+		
+		// Шаг 3. Вычисляем вес строки по каждой лексеме от общего веса и сортируем по весу
+		foreach($aData as $brandnum => &$rows) {
+			foreach($rows as &$row) {
+				$factor = 0;
+				foreach($aWords as $word) {
+					if (in_array($word, $row['_words'])) { // ищем по полному совпадению лексемы
+						$factor+= $aWeight[$word];
+						// $row['__factor'][] = $word.' '.$aWeight[$word];
+					}
+				}
+				$row['_factor'] = $factor / $totalWeight;
+			}
+			$rows = Hash::sort($rows, '{n}._factor', 'desc');
+		}
+		
+		// Шаг 4. Извлекаем наиболее весомые строки
+		$data = array();
+		foreach($aData as $brandnum => $rows) {
+			unset($rows[0]['_words']);
+			unset($rows[0]['_title']);
+			unset($rows[0]['_factor']);
+			$data[] = $rows[0];
+		}
+		return $data;
 	}
 	
 	public function getPrices($brand, $partnumber, $lFullInfo) {

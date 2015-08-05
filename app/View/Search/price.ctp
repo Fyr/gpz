@@ -98,7 +98,7 @@
 					<?=($row['brand_logo']) ? $this->Html->image($row['brand_logo'], array('class' => 'brand-logo')) : ''?>
 					<?=$row['brand'];?>
 				</td>
-				<td nowrap="nowrap"><?=$row['partnumber']?></td>
+				<td nowrap="nowrap">&nbsp;<?=$row['partnumber']?></td>
 				<td>
 					<?//($row['image']) ? $this->Html->image($row['image'], array('class' => 'product-img')) : ''?>
 					<?=$row['title']?>

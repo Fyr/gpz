@@ -19,7 +19,7 @@ class AdminController extends AppController {
 			)),
 			'Catalog' => array('label' => __('Catalog'), 'href' => '', 'submenu' => array(
 				array('label' => __('Car Types'), 'href' => array('controller' => 'AdminContent', 'action' => 'index', 'CarType')),
-				// array('label' => __('Car Subsections'), 'href' => array('controller' => 'AdminContent', 'action' => 'index', 'CarSubsection')),
+				array('label' => __('Car Subsections'), 'href' => array('controller' => 'AdminSubsections', 'action' => 'index')),
 			)),
 			/*[
 			'Products' => array('label' => __('Products'), 'href' => '', 'submenu' => array(

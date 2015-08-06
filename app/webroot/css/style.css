@@ -271,10 +271,15 @@ textarea { height: auto;}
 
 .catalogPage {}
 	.catalogPage .leftSide { float: left; width: 300px; text-align: center; padding: 0; }
-	.catalogPage .leftSide a { display: block; text-decoration: none; border-top: 1px solid #ddd; padding: 5px 0; }
-	.catalogPage .leftSide a:first-child { border-top: none; border-radius: 5px 5px 0 0;}
-	.catalogPage .leftSide a:last-child { border-radius: 0 0 5px 5px;}
-	.catalogPage .leftSide a:hover, .catalogPage .leftSide a.active { background: #3f6d70; color: #fff;}
+	.catalogPage .leftSide.list a { display: block; text-decoration: none; border-top: 1px solid #ddd; padding: 5px 0; }
+	.catalogPage .leftSide.list a:first-child { border-top: none; border-radius: 5px 5px 0 0;}
+	.catalogPage .leftSide.list a:last-child { border-radius: 0 0 5px 5px;}
+	.catalogPage .leftSide.list a:hover, .catalogPage .leftSide a.active { background: #3f6d70; color: #fff;}
+	
+	.catalogPage .leftSide a.thumb-node { display: inline-block; margin: 3px 3px; }
+	.catalogPage .leftSide a.thumb-node img { border: 1px solid transparent; }
+	.catalogPage .leftSide a.thumb-node, .catalogPage .leftSide a.thumb-node:hover { text: decoration: none;}
+	.catalogPage .leftSide a.thumb-node:hover img { border: 1px solid #999; }
 
 	.catalogPage .mainContentCatalog { margin-left: 320px; }
 	.catalogPage .mainContentCatalog .alphabet { text-align: center; }

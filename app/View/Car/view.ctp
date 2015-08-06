@@ -12,7 +12,7 @@
 ?>
 
 <div class="catalogPage clearfix">
-	<div class="block leftSide">
+	<div class="block leftSide list">
 <?
 	foreach($aCarSubtypes as $_article) {
 		$this->ArticleVars->init($_article, $url, $title, $teaser, $src, '200x');

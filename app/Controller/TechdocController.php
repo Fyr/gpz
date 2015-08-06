@@ -1,9 +1,12 @@
 <?php
 App::uses('AppController', 'Controller');
+App::uses('TechDocApi', 'Model');
 class TechdocController extends AppController {
 	public $name = 'Techdoc';
 	public $uses = array('TechDocApi');
 	public $helpers = array('ObjectType');
+	
+	protected $Subsection;
 	
 	public function index() {
 		$this->set('aCatalog', $this->TechDocApi->getMarks());
@@ -48,7 +51,17 @@ class TechdocController extends AppController {
 		
 		$aSubsections = $this->TechDocApi->getModelSubsections($mark_id, $model_id, $type_id);
 		$this->set('aSubsections', $aSubsections);
-		unset($aSubsections);
+
+		// Сохраняем осн.узлы для того, чтобы навесить картинки
+		$this->loadModel('Subsection');
+		$this->Subsection->saveMainSubsections($aSubsections);
+		
+		// получаем список узлов с картинками
+		$ids = Hash::extract($aSubsections, '{n}.id');
+		$conditions = array('Subsection.td_id' => $ids, 'Media.main' => 1);
+		$order = 'Subsection.td_id';
+		$subsections = $this->Subsection->find('all', compact('conditions', 'order'));
+		$this->set('subsections', $subsections);
 	}
 	
 	public function autoparts($mark_id, $model_id, $type_id, $node_id) {

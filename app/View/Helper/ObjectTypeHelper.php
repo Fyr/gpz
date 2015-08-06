@@ -19,6 +19,7 @@ class ObjectTypeHelper extends AppHelper {
                 'CarType' => __('Car Types'),
                 'CarSubtype' => __('Car Subtypes'),
                 'CarSubsection' => __('Car Subsections'),
+                'Subsection' => __('Car Subsections')
             ), 
             'create' => array(
                 'Article' => __('Create Article'),
@@ -35,6 +36,7 @@ class ObjectTypeHelper extends AppHelper {
                 'CarType' => __('Create Car Type'),
                 'CarSubtype' => __('Create Car Subtype'),
                 'CarSubsection' => __('Create Car Subsection'),
+                'Subsection' => __('Create Car Subsection')
             ),
             'edit' => array(
                 'Article' => __('Edit Article'),
@@ -51,6 +53,7 @@ class ObjectTypeHelper extends AppHelper {
                 'CarType' => __('Edit Car Type'),
                 'CarSubtype' => __('Edit Car Subtype'),
                 'CarSubsection' => __('Edit Car Subsection'),
+                'Subsection' => __('Edit Car Subsection')
             )
         );
         return $Titles;

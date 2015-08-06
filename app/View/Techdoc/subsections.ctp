@@ -26,10 +26,30 @@
 <style type="text/css">
 .ztree li span.button.ico_docu { display: none; }
 </style>
-<div class="block tableContent clearfix">
-	<ul id="treeDemo" class="ztree"></ul>
+<div class="catalogPage">
+	<div class="block leftSide">
+<?
+	foreach($subsections as $row) {
+		$src = $this->Media->imageUrl($row, 'thumb80x80');
+		if ($src) {
+?>
+		<a class="thumb-node" href="javascript:void(0)" title="<?=h($row['Subsection']['title'])?>" onclick="expandNode(<?=$row['Subsection']['td_id']?>)"><img src=<?=$src?> alt="<?=h($row['Subsection']['title'])?>" /></a>
+<?
+		}
+	}
+?>
+	</div>
+	<div class="block mainContentCatalog clearfix">
+		<ul id="treeDemo" class="ztree"></ul>
+	</div>
 </div>
 <script type="text/javascript">
+var treeObj;
+function expandNode(id) {
+	var node = treeObj.getNodeByParam("id", id, null);
+	$('#' + node.tId).get(0).scrollIntoView();
+	treeObj.expandNode(node, true);
+}
 $(document).ready(function(){
 	var setting = {
 		view: {
@@ -53,6 +73,11 @@ $(document).ready(function(){
 	};
 
 	var zNodes = <?=json_encode($aSubsections)?>;
-	$.fn.zTree.init($("#treeDemo"), setting, zNodes);
+	treeObj = $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+	/*
+	$('li.level0 > a.level0 span:eq(1)').each(function(){
+		$(this).wrap('<a name="#" />');
+	});
+	*/
 });
 </script>

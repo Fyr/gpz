@@ -66,18 +66,14 @@ $(document).ready(function(){
 			}
 		},
 		callback: {
-			onClick: function(event, treeId, treeNode, clickFlag){
-				console.log(treeNode);
+			onClick: function(event, treeId, node, clickFlag){
+				event.stopPropagation();
+				treeObj.expandNode(node);
 			}
 		}
 	};
 
 	var zNodes = <?=json_encode($aSubsections)?>;
 	treeObj = $.fn.zTree.init($("#treeDemo"), setting, zNodes);
-	/*
-	$('li.level0 > a.level0 span:eq(1)').each(function(){
-		$(this).wrap('<a name="#" />');
-	});
-	*/
 });
 </script>

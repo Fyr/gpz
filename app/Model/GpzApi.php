@@ -38,15 +38,24 @@ class GpzApi extends AppModel {
 		// Шаг 1. Находим все лексемы и прибиваем все к нижнему регистру
 		$aData = array();
 		$aWords = array();
+		
 		foreach($data as &$row) {
 			// Приводим номера к одному виду - удаляем пробелы, дефисы, подчеркивания, нули
 			$row['partnumber'] = str_replace(array(' ', '-', '_'), '', $row['partnumber']);
 			
 			$row['_title'] = mb_strtolower($row['title']);
-			$row['_words'] = explode(' ', $row['_title']);
+			
+			// вычищаем строку от псевдосимволов
+			$row['_title'] = str_replace(array('.', '(', ')', '-', '=', ';'), ' ', $row['_title']);
+			while (strpos($row['_title'], '  ') !== false) {
+				$row['_title'] = str_replace('  ', ' ', $row['_title']);
+			}
+			
+			$row['_words'] = explode(' ', trim($row['_title']));
 			$aWords = array_unique(array_merge($aWords, $row['_words']));
 			$aData[$row['brand'].$row['partnumber']][] = $row;
 		}
+		unset($row); // оч странно но почему то без этого меняется значение последнего эл-та в $data
 		
 		// Шаг 2. Вычищаем односимвольные лексемы и вычисляем их вес (кол-во повторений)
 		$aWeight =  array();
@@ -54,15 +63,16 @@ class GpzApi extends AppModel {
 		foreach($aWords as $i => $word) {
 			if (mb_strlen($word) <= 1) {
 				unset($aWords[$i]);
-			} else {
-				foreach($data as $row) {
-					if (in_array($word, $row['_words'])) {
-						if (!isset($aWeight[$word])) {
-							$aWeight[$word] = 0;
-						}
-						$aWeight[$word]++;
-						$totalWeight++;
-					}
+			}
+		}
+		foreach($aWords as $i => $word) {
+			if (!isset($aWeight[$word])) {
+				$aWeight[$word] = 0;
+			}
+			foreach($data as $row) {
+				if (in_array($word, $row['_words'])) {
+					$aWeight[$word]++;
+					$totalWeight++;
 				}
 			}
 		}

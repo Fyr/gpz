@@ -31,6 +31,9 @@
 		<tr class="first table-gradient">
 			<th></th>
 			<th>
+				<a class="grid-unsortable" href="javascript:void(0)">Лого</a>
+			</th>
+			<th>
 				<a class="grid-unsortable" href="javascript:void(0)">Производитель</a>
 			</th>
 			<th>
@@ -96,6 +99,8 @@
 				</td>
 				<td>
 					<?=($row['brand_logo']) ? $this->Html->image($row['brand_logo'], array('class' => 'brand-logo')) : ''?>
+				</td>
+				<td>
 					<?=$row['brand'];?>
 				</td>
 				<td nowrap="nowrap">&nbsp;<?=$row['partnumber']?></td>

@@ -15,10 +15,16 @@
 		<thead>
 		<tr class="first table-gradient">
 			<th>
+				<a class="grid-unsortable" href="javascript:void(0)">Лого</a>
+			</th>
+			<th>
 				<a class="grid-unsortable" href="javascript:void(0)">Производитель</a>
 			</th>
 			<th>
 				<a class="grid-unsortable" href="javascript:void(0)">Номер</a>
+			</th>
+			<th>
+				<a class="grid-unsortable" href="javascript:void(0)">Изображение</a>
 			</th>
 			<th>
 				<a class="grid-unsortable" href="javascript:void(0)">Наименование</a>
@@ -39,13 +45,17 @@
 			$params = array('brand' => $row['brand'], 'number' => $row['article']);
 ?>
 			<tr class="grid-row">
-				<td>
+				<td align="center">
 					<?=($row['logo']) ? $this->Html->image($row['logo'], array('class' => 'brand-logo')) : ''?>
+				</td>
+				<td>
 					<?=$row['brand']?>
 				</td>
 				<td nowrap="nowrap"><?=$row['article']?></td>
-				<td>
+				<td align="center">
 					<?=($row['image']) ? $this->Html->image($row['image'], array('class' => 'product-img')) : ''?>
+				</td>
+				<td>
 					<?=$row['name']?>
 				</td>
 				<td nowrap="nowrap">

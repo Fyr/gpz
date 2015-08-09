@@ -15,12 +15,12 @@ class TechDocApi extends AppModel {
 		$cache_key = http_build_query($data); // to cache all params except api_key
 		$data['key'] = Configure::read('TechDocApi.key');
 		
-		// if ($method !== 'search_articles') { // не кешируем цены
+		if ($method !== 'search_articles' && $method !== 'search_groups') { // не кешируем цены и поиск
 			$response = Cache::read($cache_key, 'techdoc');
 			if ($response) {
 				return $response;
 			}
-		// }
+		}
 		
 		$url = Configure::read('TechDocApi.url').'?'.http_build_query($data);
 		$curl = new Curl($url);

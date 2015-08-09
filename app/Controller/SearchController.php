@@ -33,13 +33,21 @@ class SearchController extends AppController {
 
 		if (!$q){
 			return $this->setError('Введите текст в строку поиска');
-		}
-			
+		} 
+		
 		try {
 			$this->setResult($this->GpzApi->search($q));
+			
+			if (!(isset($this->seo['title']) && $this->seo['title'])) {
+				$this->seo = array(
+					'title' => $q, 
+					'keywords' => "Каталог запчастей, запчасти, {$q}",
+					'descr' => "На нашем сайте вы можете приобрести {$q} - лучшие запчасти в Белорусии. Низкие цены на запчасти, быстрая доставка по стране, диагностика, ремонт."
+				);
+			}
 		}  catch (Exception $e){
-			$this->setError($e->getMessage());
-			// $this->redirect($_SERVER['REQUEST_URI']);
+			// $this->setError($e->getMessage());
+			$this->redirect($_SERVER['REQUEST_URI']);
 		}		
 	}
 	
@@ -53,9 +61,23 @@ class SearchController extends AppController {
 			return $this->setError('Неверный запрос');
 		}
 		try {	
-			$this->setResult($this->GpzApi->getPrices($brand, $number, $lFullInfo));
+			$content = $this->GpzApi->getPrices($brand, $number, $lFullInfo);
+			$this->setResult($content);
 			$this->set('lFullInfo', $lFullInfo);
 			$this->set('aOfferTypeOptions', GpzOffer::options());
+			
+			$title = $number.' '.$brand;
+			foreach($content as $row) {
+				if ($row['title'] != '(БЕЗ НАЗВАНИЯ)' && $row['title']) {
+					$title = $row['title'];
+					break;
+				}
+			}
+			$this->seo = array(
+				'title' => 'Цены на '.$title, 
+				'keywords' => "Цены на {$title}, каталог запчастей, запчасти",
+				'descr' => "На нашем сайте вы можете приобрести {$title} - лучшие запчасти в Белорусии. Низкие цены на запчасти, быстрая доставка по стране, диагностика, ремонт."
+			);
 		}  catch (Exception $e){
 			// $this->setError($e->getMessage());
 			$this->redirect($_SERVER['REQUEST_URI']);

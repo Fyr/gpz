@@ -47,8 +47,12 @@ $(document).ready(function(){
 		var html = '';
 		if ($('td', this).length > 1) {
 			$('td', this).each(function(i){
-				if (!$(this).hasClass('subheader')) {
-					html+= (aHeaders[i] ? aHeaders[i] + ': ' : '') + $(this).html() + '<br/>';
+				if (!$(this).hasClass('subheader') && $(this).html().trim()) {
+					if (aHeaders[i].indexOf('Изображение') > -1 || aHeaders[i].indexOf('Фото') > -1) {
+						html = $(this).html() + html;
+					} else {
+						html+= (aHeaders[i] ? aHeaders[i] + ': ' : '') + $(this).html() + '<br/>';
+					}
 				}
 			});
 			$('.show-mobile table > tbody').append('<tr class="grid-row"><td>' + html + '</td></tr>');
@@ -57,6 +61,10 @@ $(document).ready(function(){
 		}
 	});
 });
+
+String.prototype.trim = function() {
+	return this.replace(/^\s*/, '').replace(/\s*$/, '');
+}
 
 function showLoader() {
 	$('#loader').show();

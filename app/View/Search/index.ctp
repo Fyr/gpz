@@ -37,10 +37,16 @@
 		<thead>
 		<tr class="first table-gradient">
 			<th>
+				<a class="grid-unsortable" href="javascript:void(0)">Логотип</a>
+			</th>
+			<th>
 				<a class="grid-unsortable" href="javascript:void(0)">Производитель</a>
 			</th>
 			<th>
 				<a class="grid-unsortable" href="javascript:void(0)">Номер</a>
+			</th>
+			<th>
+				<a class="grid-unsortable" href="javascript:void(0)">Изображение</a>
 			</th>
 			<th>
 				<a class="grid-unsortable" href="javascript:void(0)">Наименование</a>
@@ -55,16 +61,20 @@
 		foreach ($content as $row) {
 ?>
 			<tr class="grid-row">
-				<td>
+				<td align="center">
 					<?=($row['brand_logo']) ? $this->Html->image($row['brand_logo'], array('class' => 'brand-logo')) : ''?>
+				</td>
+				<td>
 					<?=$row['brand'];?>
 				</td>
 				<td nowrap="nowrap"><?=$row['partnumber'];?></td>
-				<td>
+				<td align="center">
 					<?=($row['image']) ? $this->Html->image($row['image'], array('class' => 'product-img')) : ''?>
-					<?=$row['title']?>
 				</td>
 				<td>
+					<?=$row['title']?>
+				</td>
+				<td align="center">
 					<a class="showLoader" href="/Search/price?brand=<?=$row['brand'];?>&number=<?=$row['partnumber'];?>">Цены и замены</a>
 				</td>
 			</tr>

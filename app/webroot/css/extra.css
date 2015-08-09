@@ -64,7 +64,7 @@ form.searchBlock {
 }
 
 .brand-logo { width: 30px; }
-.product-img { float: left; margin: 0 5px 5px 0; width: 60px; }
+.product-img { width: 60px; }
 
 .table-bordered th, .table-bordered td {
     border-left: 1px solid #dddddd;
@@ -87,3 +87,4 @@ form.searchBlock {
 .show-mobile table { width: 100%; border-spacing: 0; }
 .show-mobile tbody a { color: #f00 !important; text-shadow: none; }
 .show-mobile tbody a.grid-unsortable { color: #777 !important; text-shadow: none; }
+.show-mobile .product-img { float: right; margin: 3px 0 3px 3px; }

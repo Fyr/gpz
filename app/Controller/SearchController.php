@@ -60,8 +60,34 @@ class SearchController extends AppController {
 		if (!($number && $brand)) {
 			return $this->setError('Неверный запрос');
 		}
+		
+		$aSorting = array(
+			'brand' => 'Производитель',
+			'partnumber' => 'Номер',
+			'title' => 'Наименование',
+			'qty' => 'Наличие',
+			'price2' => 'Цена'
+		);
+		$this->set('aSorting', $aSorting);
+		$aOrdering = array(
+			'asc' => 'по возрастанию',
+			'desc' => 'по убыванию'
+		);
+		$this->set('aOrdering', $aOrdering);
+		
+		$sort = $this->request->query('sort');
+		if (!$sort || !in_array($sort, array_keys($aSorting))) {
+			$sort = 'price2';
+		}
+		$order = $this->request->query('order');
+		if (!$order || !in_array($order, array_keys($aOrdering))) {
+			$order = 'asc';
+		}
+		$this->set('sort', $sort);
+		$this->set('order', $order);
+		
 		try {	
-			$content = $this->GpzApi->getPrices($brand, $number, $lFullInfo);
+			$content = $this->GpzApi->getPrices($brand, $number, $sort, $order, $lFullInfo);
 			$this->setResult($content);
 			$this->set('lFullInfo', $lFullInfo);
 			$this->set('aOfferTypeOptions', GpzOffer::options());

@@ -26,6 +26,11 @@
 		$this->Html->css('/Table/css/grid', array('inline' => false));
 			
 ?>
+		<div align="right" style="margin-bottom: 10px;">
+			Сортировать по <?=$this->Form->input('sort', array('options' => $aSorting, 'value' => $sort, 'div' => false, 'label' => false))?>
+			<?=$this->Form->input('order', array('options' => $aOrdering, 'value' => $order, 'div' => false, 'label' => false))?>
+		</div>
+
 		<table align="left" width="100%" class="grid table-bordered shadow" border="0" cellpadding="0" cellspacing="0">
 		<thead>
 		<tr class="first table-gradient">
@@ -33,22 +38,16 @@
 			<th>
 				<a class="grid-unsortable" href="javascript:void(0)">Лого</a>
 			</th>
+<?
+		foreach($aSorting as $key => $title) {
+			$class = ($sort == $key) ? 'grid-sortable-active grid-sortable-'.$order : '';
+			$dir = ($sort == $key && $order == 'asc') ? 'desc' : 'asc';
+?>
 			<th>
-				<a class="grid-unsortable" href="javascript:void(0)">Производитель</a>
-			</th>
-			<th>
-				<a class="grid-unsortable" href="javascript:void(0)">Номер</a>
-			</th>
-			<th>
-				<a class="grid-unsortable" href="javascript:void(0)">Наименование</a>
-			</th>
-			<th>
-				<a class="grid-unsortable" href="javascript:void(0)">Наличие</a>
-			</th>
-			<th>
-				<a class="grid-unsortable" href="javascript:void(0)">Цена</a>
+				<a class="grid-sortable <?=$class?>" href="javascript:void(0)" title="Сортировать по `<?=$title?>` <?=$aOrdering[$dir]?>" onclick="sortBy('<?=$key?>', '<?=$dir?>')"><?=$title?></a>
 			</th>
 <?
+		}
 		if ($lFullInfo) {
 ?>
 			<th>
@@ -59,7 +58,7 @@
 			</th>
 <?
 		}
-		$colspan = ($lFullInfo) ? 8 : 6;
+		$colspan = ($lFullInfo) ? 9 : 7;
 ?>
 		</tr>
 		</thead>
@@ -144,3 +143,26 @@
 ?>
 </div>
 
+<script type="text/javascript">
+function sortBy(key, dir) {
+	var url = location.href;
+	if (url.indexOf('sort') > -1) {
+		url = url.replace(/sort=\w+/, 'sort=' + key);
+	} else {
+		url+= '&sort=' + key;
+	}
+	if (url.indexOf('order') > -1) {
+		url = url.replace(/order=\w+/, 'order=' + dir);
+	} else {
+		url+= '&order=' + dir;
+	}
+	
+	location.href = url;
+}
+
+$(function(){
+	$('#sort, #order').change(function(){
+		sortBy($('#sort').val(), $('#order').val());
+	});
+});
+</script>

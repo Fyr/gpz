@@ -39,19 +39,25 @@ $(document).ready(function(){
 	$('.show-mobile').append('<table class="grid table-bordered shadow"><tbody></tbody></table>');
 	
 	var aHeaders = [];
+	console.log($('.show-desktop .first th').length);
 	$('.show-desktop .first th').each(function(){
-		aHeaders.push($(this).html().trim());
+		var html = $(this).html().trim();
+		if ($('a', this).length) {
+			html = $('a', this).html().trim();
+		}
+		aHeaders.push(html);
 	});
 	
 	$('.show-desktop tbody > tr').each(function(){
-		var html = '';
+		var html = '', td;
 		if ($('td', this).length > 1) {
 			$('td', this).each(function(i){
-				if (!$(this).hasClass('subheader') && $(this).html().trim()) {
+				td = $(this).html().trim();
+				if (!$(this).hasClass('subheader') && td) {
 					if (aHeaders[i].indexOf('Изображение') > -1 || aHeaders[i].indexOf('Фото') > -1) {
-						html = $(this).html() + html;
+						html = td + html;
 					} else {
-						html+= (aHeaders[i] ? aHeaders[i] + ': ' : '') + $(this).html() + '<br/>';
+						html+= (aHeaders[i] ? '<span class="grid-unsortable">' + aHeaders[i] + '</span>: ' : '') + td + '<br/>';
 					}
 				}
 			});

@@ -103,7 +103,7 @@ class GpzApi extends AppModel {
 		return $data;
 	}
 	
-	public function getPrices($brand, $partnumber, $lFullInfo) {
+	public function getPrices($brand, $partnumber, $sort, $order, $lFullInfo) {
 		$this->ZzapApi = $this->loadModel('ZzapApi');
 		$this->TechDocApi = $this->loadModel('TechDocApi');
 		
@@ -126,7 +126,7 @@ class GpzApi extends AppModel {
 			throw $e;
 		}
 		
-		return $this->processPrices(array_merge($zzapData, $tdData), $lFullInfo);
+		return $this->processPrices(array_merge($zzapData, $tdData), $sort, $order, $lFullInfo);
 	}
 	
 	private function processPricesByOfferType($table, $lFullInfo) {
@@ -156,8 +156,26 @@ class GpzApi extends AppModel {
 		return $_table;
 	}
 	
-	private function processPrices($table, $lFullInfo) {
-		$table = Hash::sort($table, '{n}.price2', 'asc');
+	private function processPrices($table, $sort, $order, $lFullInfo) {
+		$table = Hash::sort($table, '{n}.'.$sort, $order);
+		if ($sort == 'price2') {
+			return $table;
+		}
+		
+		// вторичная сортировка - по цене
+		$_table = array();
+		foreach($table as $row) {
+			$_table[$row[$sort]][] = $row;
+		}
+		foreach($_table as $k => $rows) {
+			$_table[$k] = Hash::sort($rows, '{n}.price2', 'asc');
+		}
+		$table = array();
+		foreach($_table as $rows) {
+			foreach($rows as $row) {
+				$table[] = $row;
+			}
+		}
 		return $table;
 	}
 	

@@ -136,7 +136,7 @@
 		</div>
 <?
 	if (TEST_ENV) {
-		echo $this->element('sql_dump');
+		// echo $this->element('sql_dump');
 	} else {
 		echo $this->element('jivosite');
 	}

@@ -42,6 +42,11 @@ class GpzApi extends AppModel {
 		foreach($data as &$row) {
 			// Приводим номера к одному виду - удаляем пробелы, дефисы, подчеркивания, нули
 			$row['partnumber'] = str_replace(array(' ', '-', '_'), '', $row['partnumber']);
+			if (is_numeric($row['partnumber'])) {
+				$row['partnumber'] = intval($row['partnumber']).'';
+			} else {
+				$row['partnumber'] = strtoupper($row['partnumber']);
+			}
 			
 			$row['_title'] = mb_strtolower($row['title']);
 			

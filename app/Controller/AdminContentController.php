@@ -92,6 +92,7 @@ class AdminContentController extends AdminController {
 			)
 		), false);
 		
+		$lSaved = false;
 		$this->PCArticle->edit($id, $lSaved);
 		$objectType = $this->request->data('Article.object_type');
 		// $objectID = $this->request->data('Article.object_id');

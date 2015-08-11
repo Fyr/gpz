@@ -33,10 +33,10 @@ class ZzapApi extends AppModel {
 		$proxy_type = ($this->isBot($ip)) ? 'Bot' : 'Site';
 		if ($proxy_type == 'Bot' || TEST_ENV) {
 			// пытаемся достать инфу из кэша без запроса на API - так быстрее и не нужно юзать прокси
-			$_cache = $this->initModel('ZzapCache')->getCache($method, $request);
+			$_cache = $this->loadModel('ZzapCache')->getCache($method, $request);
 			if ($_cache) {
-				$this->initModel('ZzapLog')->clear();
-				$this->initModel('ZzapLog')->save(array(
+				$this->loadModel('ZzapLog')->clear();
+				$this->loadModel('ZzapLog')->save(array(
 					'ip_type' => $proxy_type,
 					'ip' => $ip,
 					'host' => gethostbyaddr($ip),
@@ -58,8 +58,8 @@ class ZzapApi extends AppModel {
 		// этого уже достаточно чтобы отправить запрос
 		
 		// если бот - перенаправляем на др.прокси-сервера для ботов - снимаем нагрузку с прокси для сайта
-		$proxy = $this->initModel('ProxyUse')->getProxy($proxy_type);
-		$this->initModel('ProxyUse')->useProxy($proxy['ProxyUse']['host'], $method, $request);
+		$proxy = $this->loadModel('ProxyUse')->getProxy($proxy_type);
+		$this->loadModel('ProxyUse')->useProxy($proxy['ProxyUse']['host'], $method, $request);
 		
 		$curl->setOption(CURLOPT_PROXY, $proxy['ProxyUse']['host'])
 			->setOption(CURLOPT_PROXYUSERPWD, $proxy['ProxyUse']['login'].':'.$proxy['ProxyUse']['password']);
@@ -98,14 +98,14 @@ class ZzapApi extends AppModel {
 			}
 			
 			// если все хорошо - сохраняем ответ в кэше
-			$this->initModel('ZzapCache')->setCache($method, $request, $response['d']);
+			$this->loadModel('ZzapCache')->setCache($method, $request, $response['d']);
 		} catch (Exception $e) {
 			if ($responseType == 'OK') {
 				// была ошибка ответа
 				$responseType = 'RESPONSE_ERROR';
 			}
 			// пытаемся достать ответ из кэша
-			$_cache = $this->initModel('ZzapCache')->getCache($method, $request);
+			$_cache = $this->loadModel('ZzapCache')->getCache($method, $request);
 			if ($_cache) {
 				$cache_id = $_cache['ZzapCache']['id'];
 				$cache = $_cache['ZzapCache']['response'];
@@ -119,8 +119,8 @@ class ZzapApi extends AppModel {
 		}
 		
 		// Логируем всю инфу для статистики
-		$this->initModel('ZzapLog')->clear();
-		$this->initModel('ZzapLog')->save(array(
+		$this->loadModel('ZzapLog')->clear();
+		$this->loadModel('ZzapLog')->save(array(
 			'ip_type' => $proxy_type,
 			'ip' => $ip,
 			'host' => gethostbyaddr($ip),

@@ -31,6 +31,7 @@ class AppModel extends Model {
 		return $query;
 	}
 	
+	/*
 	public function loadModel($model) {
 		// Проверить что лучше - loadModel или правильнее initModel
 		App::import('Model', $model);
@@ -49,6 +50,20 @@ class AppModel extends Model {
 			throw new MissingModelException($modelClass);
 		}
 		return $modelClass;
+	}
+	*/
+	
+	public function loadModel($modelClass = null, $id = null) {
+		list($plugin, $modelClass) = pluginSplit($modelClass, true);
+		
+		$this->{$modelClass} = ClassRegistry::init(array(
+			'class' => $plugin . $modelClass, 'alias' => $modelClass, 'id' => $id
+		));
+		if (!$this->{$modelClass}) {
+			throw new MissingModelException($modelClass);
+		}
+		
+		return $this->{$modelClass};
 	}
 	
 	private function _getObjectConditions($objectType = '', $objectID = '') {

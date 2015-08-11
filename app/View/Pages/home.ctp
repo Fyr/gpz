@@ -6,19 +6,21 @@
 <?
 	foreach($aCarTypes as $_article) {
 		$this->ArticleVars->init($_article, $url, $title, $teaser, $src, '200x');
+		$urlZZap = $url;
+		$urlTechDoc = $this->Html->url(array('controller' => 'Techdoc', 'action' => 'index', strtolower($title)));
 ?>
 	<div class="item tooltiptop">
 <?
 		if ($src) {
 ?>
-		<a href="<?=$url?>"><img src="<?=$src?>" alt="<?=$title?>" /></a>
+		<a href="<?=$urlTechDoc?>"><img src="<?=$src?>" alt="<?=$title?>" /></a>
 <?
 		}
 ?>
-		<div class="name"><a href="<?=$url?>"><?=$title?></a></div>
+		<div class="name"><a href="<?=$urlTechDoc?>"><?=$title?></a></div>
 		<ul class="tooltip_description" style="display:none" title="Список каталогов">
-			<li><a href="<?=$this->Html->url(array('controller' => 'TechDoc', 'action' => 'index', strtolower($title)))?>">TecDoc</a></li>
-			<li><a href="<?=$url?>">AutoZ</a></li>
+			<li><a href="<?=$urlTechDoc?>">TecDoc</a></li>
+			<li><a href="<?=$urlZZap?>">AutoZ</a></li>
 		</ul>
 	</div>
 <?

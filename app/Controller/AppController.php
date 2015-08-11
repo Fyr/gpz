@@ -77,4 +77,21 @@ class AppController extends Controller {
 		$this->Session->setFlash($msg, 'default', array(), $type);
 	}
 
+	public function loadModel($modelClass = null, $id = null) {
+		list($plugin, $modelClass) = pluginSplit($modelClass, true);
+		
+		$this->{$modelClass} = ClassRegistry::init(array(
+			'class' => $plugin . $modelClass, 'alias' => $modelClass, 'id' => $id
+		));
+		if (!$this->{$modelClass}) {
+			throw new MissingModelException($modelClass);
+		}
+		
+		$this->uses = ($this->uses) ? (array)$this->uses : array();
+		if (!in_array($modelClass, $this->uses, true)) {
+			$this->uses[] = $modelClass;
+		}
+		
+		return $this->{$modelClass};
+	}
 }

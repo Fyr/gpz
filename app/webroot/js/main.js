@@ -50,6 +50,7 @@ $(document).ready(function(){
 	$('.show-desktop tbody > tr').each(function(){
 		var html = '', td;
 		if ($('td', this).length > 1) {
+			var url = '';
 			$('td', this).each(function(i){
 				td = $(this).html().trim();
 				if (!$(this).hasClass('subheader') && td) {
@@ -59,8 +60,17 @@ $(document).ready(function(){
 						html+= (aHeaders[i] ? '<span class="grid-unsortable">' + aHeaders[i] + '</span>: ' : '') + td + '<br/>';
 					}
 				}
+				if ($('a', this).length) {
+					url = $('a', this).attr('href');
+				}
 			});
-			$('.show-mobile table > tbody').append('<tr class="grid-row"><td>' + html + '</td></tr>');
+			
+			if (url) {
+				$('.show-mobile table > tbody').append('<tr class="grid-row clickable" onclick="var e = arguments[0] || window.event; clickTr(e, \'' + url + '\');"><td>' + html + '</td></tr>');
+				$(this).addClass('clickable').attr('onclick', 'var e = arguments[0] || window.event; clickTr(e, \'' + url + '\');')
+			} else {
+				$('.show-mobile table > tbody').append('<tr class="grid-row"><td>' + html + '</td></tr>');
+			}
 		} else {
 			$('.show-mobile table > tbody').append('<tr class="grid-row"><td class="subheader">' + $('td', this).html() + '</td></tr>');
 		}
@@ -77,4 +87,12 @@ function showLoader() {
 
 function hideLoader() {
 	$('#loader').hide();
+}
+
+function clickTr(e, url) {
+	if (e.target.tagName == 'IMG' && $(e.target).parent().hasClass('fancybox')) {
+		// noop
+	} else {
+		location.href = url;
+	}
 }

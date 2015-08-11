@@ -6,7 +6,8 @@
 		$title = 'Ошибка!';
 	} else {
 		foreach($content as $row) {
-			if ($row['title'] != '(БЕЗ НАЗВАНИЯ)' && $title = $row['title']) {
+			if ($row['title'] != '(БЕЗ НАЗВАНИЯ)' && trim($row['title'])) {
+				$title = $row['partnumber'].' '.trim($row['title']);
 				break;
 			}
 		}

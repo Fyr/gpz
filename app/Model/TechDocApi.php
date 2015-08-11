@@ -68,7 +68,7 @@ class TechDocApi extends AppModel {
 	}
 	
 	public function processModels($e) {
-		$e['title'] = $e['model'];
+		$e['title'] = str_replace('_', '', $e['model']);
 		$e['date_from'] = substr($e['year_from'], 4).'.'.substr($e['year_from'], 0, 4);
 		$e['date_to'] = (isset($e['year_to'])) ? substr($e['year_to'], 4).'.'.substr($e['year_to'], 0, 4) : '';
 		
@@ -85,6 +85,7 @@ class TechDocApi extends AppModel {
 	}
 	
 	public function processModelSections($e) {
+		$e['type'] = str_replace('_', '', $e['type']);
 		$e['date_from'] = substr($e['year_from'], 4).'.'.substr($e['year_from'], 0, 4);
 		$e['date_to'] = (isset($e['year_to'])) ? substr($e['year_to'], 4).'.'.substr($e['year_to'], 0, 4) : '';
 		

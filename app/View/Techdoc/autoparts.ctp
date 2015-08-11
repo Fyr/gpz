@@ -1,5 +1,7 @@
 <?
-	$this->Html->css('/Table/css/grid', array('inline' => false));
+	$this->Html->css(array('/Table/css/grid', 'jquery.fancybox'), array('inline' => false));
+	$this->Html->script(array('vendor/jquery/jquery.fancybox.pack'), array('inline' => false));
+	
 	echo $this->element('bread_crumbs', array('aBreadCrumbs' => array(
 		array('label' => 'TecDoc', 'url' => $this->Html->url(array('action' => 'index'))),
 		array('label' => $mark['title'], 'url' => array('controller' => 'Techdoc', 'action' => 'brand', $mark['id'])),
@@ -53,7 +55,15 @@
 				</td>
 				<td nowrap="nowrap"><?=$row['article']?></td>
 				<td align="center">
-					<?=($row['image']) ? $this->Html->image($row['image'], array('class' => 'product-img')) : ''?>
+<?
+			if ($row['image']) {
+?>
+					<a class="fancybox" href="<?=$row['image']?>" rel="photos">
+						<?=$this->Html->image($row['image'], array('class' => 'product-img'))?>
+					</a>
+<?
+			}
+?>
 				</td>
 				<td>
 					<?=$row['name']?>
@@ -68,3 +78,10 @@
 		</tbody>
 		</table>
 </div>
+<script type="text/javascript">
+$(function(){
+	$('.fancybox').fancybox({
+		padding: 5
+	});
+});
+</script>

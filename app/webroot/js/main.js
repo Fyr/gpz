@@ -39,7 +39,6 @@ $(document).ready(function(){
 	$('.show-mobile').append('<table class="grid table-bordered shadow"><tbody></tbody></table>');
 	
 	var aHeaders = [];
-	console.log($('.show-desktop .first th').length);
 	$('.show-desktop .first th').each(function(){
 		var html = $(this).html().trim();
 		if ($('a', this).length) {

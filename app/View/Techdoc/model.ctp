@@ -30,9 +30,6 @@
 				<a class="grid-unsortable" href="javascript:void(0)">Наименование двигателя</a>
 			</th>
 			<th>
-				<a class="grid-unsortable" href="javascript:void(0)">Топливо</a>
-			</th>
-			<th>
 				<a class="grid-unsortable" href="javascript:void(0)">Кузов</a>
 			</th>
 			<th>
@@ -67,7 +64,6 @@
 				<td align="center"><?=$row['date_issue']?></td>
 				<td align="center"><?=$row['engine_code']?></td>
 				<td><?=$row['engine_name']?></td>
-				<td><?=$row['fuel_name']?></td>
 				<td align="center"><?=$row['body_name']?></td>
 				<td align="center"><?=$row['cylinders']?> / <?=number_format($row['vcm'], 0, '', ',')?>м<sup>3</sup></td>
 				<td><?=$row['kw_from']?> кВт / <?=$row['hp_from']?> л.с</td>

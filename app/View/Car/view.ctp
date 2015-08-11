@@ -3,6 +3,7 @@
 
 	$title = $carSubtype['CarSubtype']['title'];
 	echo $this->element('bread_crumbs', array('aBreadCrumbs' => array(
+		array('label' => 'AutoZ', 'url' => array('action' => 'index')),
 		array('label' => $carSubtype['CarType']['title'], 'url' => SiteRouter::url($carType)),
 		array('label' => $title)
 	)));

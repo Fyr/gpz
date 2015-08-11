@@ -11,6 +11,7 @@ class SearchController extends AppController {
 	public function beforeFilter() {
 		$this->Auth->allow(array('index', 'price'));
 		parent::beforeFilter();
+		$this->currMenu = 'Products';
 	}
 	
 	public function index() {

@@ -76,10 +76,10 @@
 					</div>
 					<div class="banners clearfix">
 						<a href="<?=$this->Html->url(array('controller' => 'Techdoc', 'action' => 'index'))?>">
-							<img src="/img/tecdoc.png" alt="Поиск по TecDoc каталогу" />
+							<img src="/img/tecdoc.png" alt="Поиск по каталогу TecDoc" />
 						</a>
-						<a href="<?=$this->Html->url(array('controller' => 'Techdoc', 'action' => 'index'))?>">
-							<img src="/img/tecdoc.png" alt="Поиск по TecDoc каталогу" style=""/>
+						<a href="<?=$this->Html->url(array('controller' => 'Car', 'action' => 'index'))?>">
+							<img src="/img/autoz.png" alt="Поиск по каталогу AutoZ" style=""/>
 						</a>
 					</div>
 <?

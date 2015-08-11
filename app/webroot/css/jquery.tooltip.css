@@ -1,0 +1,76 @@
+div.jquery-gdakram-tooltip {
+	width: 240px;
+	color: #000;
+	font-size: 13px;
+	position: absolute;
+	z-index: 10000;
+	top: 0px;
+	left: 0px;
+	display: none;
+}
+
+div.jquery-gdakram-tooltip div.content {
+	-moz-border-radius: 1em;
+	-webkit-border-radius: 1em;
+	border-radius: 1em;
+	background-color: #fff;
+	
+	float: left;
+	padding: 0 10px 10px 10px;
+	
+	-webkit-box-shadow: 0 0 8px rgba(0,0,0,0.44);
+	-moz-box-shadow: 0 0 8px rgba(0,0,0,0.44);
+	box-shadow: 0 0 8px rgba(0,0,0,0.44);
+	border: 1px solid #dcdcdc;
+}
+
+div.jquery-gdakram-tooltip div.content h1 {
+  font-size: 16px;
+  border-bottom: 1px solid #dcdcdc;
+  padding-bottom: 5px;
+}
+
+div.jquery-gdakram-tooltip div.content li { list-style: none; }
+
+div.jquery-gdakram-tooltip div.up_arrow {
+  background : url('../img/up_arrow.png') 80px 0px no-repeat;
+  width: 100%;
+  height: 20px;
+	position: relative; 
+	z-index: 10;
+	top:1px;
+}
+
+div.jquery-gdakram-tooltip div.down_arrow {
+  background : url('../img/down_arrow.png') 80px 0px no-repeat;
+  width: 100%;
+  height: 20px;
+	position: relative; 
+	z-index: 10;
+	top:-1px;
+}
+
+div.jquery-gdakram-tooltip div.left_arrow {
+  height: 100%;
+}
+
+div.jquery-gdakram-tooltip div.left_arrow {
+  float:left;
+  background : url('../img/left_arrow.png') 0px 0px no-repeat;
+  width: 20px;
+  height: 20px;
+  position: relative;
+  top: 0px;
+  left: 1px;
+  
+}
+
+div.jquery-gdakram-tooltip div.right_arrow {
+  float:right;
+  background : url('../img/right_arrow.png') 0px 0px no-repeat;
+  width: 20px;
+  height: 20px;
+  position: relative;
+  top: 40px;
+  right: 27px;
+}

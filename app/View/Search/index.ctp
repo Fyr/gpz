@@ -8,6 +8,7 @@
 		$carType = array('CarType' => $article['CarType']);
 		$carSubtype = array('CarSubtype' => $article['CarSubtype'], 'CarType' => $article['CarType']);
 		echo $this->element('bread_crumbs', array('aBreadCrumbs' => array(
+			array('label' => 'AutoZ', 'url' => array('controller' => 'Car', 'action' => 'index')),
 			array('label' => $article['CarType']['title'], 'url' => SiteRouter::url($carType)),
 			array('label' => $article['CarSubtype']['title'], 'url' => SiteRouter::url($carSubtype)),
 			array('label' => $title)

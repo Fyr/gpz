@@ -11,6 +11,16 @@ class CarController extends AppController {
 	public $uses = array('CarType', 'CarSubtype', 'CarSubsection');
 	public $helpers = array('ObjectType');
 	
+	public function beforeFilter() {
+		parent::beforeFilter();
+		$this->currMenu = 'Products';
+	}
+	
+	public function index() {
+		$aCarTypes = $this->CarType->find('all');
+		$this->set('aCarTypes', $aCarTypes);
+	}
+	
 	public function viewCarType() {
 		$carType = $this->CarType->findBySlug($this->request->param('carType'));
 		if (!$carType && !TEST_ENV) {

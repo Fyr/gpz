@@ -8,8 +8,22 @@ class TechdocController extends AppController {
 	
 	protected $Subsection;
 	
-	public function index() {
-		$this->set('aCatalog', $this->TechDocApi->getMarks());
+	public function beforeFilter() {
+		parent::beforeFilter();
+		$this->currMenu = 'Products';
+	}
+	
+	public function index($brand = '') {
+		$brands = $this->TechDocApi->getMarks();
+		$this->set('aCatalog', $brands);
+		
+		if ($brand) {
+			$brand = strtoupper($brand);
+			$brands = Hash::combine($brands, '{n}.title', '{n}.id');
+			if (isset($brands[$brand]) && $brands[$brand]) {
+				$this->redirect(array('action' => 'brand', $brands[$brand]));
+			}
+		}
 	}
 	
 	public function brand($mark_id) {

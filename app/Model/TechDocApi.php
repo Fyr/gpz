@@ -120,7 +120,7 @@ class TechDocApi extends AppModel {
 				'brand_logo' => $item['logo'],
 				'partnumber' => $item['article'],
 				'image' => $item['image'],
-				'title' => $item['name'],
+				'title' => $this->getTitle($item['name']),
 				'title_descr' => implode(' / ', $title_descr)
 			);
 		}
@@ -158,7 +158,7 @@ class TechDocApi extends AppModel {
 					'brand_logo' => $item['logo'],
 					'partnumber' => $item['article'],
 					'image' => $item['image'],
-					'title' => $item['name'],
+					'title' => $this->getTitle($item['name']),
 					'title_descr' => implode(' / ', $title_descr),
 					'qty' => $price['box'],
 					'qty_descr' => '',
@@ -194,5 +194,9 @@ class TechDocApi extends AppModel {
 	private function getPrice2($price) {
 		$priceRatio = 1 + (Configure::read('Settings.td_price_ratio')/100);
 		return round($priceRatio * $this->getPrice($price), -2);
+	}
+	
+	private function getTitle($title) {
+		return str_replace('~', '', $title);
 	}
 }

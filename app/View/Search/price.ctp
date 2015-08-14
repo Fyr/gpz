@@ -1,6 +1,7 @@
 <? 
-	$this->Html->css(array('/Icons/css/icons', 'the-modal'), array('inline' => false));
-	$this->Html->script('vendor/jquery/jquery.the-modal', array('inline' => false));
+	$this->Html->css(array('/Table/css/grid', '/Icons/css/icons', 'jquery.fancybox', 'the-modal'), array('inline' => false));
+	$this->Html->script(array('vendor/jquery/jquery.fancybox.pack', 'vendor/jquery/jquery.the-modal'), array('inline' => false));
+	
 	$title = '';
 	if (isset($errorText)) {
 		$title = 'Ошибка!';
@@ -24,8 +25,6 @@
 		<p class="error"><?=$errorText?></p>
 <?
 	} else {
-		$this->Html->css('/Table/css/grid', array('inline' => false));
-			
 ?>
 		<div align="right" style="margin-bottom: 10px;">
 			Сортировать по <?=$this->Form->input('sort', array('options' => $aSorting, 'value' => $sort, 'div' => false, 'label' => false))?>
@@ -43,11 +42,19 @@
 		foreach($aSorting as $key => $title) {
 			$class = ($sort == $key) ? 'grid-sortable-active grid-sortable-'.$order : '';
 			$dir = ($sort == $key && $order == 'asc') ? 'desc' : 'asc';
+			if ($key == 'image') {
+?>
+			<th>
+				<a class="grid-unsortable" href="javascript:void(0)"><?=$title?></a>
+			</th>
+<?
+			} else {
 ?>
 			<th>
 				<a class="grid-sortable <?=$class?>" href="javascript:void(0)" title="Сортировать по `<?=$title?>` <?=$aOrdering[$dir]?>" onclick="sortBy('<?=$key?>', '<?=$dir?>')"><?=$title?></a>
 			</th>
 <?
+			}
 		}
 		if ($lFullInfo) {
 ?>
@@ -59,7 +66,7 @@
 			</th>
 <?
 		}
-		$colspan = ($lFullInfo) ? 9 : 7;
+		$colspan = ($lFullInfo) ? 10 : 8;
 ?>
 		</tr>
 		</thead>
@@ -105,15 +112,25 @@
 				</td>
 				<td nowrap="nowrap">&nbsp;<?=$row['partnumber']?></td>
 				<td>
-					<?//($row['image']) ? $this->Html->image($row['image'], array('class' => 'product-img')) : ''?>
+<?
+	if ($row['image']) {
+?>
+					<a class="fancybox" href="<?=$row['image']?>" rel="photo">
+						<?=($row['image']) ? $this->Html->image($row['image'], array('class' => 'product-img')) : ''?>
+					</a>
+<?
+	}
+?>
+				</td>
+				<td>
 					<?=$row['title']?>
 					<?//$row['title_descr']?>
 				</td>
 				<td>
 					<b><?=$row['qty']?></b>
-					<?=(trim($row['qty_descr'])) ? $row['qty_descr'].'<br/>' : ''?>
+					<?=($lFullInfo && trim($row['qty_descr'])) ? '<br/>'.$row['qty_descr'] : ''?>
 				</td>
-				<td align="right">
+				<td align="right" <? if (!$lFullInfo) {?> nowrap="nowrap" <? }?>>
 					<b><?=$this->Price->format($row['price2'])?></b>
 <?
 					if ($lFullInfo) {
@@ -164,6 +181,10 @@ function sortBy(key, dir) {
 $(function(){
 	$('#sort, #order').change(function(){
 		sortBy($('#sort').val(), $('#order').val());
+	});
+	
+	$('.fancybox').fancybox({
+		padding: 5
 	});
 });
 </script>

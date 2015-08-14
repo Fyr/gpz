@@ -6,7 +6,7 @@
 		array('label' => 'TecDoc', 'url' => $this->Html->url(array('action' => 'index'))),
 		array('label' => $mark['title'], 'url' => array('controller' => 'Techdoc', 'action' => 'brand', $mark['id'])),
 		array('label' => $model['title'], 'url' => array('action' => 'model', $mark['id'], $model['id'])),
-		array('label' => $submodel['type'], 'url' => array('action' => 'subsections', $mark['id'], $model['id'])),
+		array('label' => $submodel['type'], 'url' => array('action' => 'subsections', $mark['id'], $model['id'], $submodel['id'])),
 		array('label' => $subsection['name'])
 	)));
 	$title = $subsection['name'].' для '.$mark['title'].' '.$model['title'].' '.$submodel['type'].' '.$model['date_issue'];
@@ -68,7 +68,7 @@
 				<td>
 					<?=$row['name']?>
 				</td>
-				<td nowrap="nowrap">
+				<td nowrap="nowrap" align="center">
 					<?=$this->Html->link('Цены и замены', array('controller' => 'Search', 'action' => 'price', '?' => $params))?>
 				</td>
 			</tr>

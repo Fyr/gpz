@@ -65,6 +65,7 @@ class SearchController extends AppController {
 		$aSorting = array(
 			'brand' => 'Производитель',
 			'partnumber' => 'Номер',
+			'image' => 'Фото',
 			'title' => 'Наименование',
 			'qty' => 'Наличие',
 			'price2' => 'Цена'

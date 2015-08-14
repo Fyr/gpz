@@ -60,7 +60,7 @@ $(document).ready(function(){
 						html+= (aHeaders[i] ? '<span class="grid-unsortable">' + aHeaders[i] + '</span>: ' : '') + td + '<br/>';
 					}
 				}
-				if ($('a', this).length) {
+				if ($('a', this).length && !$('a', this).hasClass('fancybox') && !$('a', this).hasClass('popup-trigger')) {
 					url = $('a', this).attr('href');
 				}
 			});

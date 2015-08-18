@@ -1,5 +1,7 @@
 <?
-	$this->Html->css('/Table/css/grid', array('inline' => false));
+	$this->Html->css(array('/Table/css/grid', 'jquery.fancybox'), array('inline' => false));
+	$this->Html->script(array('vendor/jquery/jquery.fancybox.pack'), array('inline' => false));
+
 	$title = 'Результаты поиска';
 	if (isset($errorText)) {
 		$title = 'Ошибка!';
@@ -66,11 +68,19 @@
 					<?=($row['brand_logo']) ? $this->Html->image($row['brand_logo'], array('class' => 'brand-logo')) : ''?>
 				</td>
 				<td>
-					<?=$row['brand'];?>
+					<?=$row['brand']?>
 				</td>
-				<td nowrap="nowrap"><?=$row['partnumber'];?></td>
+				<td nowrap="nowrap"><?=$row['partnumber']?></td>
 				<td align="center">
-					<?=($row['image']) ? $this->Html->image($row['image'], array('class' => 'product-img')) : ''?>
+<?
+			if ($row['image']) {
+?>
+					<a class="fancybox" href="<?=$row['image']?>">
+						<?=$this->Html->image($row['image'], array('class' => 'product-img', 'alt' => $row['partnumber'].' '.$row['title']))?>
+					</a>
+<?
+			}
+?>
 				</td>
 				<td>
 					<?=$row['title']?>

@@ -16,13 +16,14 @@ a:hover { text-decoration: none;}
 .icon.mapTop { background-position: 0 0; width: 20px; height: 25px;}
 .icon.smallArrow { background-position: -64px -37px; width: 4px; height: 5px; }
 
-
+/*
 .shadowLeft { background: url('../img/shadow_left.png') repeat-y left top; }
 .shadowRight { background: url('../img/shadow_right.png') repeat-y right top; }
-
+*/
 
 
 .wrapper { max-width: 1124px; margin: 0 auto 0 auto; padding: 0 10px;}
+.footerWrap { max-width: 1124px; margin: 0 auto 0 auto; padding: 0 10px;}
 
 
 .header { max-width: 1124px;  margin: 0 auto; position: relative; padding: 0 10px;}
@@ -196,7 +197,7 @@ textarea { height: auto;}
         .footer .menu .icon.smallArrow { margin-right: 12px; margin-top: 8px; vertical-align: top; }
         .footer .menu li.active a { color: #3f6d70;}
 
-	.footer .wrapper { position: relative; }
+	.footerWrap { position: relative; }
 	.footer .carFirst { position: absolute; left: 0; bottom: -67px;}
 	.footer .carSecond { position: absolute; right: 0; bottom: -70px;}
 	.footer .copyright { font-size: 11px; color: #2d2d2d; text-align: right; padding: 5px 0 0 0;}
@@ -223,7 +224,7 @@ textarea { height: auto;}
 	.footer .menu li { float: left; width: 100px}
 	.footer .address { display: inline-block; margin-right: 20px;}
 	.footer .phones { display: inline-block; margin-top: 0;}
-	.footer .wrapper { padding-bottom: 40px;}
+	.footerWrap { padding-bottom: 40px;}
 }
 
 @media (max-width: 400px) { 
@@ -269,7 +270,7 @@ textarea { height: auto;}
 }
 
 
-.catalogPage {}
+.catalogPage { position: relative;}
 	.catalogPage .leftSide { float: left; width: 300px; text-align: center; padding: 0; }
 	.catalogPage .leftSide.list a { display: block; text-decoration: none; border-top: 1px solid #ddd; padding: 5px 0; }
 	.catalogPage .leftSide.list a:first-child { border-top: none; border-radius: 5px 5px 0 0;}
@@ -292,10 +293,40 @@ textarea { height: auto;}
 	.catalogPage .mainContentCatalog .content .letter { text-align: center; background: #3f6d70; color: #fff; border: 1px solid #2a5154; margin: 30px 0 10px 0; padding: 3px 0;}
 	.catalogPage .mainContentCatalog .content .letter:first-child { margin-top: 0;}
 	
+	.catalogPage .handle  { display: none; }
 
 @media (max-width: 767px) { 
-	.catalogPage .leftSide { float: none; width: auto;}
-	.catalogPage .mainContentCatalog { margin-left: 0;}
+	.catalogPage .leftSide { float: none;  position: absolute; width: 280px; background: #fff; right: 0; z-index: 10; top: 0; 
+		-webkit-transition: right 0.5s linear 0s;
+		-moz-transition: right 0.5s linear 0s;
+		-o-transition: right 0.5s linear 0s;
+		transition: right 0.5s linear 0s;
+		
+		-webkit-box-shadow: -3px 10px 5px 0px rgba(50, 50, 50, 0.25);
+		-moz-box-shadow:    -3px 10px 5px 0px rgba(50, 50, 50, 0.25);
+		box-shadow:         -3px 10px 5px 0px rgba(50, 50, 50, 0.25);
+	}
+	
+	.catalogPage { margin: 0 -10px; }
+	
+	.catalogPage .leftSide.closed { right: -282px; }
+	
+	.catalogPage  .handle  { position: fixed; display: block; z-index: 11; right: 282px; background: #3f6d70; width: 30px; height: 50px; font: 40px Georgia; color: #fff; text-align: center; cursor: pointer; margin-top: 3px; border: 1px solid #2a5154;
+		-webkit-border-radius: 5px 0 0 5px;
+		-moz-border-radius: 5px 0 0 5px;
+		border-radius: 5px 0 0 5px;
+		
+		-webkit-transition: right 0.5s linear 0s;
+		-moz-transition: right 0.5s linear 0s;
+		-o-transition: right 0.5s linear 0s;
+		transition: right 0.5s linear 0s;
+	}
+	
+	.catalogPage .handle.closed { right: 0 !important; }
+	
+	.wrapper { overflow: hidden; }
+	
+	.catalogPage .mainContentCatalog { margin-left: 10px; margin-right: 10px; }
 	.tableContent { overflow: auto; padding-left: 0 !important; padding-right: 0 !important;}
 }
 
@@ -309,3 +340,11 @@ textarea { height: auto;}
 @media (max-width: 767px) { 
 	.banners a > img { float: none !important; max-width: 100% !important; }
 }
+
+
+.grid .grid-row td .innerThumb { width: 60px; height: 60px; background: #fff; display: inline-block; text-align: center;  }
+.grid .grid-row .product-img {  display: inline-block; vertical-align: middle; }
+.grid .grid-row td .innerThumb .fancybox { display: inline-block; }
+.grid .grid-row td .innerThumb i { display: inline-block; height: 100%; vertical-align: middle; }
+
+.show-mobile .innerThumb { float: right; margin: 3px 0 3px 3px; } 

@@ -13,6 +13,7 @@
 ?>
 
 <div class="catalogPage clearfix">
+	<span class="handle">»</span>
 	<div class="block leftSide list">
 <?
 	foreach($aCarSubtypes as $_article) {
@@ -67,6 +68,50 @@ $(document).ready(function(){
 		// $('.outerSearch input[type=text]').val($('.catalogPage .leftSide a.active').html() + ' ' + $(this).html());
 		// $('form.searchBlock').submit();
 		// showLoader();
+	});
+	
+	function closeOpenPanel() {
+		var selector = $('.catalogPage .leftSide');
+		var handle = $('.catalogPage .handle');
+		
+		if ( ! selector.hasClass('closed') ) {
+			selector.addClass('closed');
+			handle.text("«");
+			handle.addClass('closed');
+		}
+		else {
+			selector.removeClass('closed');
+			handle.text("»");
+			handle.removeClass('closed');
+		}
+	}
+	
+	$('.handle').click ( function() {
+		closeOpenPanel();
+	});
+	
+	
+	$(window).scroll ( function() {
+		
+		var panel = $('.catalogPage .leftSide');
+		var handle = $('.catalogPage .handle');
+		
+		var scrolled = $(this).scrollTop();
+		
+		//var handleTop = handle.offset().top;
+		var handleHeight = handle.height();
+		
+		//var panelTop = panel.offset().top;
+		var panelHeight = panel.height();
+		
+		if (  scrolled + handleHeight >  panelHeight ) {
+			handle.css({'position':'absolute','top': panelHeight - handleHeight - 5 });
+		}
+		
+		else {
+			handle.css({'top': 'auto', 'position':'fixed'});
+		}
+		
 	});
 });
 </script>

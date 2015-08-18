@@ -53,15 +53,24 @@ $(document).ready(function(){
 			var url = '';
 			$('td', this).each(function(i){
 				td = $(this).html().trim();
+				
 				if (!$(this).hasClass('subheader') && td) {
 					if (aHeaders[i].indexOf('Изображение') > -1 || aHeaders[i].indexOf('Фото') > -1) {
+						td = '<div class="innerThumb">' + td + '<i></i></div>';
 						html = td + html;
+						
 					} else {
 						html+= (aHeaders[i] ? '<span class="grid-unsortable">' + aHeaders[i] + '</span>: ' : '') + td + '<br/>';
 					}
 				}
-				if ($('a', this).length && !$('a', this).hasClass('fancybox') && !$('a', this).hasClass('popup-trigger')) {
-					url = $('a', this).attr('href');
+				
+				if ( $('a', this).length && !$('a', this).hasClass('popup-trigger') ) {
+						
+					if ( $('a', this).hasClass('fancybox') ) {
+						$('a', this).wrap('<div class="innerThumb"></div>').after('<i></i>');
+					} else {
+						url = $('a', this).attr('href');
+					}
 				}
 			});
 			
@@ -75,6 +84,34 @@ $(document).ready(function(){
 			$('.show-mobile table > tbody').append('<tr class="grid-row"><td class="subheader">' + $('td', this).html() + '</td></tr>');
 		}
 	});
+	
+	$('.grid .product-img').each ( function(){
+		
+		$(this).load(function() {
+			if ($(this).width() > 60 || $(this).height() > 60)	{
+				if ($(this).width() > $(this).height()) {
+					$(this).width(60);
+				} else {
+					$(this).height(60);
+				}
+			}
+							
+		});
+	});
+	
+	$(window).resize( function() {
+		
+		$('.grid .product-img').each ( function(){		
+			if ($(this).width() > 60 || $(this).height() > 60)	{
+				if ($(this).width() > $(this).height()) {
+					$(this).width(60);
+				} else {
+					$(this).height(60);
+				}
+			}		
+		});
+	});
+	
 });
 
 String.prototype.trim = function() {

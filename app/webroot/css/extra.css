@@ -53,6 +53,7 @@ form.searchBlock {
 	opacity: 0.8; 
 	padding-top: 122px;
 	display: none;
+	z-index: 100;
 }
 
 .tableContent .table-bordered th, .table-bordered td {
@@ -64,7 +65,6 @@ form.searchBlock {
 }
 
 .brand-logo { width: 30px; }
-.product-img { width: 60px; }
 
 .table-bordered th, .table-bordered td {
     border-left: 1px solid #dddddd;
@@ -87,6 +87,8 @@ form.searchBlock {
 .show-mobile table { width: 100%; border-spacing: 0; }
 .show-mobile tbody a { color: #f00 !important; text-shadow: none; }
 .show-mobile tbody .grid-unsortable { color: #777 !important; text-shadow: none; }
-.show-mobile .product-img { float: right; margin: 3px 0 3px 3px; }
+
 
 .clickable {cursor: pointer;}
+
+#jivo_top_wrap, .jivo_top_wrap { z-index: 80 !important; }

@@ -27,6 +27,7 @@
 .ztree li span.button.ico_docu { display: none; }
 </style>
 <div class="catalogPage">
+	<span class="handle">»</span>
 	<div class="block leftSide">
 <?
 	foreach($subsections as $row) {
@@ -44,12 +45,33 @@
 	</div>
 </div>
 <script type="text/javascript">
+	
+function closeOpenPanel() {
+	var selector = $('.catalogPage .leftSide');
+	var handle = $('.catalogPage .handle');
+
+	if ( ! selector.hasClass('closed') ) {
+		selector.addClass('closed');
+		handle.text("«");
+		handle.addClass('closed');
+	}
+	else {
+		selector.removeClass('closed');
+		handle.text("»");
+		handle.removeClass('closed');
+	}
+}
+	
 var treeObj;
 function expandNode(id) {
 	var node = treeObj.getNodeByParam("id", id, null);
 	$('#' + node.tId).get(0).scrollIntoView();
+	closeOpenPanel();
 	treeObj.expandNode(node, true);
 }
+	
+
+	
 $(document).ready(function(){
 	var setting = {
 		view: {
@@ -75,5 +97,32 @@ $(document).ready(function(){
 
 	var zNodes = <?=json_encode($aSubsections)?>;
 	treeObj = $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+	
+	$('.handle').click ( function() {
+		closeOpenPanel();
+	});
+	
+	$(window).scroll ( function() {
+		
+		var panel = $('.catalogPage .leftSide');
+		var handle = $('.catalogPage .handle');
+		
+		var scrolled = $(this).scrollTop();
+		
+		//var handleTop = handle.offset().top;
+		var handleHeight = handle.height();
+		
+		//var panelTop = panel.offset().top;
+		var panelHeight = panel.height();
+		
+		if (  scrolled + handleHeight >  panelHeight ) {
+			handle.css({'position':'absolute','top': panelHeight - handleHeight - 5 });
+		}
+		
+		else {
+			handle.css({'top': 'auto', 'position':'fixed'});
+		}
+		
+	});
 });
 </script>

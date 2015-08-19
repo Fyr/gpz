@@ -301,17 +301,18 @@ textarea { height: auto;}
 		-moz-transition: right 0.5s linear 0s;
 		-o-transition: right 0.5s linear 0s;
 		transition: right 0.5s linear 0s;
-		
+		border-radius:  0;
 		-webkit-box-shadow: -3px 10px 5px 0px rgba(50, 50, 50, 0.25);
 		-moz-box-shadow:    -3px 10px 5px 0px rgba(50, 50, 50, 0.25);
 		box-shadow:         -3px 10px 5px 0px rgba(50, 50, 50, 0.25);
 	}
 	
 	.catalogPage { margin: 0 -10px; }
+	.catalogPage .leftSide.list a:first-child { border-top: none; border-radius: 0;}
 	
 	.catalogPage .leftSide.closed { right: -282px; }
 	
-	.catalogPage  .handle  { position: fixed; display: block; z-index: 11; right: 282px; background: #3f6d70; width: 30px; height: 50px; font: 40px Georgia; color: #fff; text-align: center; cursor: pointer; margin-top: 3px; border: 1px solid #2a5154;
+	.catalogPage  .handle  { position: fixed; display: block; z-index: 11; right: 282px; background: #3f6d70; width: 30px; height: 50px; font: 40px Georgia; color: #fff; text-align: center; cursor: pointer; margin-top: 0px; border: 1px solid #2a5154;
 		-webkit-border-radius: 5px 0 0 5px;
 		-moz-border-radius: 5px 0 0 5px;
 		border-radius: 5px 0 0 5px;

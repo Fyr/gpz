@@ -115,10 +115,14 @@ $(document).ready(function(){
 		//var panelTop = panel.offset().top;
 		var panelHeight = panel.height();
 		
-		if (  scrolled + handleHeight >  panelHeight ) {
-			handle.css({'position':'absolute','top': panelHeight - handleHeight - 5 });
-		}
+		console.log( scrolled );
 		
+		if (  scrolled + handleHeight >  panelHeight ) {
+			handle.css({'position':'absolute','top': panelHeight - handleHeight  });
+		}
+		else if ( scrolled < 0 ) {
+			handle.css({'position':'absolute','top': 0 });
+		}
 		else {
 			handle.css({'top': 'auto', 'position':'fixed'});
 		}

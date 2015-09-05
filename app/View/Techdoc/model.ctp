@@ -66,7 +66,7 @@
 				<td><?=$row['engine_name']?></td>
 				<td align="center"><?=$row['body_name']?></td>
 				<td align="center"><?=$row['cylinders']?> / <?=number_format($row['vcm'], 0, '', ',')?>м<sup>3</sup></td>
-				<td><?=$row['kw_from']?> кВт / <?=$row['hp_from']?> л.с</td>
+				<td align="center"><?=$row['kw_from']?> кВт / <?=$row['hp_from']?> л.с</td>
 				<td align="center">
 					<?=$this->Html->link('подробнее', array('action' => 'subsections', $mark_id, $model_id, $row['id']))?>
 				</td>

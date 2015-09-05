@@ -128,7 +128,8 @@
 				</td>
 				<td>
 					<b><?=$row['qty']?></b>
-					<?=($lFullInfo && trim($row['qty_descr'])) ? '<br/>'.$row['qty_descr'] : ''?>
+					<?=(!$lFullInfo && $row['qty_order']) ? '<br />'.$row['qty_order'].' дн.' : ''?>
+					<?=($lFullInfo && trim($row['qty_descr'])) ? '<br />'.$row['qty_descr'] : ''?>
 				</td>
 				<td align="right" <? if (!$lFullInfo) {?> nowrap="nowrap" <? }?>>
 					<b><?=$this->Price->format($row['price2'])?></b>

@@ -144,7 +144,7 @@
 						<img src="/img/car2.png" alt="" class="carSecond" />
 					</div>
 				</div>
-				<div class="footerLine" style="text-align: center; height: auto; padding: 2px 0">
+				<div class="footerLine" style="text-align: center; height: auto; padding: 2px 0">&nbsp;
 <?
 	if (DOMAIN_NAME == 'giperzap.by') {
 ?>

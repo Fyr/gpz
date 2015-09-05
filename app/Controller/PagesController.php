@@ -2,7 +2,7 @@
 App::uses('AppController', 'Controller');
 class PagesController extends AppController {
 	public $name = 'Pages';
-	public $uses = array('Page', 'CarType', 'News', 'Media.Media', 'TechDocApi', 'DbCache');
+	public $uses = array('Page', 'CarType', 'News', 'Media.Media', 'TechDocApi', 'AutoxpApi');
 	// public $helpers = array('ArticleVars');
 
 	public function home() {
@@ -21,6 +21,11 @@ class PagesController extends AppController {
 		$aCarTypes = $this->CarType->find('all');
 		$this->set('aCarTypes', $aCarTypes);
 		$this->currMenu = 'Home';
+		
+		$marks = array(
+			'AutoXP' => Hash::combine($this->AutoxpApi->getMarks(), '{n}.title', '{n}') 
+		);
+		$this->set('marks', $marks);
 	}
 	
 	public function view($slug) {

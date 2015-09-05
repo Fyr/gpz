@@ -45,6 +45,19 @@ Cache::config('techdoc', array(
 	'serialize' => true,
 ));
 
+Configure::write('AutoxpApi', array(
+	'url' => 'http://app.autoxp.ru/pscomplex/catalog.aspx?salerind=917',
+	'search_url' => 'http://app.autoxp.ru/support/catvinident.aspx?salerind=917&lavel=2',
+	'cookies' => ROOT.DS.APP_DIR.DS.'tmp'.DS.'logs'.DS.'autoxp_cookies.txt',
+	'log' => ROOT.DS.APP_DIR.DS.'tmp'.DS.'logs'.DS.'autoxp_api.log'
+));
+Cache::config('autoxp', array(
+	'engine' => 'DbTable',
+	'storage' => 'cache_autoxp',
+	'lock' => false,
+	'serialize' => true,
+));
+
 // Values from google recaptcha account
 define('RECAPTCHA_PUBLIC_KEY', '6Lezy-QSAAAAAJ_mJK5OTDYAvPEhU_l-EoBN7rxV');
 define('RECAPTCHA_PRIVATE_KEY', '6Lezy-QSAAAAACCM1hh6ceRr445OYU_D_uA79UFZ');

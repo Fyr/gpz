@@ -162,6 +162,7 @@ class TechDocApi extends AppModel {
 					'title_descr' => implode(' / ', $title_descr),
 					'qty' => $price['box'],
 					'qty_descr' => '',
+					'qty_order' => '',
 					'price' => $this->getPrice($price), // цена уже в BYR - просто округляем
 					'price2' => $this->getPrice2($price),
 					'price_orig' => $price['price'].' '.$price['currency'],

@@ -371,6 +371,7 @@ class ZzapApi extends AppModel {
 				'title_descr' => '',
 				'qty' => $item['qty'],
 				'qty_descr' => $item['descr_qty'],
+				'qty_order' => $this->getQtyDescr($item),
 				'price' => $this->getPrice($item),
 				'price2' => $this->getPrice2($item),
 				'price_orig' => $item['price'],
@@ -395,5 +396,13 @@ class ZzapApi extends AppModel {
 	private function getPrice2($item) {
 		$priceRatio = 1 + (Configure::read('Settings.price_ratio')/100);
 		return round($priceRatio * $this->getPrice($item), -2);
+	}
+	
+	private function getQtyDescr($item) {
+		preg_match('/[0-9\-]+/', $item['descr_qty'], $match);
+		if (isset($match[0]) && $match[0]) {
+			return $match[0];
+		}
+		return '';
 	}
 }

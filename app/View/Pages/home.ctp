@@ -6,21 +6,34 @@
 <?
 	foreach($aCarTypes as $_article) {
 		$this->ArticleVars->init($_article, $url, $title, $teaser, $src, '200x');
-		$urlZZap = $url;
-		$urlTechDoc = $this->Html->url(array('controller' => 'Techdoc', 'action' => 'index', strtolower($title)));
+		// Zzap + TecDoc - гарантировано есть все ссылки на лого
+		// для AutoXP - надо проверять
+		// по умолчанию - ссылка на TecDoc
+		$urls = array(
+			'TecDoc' => array('controller' => 'Techdoc', 'action' => 'index', strtolower($title)),
+			'AutoZ' => $url
+		);
+		if (isset($marks['AutoXP']) && isset($marks['AutoXP'][$title])) {
+			$urls['AutoXP'] = array('controller' => 'autoxp', 'action' => 'brand', $marks['AutoXP'][$title]['id']);
+		}
 ?>
 	<div class="item tooltiptop">
 <?
 		if ($src) {
 ?>
-		<a href="<?=$urlTechDoc?>"><img src="<?=$src?>" alt="<?=$title?>" /></a>
+		<a href="javascript:void(0)"><img src="<?=$src?>" alt="<?=$title?>" /></a>
 <?
 		}
 ?>
-		<div class="name"><a href="<?=$urlTechDoc?>"><?=$title?></a></div>
+		<div class="name"><?=$this->Html->link($title, 'javascript:void(0)')?></div>
 		<ul class="tooltip_description" style="display:none" title="Список каталогов">
-			<li><a href="<?=$urlTechDoc?>">TecDoc</a></li>
-			<li><a href="<?=$urlZZap?>">AutoZ</a></li>
+<?
+		foreach($urls as $title => $url) {
+?>
+			<li><?=$this->Html->link($title, $url)?></li>
+<?
+		}
+?>
 		</ul>
 	</div>
 <?
@@ -39,13 +52,15 @@ $(document).ready(function(){
 		'arrow_left_offset' : 90,
         'arrow_right_offset' : 0,
         'arrow_top_offset' : 70,
+        'event_in': 'click'
 	});
-	
+/*	
 	if ($('.show-mobile:visible').length) {
 		$('.catalog .item > a, .catalog .item .name > a').each(function(){
 			var url = $(this).attr('href');
 			$(this).attr('href', 'javascript:void(0)');
 		});
 	}
+	*/
 });
 </script>

@@ -1,5 +1,6 @@
 <?
 	App::uses('Translit', 'Article.Vendor');
+	$this->Html->script('mobile-panel', array('inline' => false));
 
 	$title = $carSubtype['CarSubtype']['title'];
 	echo $this->element('bread_crumbs', array('aBreadCrumbs' => array(
@@ -13,7 +14,6 @@
 ?>
 
 <div class="catalogPage clearfix">
-	<span class="handle">»</span>
 	<div class="block leftSide list">
 <?
 	foreach($aCarSubtypes as $_article) {
@@ -70,50 +70,5 @@ $(document).ready(function(){
 		// showLoader();
 	});
 	
-	function closeOpenPanel() {
-		var selector = $('.catalogPage .leftSide');
-		var handle = $('.catalogPage .handle');
-		
-		if ( ! selector.hasClass('closed') ) {
-			selector.addClass('closed');
-			handle.text("«");
-			handle.addClass('closed');
-		}
-		else {
-			selector.removeClass('closed');
-			handle.text("»");
-			handle.removeClass('closed');
-		}
-	}
-	
-	$('.handle').click ( function() {
-		closeOpenPanel();
-	});
-	
-	
-	$(window).scroll ( function() {
-		
-		var panel = $('.catalogPage .leftSide');
-		var handle = $('.catalogPage .handle');
-		
-		var scrolled = $(this).scrollTop();
-		
-		//var handleTop = handle.offset().top;
-		var handleHeight = handle.height();
-		
-		//var panelTop = panel.offset().top;
-		var panelHeight = panel.height();
-		
-		if (  scrolled + handleHeight >  panelHeight ) {
-			handle.css({'position':'absolute','top': panelHeight - handleHeight });
-		}
-		else if ( scrolled < 0 ) {
-			handle.css({'position':'absolute','top': 0 });
-		}
-		else {
-			handle.css({'top': 'auto', 'position':'fixed'});
-		}
-		
-	});
 });
 </script>

@@ -91,4 +91,4 @@ form.searchBlock {
 
 .clickable {cursor: pointer;}
 
-#jivo_top_wrap, .jivo_top_wrap { z-index: 80 !important; }
+#jivo_top_wrap, .jivo_top_wrap { z-index: 9999999 !important; }

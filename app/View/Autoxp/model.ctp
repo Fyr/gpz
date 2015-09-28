@@ -30,7 +30,7 @@
 			<tr class="grid-row">
 				<td><?=$row['title']?></td>
 				<td align="center">
-					<?=$this->Html->link('подробнее', array('action' => 'bodytype', $mark['id'], $model['id'], $row['id']))?>
+					<?=$this->Autoxp->link('подробнее', array('action' => 'bodytype', $mark['id'], $model['id'], $row['id']))?>
 				</td>
 			</tr>
 <? 

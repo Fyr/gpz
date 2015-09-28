@@ -1,5 +1,6 @@
 <?php
 App::uses('AppModel', 'Model');
+App::uses('ProxyUse', 'Model');
 App::uses('Curl', 'Vendor');
 App::import('Vendor', 'simple_html_dom');
 
@@ -86,7 +87,6 @@ class AutoxpApi extends AppModel {
 		if ($response) {
 			return $response;
 		}
-			
 		$response = $this->sendRequest('');
 		$html = str_get_html($response);
 		$response = array();
@@ -96,16 +96,29 @@ class AutoxpApi extends AppModel {
 				$params = array();
 				parse_str($a->href, $params);
 				if (isset($params['mark'])) {
-					$response[] = array('id' => $params['mark'], 'title' => $a->plaintext);
+					$title = $a->plaintext;
+					if ($title == 'CITROEN') {
+						$title = 'CITROËN';
+					} elseif ($title == 'MERCEDES BENZ') {
+						$title = 'MERCEDES-BENZ';
+					} elseif ($title == 'MERCEDES BENZ - гр.') {
+						$title = 'MERCEDES TRUCKS';
+					} elseif ($title == 'RENAULT - гр.') {
+						$title = 'RENAULT TRUCKS';
+					} elseif ($title == 'SSANG YONG') {
+						$title = 'SSANGYONG';
+					} elseif ($title == 'VOLKSWAGEN') {
+						$title = 'VW';
+					}
+					$response[] = array('id' => $params['mark'], 'title' => $title);
 				}
 			}
 		}
 		if (!$response) {
 			throw new Exception('AutoxpApi: Bad server response');
 		}
-		
 		Cache::write($cache_key, $response, 'autoxp');
-		$this->extractSearchID($html);
+		// $this->extractSearchID($html);
 		return $response;
 	}
 	

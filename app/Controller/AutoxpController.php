@@ -4,7 +4,7 @@ App::uses('AutoxpApi', 'Model');
 class AutoxpController extends AppController {
 	public $name = 'Autoxp';
 	public $uses = array('AutoxpApi');
-	public $helpers = array('ObjectType');
+	public $helpers = array('ObjectType', 'Autoxp');
 	
 	protected $Subsection;
 	
@@ -50,6 +50,8 @@ class AutoxpController extends AppController {
 	}
 	
 	public function model($mark_id, $model_id) {
+		$model_id = str_replace('|', '/', $model_id);
+		
 		$aCatalog = Hash::combine($this->AutoxpApi->getMarks(), '{n}.id', '{n}');
 		$mark = $aCatalog[$mark_id];
 		$this->set('mark', $mark);
@@ -72,6 +74,8 @@ class AutoxpController extends AppController {
 	}
 	
 	public function bodytype($mark_id, $model_id, $body_type) {
+		$model_id = str_replace('|', '/', $model_id);
+		
 		$aCatalog = Hash::combine($this->AutoxpApi->getMarks(), '{n}.id', '{n}');
 		$mark = $aCatalog[$mark_id];
 		$this->set('mark', $mark);
@@ -99,6 +103,8 @@ class AutoxpController extends AppController {
 	}
 	
 	public function motor($mark_id, $model_id, $body_type, $fuel_id) {
+		$model_id = str_replace('|', '/', $model_id);
+		
 		$aCatalog = Hash::combine($this->AutoxpApi->getMarks(), '{n}.id', '{n}');
 		$mark = $aCatalog[$mark_id];
 		$this->set('mark', $mark);
@@ -131,6 +137,7 @@ class AutoxpController extends AppController {
 	}
 	
 	public function sections($mark_id, $model_id, $body_type, $fuel_id, $hash) {
+		$model_id = str_replace('|', '/', $model_id);
 		$hash = urldecode($hash);
 		$this->set('hash', $hash);
 		
@@ -188,6 +195,7 @@ class AutoxpController extends AppController {
 	}
 	
 	public function subsections($mark_id, $model_id, $body_type, $fuel_id, $hash, $grnum) {
+		$model_id = str_replace('|', '/', $model_id);
 		$hash = urldecode($hash);
 		$this->set('hash', $hash);
 		
@@ -228,6 +236,7 @@ class AutoxpController extends AppController {
 	}
 
 	public function autoparts($mark_id, $model_id, $body_type, $fuel_id, $hash, $grnum, $pdgrnum) {
+		$model_id = str_replace('|', '/', $model_id);
 		$hash = urldecode($hash);
 		$this->set('hash', $hash);
 		try {

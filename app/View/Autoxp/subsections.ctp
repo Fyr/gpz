@@ -4,9 +4,9 @@
 	
 	echo $this->element('bread_crumbs', array('aBreadCrumbs' => array(
 		array('label' => 'AutoXP', 'url' => $this->Html->url(array('action' => 'index'))),
-		array('label' => $mark['title'], 'url' => array('controller' => 'Autoxp', 'action' => 'brand', $mark['id'])),
-		array('label' => $model['title'], 'url' => array('controller' => 'Autoxp', 'action' => 'model', $mark['id'], $model['id'])),
-		array('label' => $body['title'], 'url' => array('controller' => 'Autoxp', 'action' => 'bodytype', $mark['id'], $model['id'], $body['id'])),
+		array('label' => $mark['title'], 'url' => $this->Autoxp->url(array('action' => 'brand', $mark['id']))),
+		array('label' => $model['title'], 'url' => $this->Autoxp->url(array('action' => 'model', $mark['id'], $model['id']))),
+		array('label' => $body['title'], 'url' => $this->Autoxp->url(array('action' => 'bodytype', $mark['id'], $model['id'], $body['id']))),
 		array('label' => $fuel['title'])
 	)));
 	
@@ -41,7 +41,7 @@
 				</td>
 				<td><?=$row['title']?></td>
 				<td align="center">
-					<?=$this->Html->link('подробнее', array('action' => 'autoparts', $mark['id'], $model['id'], $body['id'], $fuel['id'], urlencode($hash), $row['grnum'], $row['pdgrnum']))?>
+					<?=$this->Autoxp->link('подробнее', array('action' => 'autoparts', $mark['id'], $model['id'], $body['id'], $fuel['id'], $hash, $row['grnum'], $row['pdgrnum']))?>
 				</td>
 			</tr>
 <? 

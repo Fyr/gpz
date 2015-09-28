@@ -4,9 +4,9 @@
 	
 	echo $this->element('bread_crumbs', array('aBreadCrumbs' => array(
 		array('label' => 'AutoXP', 'url' => $this->Html->url(array('action' => 'index'))),
-		array('label' => $mark['title'], 'url' => array('controller' => 'Autoxp', 'action' => 'brand', $mark['id'])),
-		array('label' => $model['title'], 'url' => array('controller' => 'Autoxp', 'action' => 'model', $mark['id'], $model['id'])),
-		array('label' => $body['title'], 'url' => array('controller' => 'Autoxp', 'action' => 'bodytype', $mark['id'], $model['id'], $body['id'])),
+		array('label' => $mark['title'], 'url' => $this->Autoxp->url(array('action' => 'brand', $mark['id']))),
+		array('label' => $model['title'], 'url' => $this->Autoxp->url(array('action' => 'model', $mark['id'], $model['id']))),
+		array('label' => $body['title'], 'url' => $this->Autoxp->url(array('action' => 'bodytype', $mark['id'], $model['id'], $body['id']))),
 		array('label' => $fuel['title'])
 	)));
 	
@@ -20,7 +20,7 @@
 	foreach($subsections as $row) {
 		$src = $this->Media->imageUrl($row, 'thumb80x80');
 		if ($src) {
-			$url = $this->Html->url(array('action' => 'subsections', $mark['id'], $model['id'], $body['id'], $fuel['id'], urlencode($hash), $row['AutoXP']['id']));
+			$url = $this->Autoxp->url(array('action' => 'subsections', $mark['id'], $model['id'], $body['id'], $fuel['id'], $hash, $row['AutoXP']['id']));
 ?>
 		<a class="thumb-node" href="<?=$url?>" title="<?=h($row['Subsection']['title'])?>"><img src=<?=$src?> alt="<?=h($row['Subsection']['title'])?>" /></a>
 <?
@@ -34,7 +34,7 @@
 	foreach($aSubsections as $row) {
 ?>
 			<li>
-				<?=$this->Html->link($row['title'], array('action' => 'subsections', $mark['id'], $model['id'], $body['id'], $fuel['id'], urlencode($hash), $row['id']))?>
+				<?=$this->Autoxp->link($row['title'], array('action' => 'subsections', $mark['id'], $model['id'], $body['id'], $fuel['id'], $hash, $row['id']))?>
 			</li>
 <?
 	}

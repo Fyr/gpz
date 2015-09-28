@@ -55,10 +55,10 @@ foreach($_aModels as $mod => $aModels) {
 ?>
 			<tr class="grid-row">
 				<td>
-					<?=$title//$this->Html->link($title, array('action' => 'model', $mark_id, $submodel['id']));?>
+					<?=$title?>
 				</td>
 				<td align="center">
-					<?=$this->Html->link('подробнее', array('action' => 'model', $mark_id, $submodel['id']));?>
+					<?=$this->Autoxp->link('подробнее', array('action' => 'model', $mark_id, $submodel['id']))?>
 				</td>
 			</tr>
 <?

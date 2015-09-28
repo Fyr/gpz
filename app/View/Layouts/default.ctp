@@ -81,8 +81,8 @@
 						<a href="<?=$this->Html->url(array('controller' => 'Techdoc', 'action' => 'index'))?>">
 							<img src="/img/tecdoc.png" alt="Поиск по каталогу TecDoc" />
 						</a>
-						<a href="<?=$this->Html->url(array('controller' => 'Car', 'action' => 'index'))?>">
-							<img src="/img/autoz.png" alt="Поиск по каталогу AutoZ" style=""/>
+						<a href="<?=$this->Html->url(array('controller' => 'Autoxp', 'action' => 'index'))?>">
+							<img src="/img/autoxp.png" alt="Поиск по каталогу AutoXP" style=""/>
 						</a>
 					</div>
 <?
@@ -99,8 +99,8 @@
 						<a href="<?=$this->Html->url(array('controller' => 'Techdoc', 'action' => 'index'))?>">
 							<img src="/img/tecdoc.png" alt="Поиск по каталогу TecDoc" />
 						</a>
-						<a href="<?=$this->Html->url(array('controller' => 'Car', 'action' => 'index'))?>">
-							<img src="/img/autoz.png" alt="Поиск по каталогу AutoZ" style=""/>
+						<a href="<?=$this->Html->url(array('controller' => 'Autoxp', 'action' => 'index'))?>">
+							<img src="/img/autoxp.png" alt="Поиск по каталогу AutoXP" style=""/>
 						</a>
 					</div>
 <?

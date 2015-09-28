@@ -96,6 +96,8 @@ class GpzApi extends AppModel {
 			}
 			$rows = Hash::sort($rows, '{n}._factor', 'desc');
 		}
+		unset($row);
+		unset($rows);
 		
 		// Шаг 4. Извлекаем наиболее весомые строки
 		$data = array();

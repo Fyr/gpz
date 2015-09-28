@@ -20,7 +20,7 @@
 	foreach($subsections as $row) {
 		$src = $this->Media->imageUrl($row, 'thumb80x80');
 		if ($src) {
-			$url = $this->Autoxp->url(array('action' => 'subsections', $mark['id'], $model['id'], $body['id'], $fuel['id'], $hash, $row['AutoXP']['id']));
+			$url = $this->Autoxp->url(array('action' => 'subsections', $mark['id'], $model['id'], $body['id'], $fuel['id'], $hash, $submodel, $row['AutoXP']['id']));
 ?>
 		<a class="thumb-node" href="<?=$url?>" title="<?=h($row['Subsection']['title'])?>"><img src=<?=$src?> alt="<?=h($row['Subsection']['title'])?>" /></a>
 <?
@@ -34,7 +34,7 @@
 	foreach($aSubsections as $row) {
 ?>
 			<li>
-				<?=$this->Autoxp->link($row['title'], array('action' => 'subsections', $mark['id'], $model['id'], $body['id'], $fuel['id'], $hash, $row['id']))?>
+				<?=$this->Autoxp->link($row['title'], array('action' => 'subsections', $mark['id'], $model['id'], $body['id'], $fuel['id'], $hash, $submodel, $row['id']))?>
 			</li>
 <?
 	}

@@ -9,16 +9,12 @@ class ProxyUse extends AppModel {
 		return $row;
 	}
 	
-	public function useProxy($host, $method, $data = '') {
+	public function useProxy($host) {
 		$sql = sprintf('UPDATE %s SET used = used + 1, modified = "%s" WHERE host = "%s"', 
 			$this->getTableName(), date('Y-m-d H:i:s'), $host);
 		try {
 			$this->trxBegin();
-			
 			$this->query($sql);
-			// $this->initModel('ProxyLog')->clear();
-			// $this->initModel('ProxyLog')->save(compact('host', 'method', 'data'));
-			
 			$this->trxCommit();
 		} catch (Exception $e) {
 			$this->trxRollback();

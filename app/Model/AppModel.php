@@ -124,4 +124,9 @@ class AppModel extends Model {
 		$this->setSource($table);
 	}
 	
+	public function isBot($ip) {
+		$hostname = gethostbyaddr($ip);
+		return ($hostname === 'spider-'.str_replace('.', '-', $ip).'.yandex.com') 
+			|| ($hostname === 'crawl-'.str_replace('.', '-', $ip).'.googlebot.com');
+	}
 }

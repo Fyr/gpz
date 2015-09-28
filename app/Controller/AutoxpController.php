@@ -1,6 +1,7 @@
 <?php
 App::uses('AppController', 'Controller');
 App::uses('AutoxpApi', 'Model');
+App::uses('AutoxpRouter', 'Vendor');
 class AutoxpController extends AppController {
 	public $name = 'Autoxp';
 	public $uses = array('AutoxpApi');
@@ -16,6 +17,10 @@ class AutoxpController extends AppController {
 	public function beforeRender() {
 		$this->set('searchID', $this->AutoxpApi->getSearchID());
 		parent::beforeRender();
+	}
+	
+	public function redirect($url, $status = 302) {
+		return parent::redirect(AutoxpRouter::url($url), $status);
 	}
 	
 	public function index($brand = '') {
@@ -136,13 +141,15 @@ class AutoxpController extends AppController {
 		);
 	}
 	
-	public function sections($mark_id, $model_id, $body_type, $fuel_id, $hash) {
+	public function sections($mark_id, $model_id, $body_type, $fuel_id, $hash, $submodel) {
 		$model_id = str_replace('|', '/', $model_id);
 		$hash = urldecode($hash);
 		$this->set('hash', $hash);
+		$this->set('submodel', $submodel);
+		$cache_params = compact('mark_id', 'model_id', 'body_type', 'fuel_id', 'submodel');
 		
 		try {
-			$aSubsections = $this->AutoxpApi->getModelSections($mark_id, $hash);
+			$aSubsections = $this->AutoxpApi->getModelSections($mark_id, $hash, $cache_params);
 			$this->set('aSubsections', $aSubsections);
 		} catch (Exception $e) {
 			$this->redirect(array('action' => 'motor', $mark_id, $model_id, $body_type, $fuel_id));
@@ -194,13 +201,15 @@ class AutoxpController extends AppController {
 		$this->set('subsections', $subsections);
 	}
 	
-	public function subsections($mark_id, $model_id, $body_type, $fuel_id, $hash, $grnum) {
+	public function subsections($mark_id, $model_id, $body_type, $fuel_id, $hash, $submodel, $grnum) {
 		$model_id = str_replace('|', '/', $model_id);
 		$hash = urldecode($hash);
 		$this->set('hash', $hash);
+		$this->set('submodel', $submodel);
+		$cache_params = compact('mark_id', 'model_id', 'body_type', 'fuel_id', 'submodel', 'grnum');
 		
 		try {
-			$aSubsections = $this->AutoxpApi->getModelSubsections($mark_id, $hash, $grnum);
+			$aSubsections = $this->AutoxpApi->getModelSubsections($mark_id, $hash, $grnum, $cache_params);
 			$this->set('aSubsections', $aSubsections);
 		} catch (Exception $e) {
 			$this->redirect(array('action' => 'motor', $mark_id, $model_id, $body_type, $fuel_id));
@@ -235,12 +244,14 @@ class AutoxpController extends AppController {
 		);
 	}
 
-	public function autoparts($mark_id, $model_id, $body_type, $fuel_id, $hash, $grnum, $pdgrnum) {
+	public function autoparts($mark_id, $model_id, $body_type, $fuel_id, $hash, $submodel, $grnum, $pdgrnum) {
 		$model_id = str_replace('|', '/', $model_id);
 		$hash = urldecode($hash);
 		$this->set('hash', $hash);
+		$this->set('submodel', $submodel);
+		$cache_params = compact('mark_id', 'model_id', 'body_type', 'fuel_id', 'submodel', 'grnum', 'pdgrnum');
 		try {
-			$aAutoparts = $this->AutoxpApi->getAutoparts($mark_id, $hash, $grnum, $pdgrnum);
+			$aAutoparts = $this->AutoxpApi->getAutoparts($mark_id, $hash, $grnum, $pdgrnum, $cache_params);
 			$this->set('aAutoparts', $aAutoparts);
 		} catch (Exception $e) {
 			$this->redirect(array('action' => 'motor', $mark_id, $model_id, $body_type, $fuel_id));
@@ -267,7 +278,8 @@ class AutoxpController extends AppController {
 		$this->set('fuel', $fuel);
 		unset($aMotors);
 		
-		$aSubsections = $this->AutoxpApi->getModelSubsections($mark_id, $hash, $grnum);
+		$cache_params = compact('mark_id', 'model_id', 'body_type', 'fuel_id', 'submodel', 'grnum');
+		$aSubsections = $this->AutoxpApi->getModelSubsections($mark_id, $hash, $grnum, $cache_params);
 		$aSubsections = Hash::combine($aSubsections, '{n}.pdgrnum', '{n}');
 		$this->set('subsection', $aSubsections[$pdgrnum]);
 		unset($aSubsections);
@@ -292,7 +304,7 @@ class AutoxpController extends AppController {
 		$hash = urldecode($hash);
 		try {
 			$a = $this->AutoxpApi->searchSections($mark_id, $hash);
-			$this->redirect(array('action' => 'sections', $a['mark'], $a['model'], $a['body_type'], $a['fuel'], urlencode($a['hash'])));
+			$this->redirect(array('action' => 'sections', $a['mark'], $a['model'], $a['body_type'], $a['fuel'], $a['hash']));
 		} catch (Exception $e) {
 			$this->redirect(array('brand' => $mark_id));
 		}

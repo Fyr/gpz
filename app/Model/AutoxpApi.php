@@ -20,6 +20,17 @@ class AutoxpApi extends AppModel {
 		$cookieFile = Configure::read('AutoxpApi.cookies');
 		$curl = new Curl($url);
 		
+		// Определяем идет ли это запрос от поискового бота
+		// если бот - перенаправляем на др.прокси-сервера для ботов - снимаем нагрузку с прокси для сайта
+		// чтоб избежать блокировок со стороны сервиса
+		$ip = $_SERVER['REMOTE_ADDR'];
+		$proxy_type = ($this->isBot($ip)) ? 'Bot' : 'Site';
+		$proxy = $this->loadModel('ProxyUse')->getProxy($proxy_type);
+		$this->loadModel('ProxyUse')->useProxy($proxy['ProxyUse']['host']);
+		
+		$curl->setOption(CURLOPT_PROXY, $proxy['ProxyUse']['host'])
+			->setOption(CURLOPT_PROXYUSERPWD, $proxy['ProxyUse']['login'].':'.$proxy['ProxyUse']['password']);
+		
 		// кэширование реализовано в обработке самих ответов, т.к. нет смысла хранить весь HTML страницы в кэше
 		// проще хранить "чистый" ответ
 		// и есть проблема с хэшами ссылок
@@ -67,6 +78,17 @@ class AutoxpApi extends AppModel {
 		$cookieFile = Configure::read('AutoxpApi.cookies');
 		$curl = new Curl($url);
 		
+		// Определяем идет ли это запрос от поискового бота
+		// если бот - перенаправляем на др.прокси-сервера для ботов - снимаем нагрузку с прокси для сайта
+		// чтоб избежать блокировок со стороны сервиса
+		$ip = $_SERVER['REMOTE_ADDR'];
+		$proxy_type = ($this->isBot($ip)) ? 'Bot' : 'Site';
+		$proxy = $this->loadModel('ProxyUse')->getProxy($proxy_type);
+		$this->loadModel('ProxyUse')->useProxy($proxy['ProxyUse']['host']);
+		
+		$curl->setOption(CURLOPT_PROXY, $proxy['ProxyUse']['host'])
+			->setOption(CURLOPT_PROXYUSERPWD, $proxy['ProxyUse']['login'].':'.$proxy['ProxyUse']['password']);
+			
 		$this->writeLog('REQUEST', 'URL: '.$url.' DATA: '.json_encode($data));
 		$response = $curl->setMethod(Curl::GET)
 			->setOption(CURLOPT_COOKIEFILE, $cookieFile)
@@ -213,12 +235,17 @@ class AutoxpApi extends AppModel {
 	public function getModelsInfo($mark, $serie, $kuzov, $fuel) {
 		$request = compact('mark', 'serie', 'kuzov', 'fuel');
 		$cache_key = http_build_query($request);
-		$response = Cache::read($cache_key, 'autoxp');
-		if ($response) {
-			// return $response;
+		try {
+			$response = $this->sendRequest($request);
+		} catch (Exception $e) {
+			$response = Cache::read($cache_key, 'autoxp');
+			if ($response) {
+				return $response;
+			} else {
+				throw $e;
+			}
 		}
 		
-		$response = $this->sendRequest($request);
 		$html = str_get_html($response);
 		$response = array();
 		if ($table = $html->find('table', 3)) {
@@ -259,26 +286,24 @@ class AutoxpApi extends AppModel {
 			throw new Exception('AutoxpApi: Bad server response');
 		}
 		$response = Hash::sort($response, '{n}.model', 'asc');
-		// Cache::write($cache_key, $response, 'autoxp'); // нельзя кэшить т..к хэш постоянно меняется
-		
+		Cache::write($cache_key, $response, 'autoxp');
 		$this->extractSearchID($html);
 		return $response;
 	}
 	
-	public function getModelSections($mark, $codaxp) {
-		// $codaxp = urldecode($codaxp);
-		// fdebug($codaxp);
-		// $customerind = 0;
+	public function getModelSections($mark, $codaxp, $cache_params) {
 		$request = compact('mark', 'codaxp');
-		/*
-		$cache_key = http_build_query($request);
-		$response = Cache::read($cache_key, 'autoxp');
-		if ($response) {
-			// return $response;
+		$cache_key = http_build_query($cache_params);
+		try {
+			$response = $this->sendRequest($request);
+		} catch (Exception $e) {
+			$response = Cache::read($cache_key, 'autoxp');
+			if ($response) {
+				return $response;
+			} else {
+				throw $e;
+			}
 		}
-		*/
-		
-		$response = $this->sendRequest($request);
 		$html = str_get_html($response);
 		$table = $html->find('table', 2);
 		$response = array();
@@ -298,22 +323,25 @@ class AutoxpApi extends AppModel {
 			throw new Exception('AutoxpApi: Bad server response');
 		}
 		
-		// $response = Hash::sort($response, '{n}.model', 'asc');
-		// Cache::write($cache_key, $response, 'autoxp');
+		Cache::write($cache_key, $response, 'autoxp');
 		$this->extractSearchID($html);
 		return $response;
 	}
 	
-	public function getModelSubsections($mark, $codaxp, $grnum) {
+	public function getModelSubsections($mark, $codaxp, $grnum, $cache_params) {
 		$request = compact('mark', 'codaxp', 'grnum');
-		/*
-		$cache_key = http_build_query($request);
-		$response = Cache::read($cache_key, 'autoxp');
-		if ($response) {
-			// return $response;
+		$cache_key = http_build_query($cache_params);
+		try {
+			$response = $this->sendRequest($request);
+		} catch (Exception $e) {
+			$response = Cache::read($cache_key, 'autoxp');
+			if ($response) {
+				return $response;
+			} else {
+				throw $e;
+			}
 		}
-		*/
-		$response = $this->sendRequest($request);
+		
 		$html = str_get_html($response);
 		$table = $html->find('table', 3);
 		$response = array();
@@ -337,22 +365,24 @@ class AutoxpApi extends AppModel {
 			throw new Exception('AutoxpApi: Bad server response');
 		}
 		
-		// $response = Hash::sort($response, '{n}.model', 'asc');
-		// Cache::write($cache_key, $response, 'autoxp');
+		Cache::write($cache_key, $response, 'autoxp');
 		$this->extractSearchID($html);
 		return $response;
 	}
 	
-	public function getAutoparts($mark, $codaxp, $grnum, $pdgrnum) {
+	public function getAutoparts($mark, $codaxp, $grnum, $pdgrnum, $cache_params) {
 		$request = compact('mark', 'codaxp', 'grnum', 'pdgrnum');
-		/*
-		$cache_key = http_build_query($request);
-		$response = Cache::read($cache_key, 'autoxp');
-		if ($response) {
-			// return $response;
+		$cache_key = http_build_query($cache_params);
+		try {
+			$response = $this->sendRequest($request);
+		} catch (Exception $e) {
+			$response = Cache::read($cache_key, 'autoxp');
+			if ($response) {
+				return $response;
+			} else {
+				throw $e;
+			}
 		}
-		*/
-		$response = $this->sendRequest($request);
 		// почему-то баг с map + area
 		$pos = strpos($response, '<map');
 		$pos2 = strpos($response, '</map');
@@ -381,8 +411,7 @@ class AutoxpApi extends AppModel {
 		}
 		$response['image_map'] = $image_map;
 		
-		// $response = Hash::sort($response, '{n}.model', 'asc');
-		// Cache::write($cache_key, $response, 'autoxp');
+		Cache::write($cache_key, $response, 'autoxp');
 		$this->extractSearchID($html);
 		return $response;
 	}

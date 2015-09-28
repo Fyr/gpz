@@ -12,12 +12,6 @@ class ZzapApi extends AppModel {
 	const MAX_ROW_SUGGEST = 20;
 	const MAX_ROW_PRICE = 100;
 	
-	private function isBot($ip) {
-		$hostname = gethostbyaddr($ip);
-		return ($hostname === 'spider-'.str_replace('.', '-', $ip).'.yandex.com') 
-			|| ($hostname === 'crawl-'.str_replace('.', '-', $ip).'.googlebot.com');
-	}
-	
 	private function writeLog($actionType, $data = ''){
 		$string = date('d-m-Y H:i:s').' '.$actionType.' '.$data;
 		file_put_contents(Configure::read('ZzapApi.log'), $string."\r\n", FILE_APPEND);
@@ -59,7 +53,7 @@ class ZzapApi extends AppModel {
 		
 		// если бот - перенаправляем на др.прокси-сервера для ботов - снимаем нагрузку с прокси для сайта
 		$proxy = $this->loadModel('ProxyUse')->getProxy($proxy_type);
-		$this->loadModel('ProxyUse')->useProxy($proxy['ProxyUse']['host'], $method, $request);
+		$this->loadModel('ProxyUse')->useProxy($proxy['ProxyUse']['host']);
 		
 		$curl->setOption(CURLOPT_PROXY, $proxy['ProxyUse']['host'])
 			->setOption(CURLOPT_PROXYUSERPWD, $proxy['ProxyUse']['login'].':'.$proxy['ProxyUse']['password']);

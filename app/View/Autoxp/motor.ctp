@@ -49,7 +49,7 @@
 				<td align="center"><?=$row['kw']?> кВт / <?=$row['kw']?> л.с.</td>
 				<td align="center"><?=$row['kpp']?></td>
 				<td align="center">
-					<?=$this->Autoxp->link('подробнее', array('action' => 'sections', $mark['id'], $model['id'], $body['id'], $fuel['id'], $row['hash']))?>
+					<?=$this->Autoxp->link('подробнее', array('action' => 'sections', $mark['id'], $model['id'], $body['id'], $fuel['id'], $row['hash'], $row['model']))?>
 				</td>
 			</tr>
 <? 

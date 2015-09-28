@@ -41,7 +41,7 @@
 				</td>
 				<td><?=$row['title']?></td>
 				<td align="center">
-					<?=$this->Autoxp->link('подробнее', array('action' => 'autoparts', $mark['id'], $model['id'], $body['id'], $fuel['id'], $hash, $row['grnum'], $row['pdgrnum']))?>
+					<?=$this->Autoxp->link('подробнее', array('action' => 'autoparts', $mark['id'], $model['id'], $body['id'], $fuel['id'], $hash, $submodel, $row['grnum'], $row['pdgrnum']))?>
 				</td>
 			</tr>
 <? 

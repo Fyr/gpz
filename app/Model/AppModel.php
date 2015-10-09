@@ -124,7 +124,10 @@ class AppModel extends Model {
 		$this->setSource($table);
 	}
 	
-	public function isBot($ip) {
+	public function isBot($ip = '') {
+		if (!$ip) {
+			$ip = $_SERVER['REMOTE_ADDR'];
+		}
 		$hostname = gethostbyaddr($ip);
 		return ($hostname === 'spider-'.str_replace('.', '-', $ip).'.yandex.com') 
 			|| ($hostname === 'crawl-'.str_replace('.', '-', $ip).'.googlebot.com');

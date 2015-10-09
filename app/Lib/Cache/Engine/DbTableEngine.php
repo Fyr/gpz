@@ -17,7 +17,7 @@
 App::uses('DbCache', 'Model');
 class DbTableEngine extends CacheEngine {
 
-	public $settings = array(), $data;
+	public $settings = array(), $data = array();
 
 	private function tableName() {
 		return 'cache_'.strtolower($this->settings['prefix']);
@@ -83,6 +83,19 @@ class DbTableEngine extends CacheEngine {
 		*/
 		return ($this->settings['serialize']) ? unserialize($this->data('value')) : $this->data('value');
 	}
+	
+/**
+ * Cache Engine settings.
+ * Method is used to return a full data of cache, because there's no way to call any method of DbTableEngine directly
+ *
+ * @return array settings
+ */
+	public function settings() {
+		$alias = $this->getModel()->alias;
+		$this->settings['data'] = (isset($this->data[$alias])) ? $this->data[$alias] : array();
+		return $this->settings;
+	}
+
 /**
  * Returns data from used cache record
  *

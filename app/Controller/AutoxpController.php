@@ -146,10 +146,10 @@ class AutoxpController extends AppController {
 		$hash = urldecode($hash);
 		$this->set('hash', $hash);
 		$this->set('submodel', $submodel);
-		$cache_params = compact('mark_id', 'model_id', 'body_type', 'fuel_id', 'submodel');
+		// $cache_params = compact('mark_id', 'model_id', 'body_type', 'fuel_id', 'submodel');
 		
 		try {
-			$aSubsections = $this->AutoxpApi->getModelSections($mark_id, $hash, $cache_params);
+			$aSubsections = $this->AutoxpApi->getModelSections($mark_id, $model_id, $body_type, $fuel_id, $hash, $submodel);
 			$this->set('aSubsections', $aSubsections);
 		} catch (Exception $e) {
 			$this->redirect(array('action' => 'motor', $mark_id, $model_id, $body_type, $fuel_id));
@@ -206,10 +206,10 @@ class AutoxpController extends AppController {
 		$hash = urldecode($hash);
 		$this->set('hash', $hash);
 		$this->set('submodel', $submodel);
-		$cache_params = compact('mark_id', 'model_id', 'body_type', 'fuel_id', 'submodel', 'grnum');
+		// $cache_params = compact('mark_id', 'model_id', 'body_type', 'fuel_id', 'submodel', 'grnum');
 		
 		try {
-			$aSubsections = $this->AutoxpApi->getModelSubsections($mark_id, $hash, $grnum, $cache_params);
+			$aSubsections = $this->AutoxpApi->getModelSubsections($mark_id, $model_id, $body_type, $fuel_id, $hash, $submodel, $grnum);
 			$this->set('aSubsections', $aSubsections);
 		} catch (Exception $e) {
 			$this->redirect(array('action' => 'motor', $mark_id, $model_id, $body_type, $fuel_id));
@@ -249,9 +249,9 @@ class AutoxpController extends AppController {
 		$hash = urldecode($hash);
 		$this->set('hash', $hash);
 		$this->set('submodel', $submodel);
-		$cache_params = compact('mark_id', 'model_id', 'body_type', 'fuel_id', 'submodel', 'grnum', 'pdgrnum');
+		// $cache_params = compact('mark_id', 'model_id', 'body_type', 'fuel_id', 'submodel', 'grnum', 'pdgrnum');
 		try {
-			$aAutoparts = $this->AutoxpApi->getAutoparts($mark_id, $hash, $grnum, $pdgrnum, $cache_params);
+			$aAutoparts = $this->AutoxpApi->getAutoparts($mark_id, $model_id, $body_type, $fuel_id, $hash, $submodel, $grnum, $pdgrnum);
 			$this->set('aAutoparts', $aAutoparts);
 		} catch (Exception $e) {
 			$this->redirect(array('action' => 'motor', $mark_id, $model_id, $body_type, $fuel_id));
@@ -279,7 +279,7 @@ class AutoxpController extends AppController {
 		unset($aMotors);
 		
 		$cache_params = compact('mark_id', 'model_id', 'body_type', 'fuel_id', 'submodel', 'grnum');
-		$aSubsections = $this->AutoxpApi->getModelSubsections($mark_id, $hash, $grnum, $cache_params);
+		$aSubsections = $this->AutoxpApi->getModelSubsections($mark_id, $model_id, $body_type, $fuel_id, $hash, $submodel, $grnum);
 		$aSubsections = Hash::combine($aSubsections, '{n}.pdgrnum', '{n}');
 		$this->set('subsection', $aSubsections[$pdgrnum]);
 		unset($aSubsections);
@@ -301,7 +301,7 @@ class AutoxpController extends AppController {
 	
 	public function searchSections($mark_id, $hash) {
 		$this->autoRender = false;
-		$hash = urldecode($hash);
+		$hash = str_replace('|', '/', urldecode($hash));
 		try {
 			$a = $this->AutoxpApi->searchSections($mark_id, $hash);
 			$this->redirect(array('action' => 'sections', $a['mark'], $a['model'], $a['body_type'], $a['fuel'], $a['hash']));

@@ -2,18 +2,19 @@
 App::uses('AppModel', 'Model');
 App::uses('ZzapApi', 'Model');
 App::uses('TechDocApi', 'Model');
+App::uses('PartTradeApi', 'Model');
 class GpzApi extends AppModel {
 	
 	public function search($q) {
 		$this->ZzapApi = $this->loadModel('ZzapApi');
 		$this->TechDocApi = $this->loadModel('TechDocApi');
+		$this->PartTradeApi = $this->loadModel('PartTradeApi');
 		
 		$e = null;
 		$tdData = array();
 		try {
 			$tdData = $this->TechDocApi->getSuggests($q);
 		} catch (Exception $e) {
-			
 		}
 		
 		$zzapData = array();
@@ -22,13 +23,19 @@ class GpzApi extends AppModel {
 		} catch (Exception $e) {
 		}
 		
-		if (!$zzapData && !$tdData) {
+		$ptData = array();
+		try {
+			$ptData = $this->PartTradeApi->getSuggests($q);
+		} catch (Exception $e) {
+		}
+		
+		if (!$zzapData && !$tdData && !$ptData) {
 			if ($e) {
 				throw $e;
 			}
 		}
 		
-		return $this->processSuggests(array_merge($tdData, $zzapData));
+		return $this->processSuggests(array_merge($tdData, $zzapData, $ptData));
 	}
 	
 	/**
@@ -113,6 +120,7 @@ class GpzApi extends AppModel {
 	public function getPrices($brand, $partnumber, $sort, $order, $lFullInfo) {
 		$this->ZzapApi = $this->loadModel('ZzapApi');
 		$this->TechDocApi = $this->loadModel('TechDocApi');
+		$this->PartTradeApi = $this->loadModel('PartTradeApi');
 		
 		$tdData = array();
 		try {
@@ -129,11 +137,17 @@ class GpzApi extends AppModel {
 		} catch (Exception $e) {
 		}
 		
-		if (!$zzapData && !$tdData) {
+		$ptData = array();
+		try {
+			$ptData = $this->PartTradeApi->getPrices($partnumber, $brand);
+		} catch (Exception $e) {
+		}
+		
+		if (!$zzapData && !$tdData && !$ptData) {
 			throw $e;
 		}
 		
-		return $this->processPrices(array_merge($zzapData, $tdData), $sort, $order, $lFullInfo);
+		return $this->processPrices(array_merge($zzapData, $tdData, $ptData), $sort, $order, $lFullInfo);
 	}
 	
 	private function processPricesByOfferType($table, $lFullInfo) {

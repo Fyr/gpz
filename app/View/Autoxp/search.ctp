@@ -33,7 +33,7 @@
 				<td><?=$row['title']?></td>
 				<td align="center"><?=$row['year_issue']?></td>
 				<td nowrap="nowrap" align="center">
-					<?=$this->Html->link('подробнее', array('action' => 'searchSections', $row['mark'], urldecode($row['hash'])))?>
+					<?=$this->Html->link('подробнее', array('action' => 'searchSections', $row['mark'], urlencode(str_replace('/', '|', $row['hash']))))?>
 				</td>
 			</tr>
 <? 

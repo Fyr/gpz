@@ -58,6 +58,13 @@ Cache::config('autoxp', array(
 	'serialize' => true,
 ));
 
+Configure::write('PartTradeApi', array(
+	'url' => 'http://www.parttrade.ru/ws/services?wsdl',
+	'log' => ROOT.DS.APP_DIR.DS.'tmp'.DS.'logs'.DS.'parttrade_api.log',
+	'username' => 'giperzap',
+	'password' => 'mogirus159'
+));
+
 // Values from google recaptcha account
 define('RECAPTCHA_PUBLIC_KEY', '6Lezy-QSAAAAAJ_mJK5OTDYAvPEhU_l-EoBN7rxV');
 define('RECAPTCHA_PRIVATE_KEY', '6Lezy-QSAAAAACCM1hh6ceRr445OYU_D_uA79UFZ');

@@ -37,6 +37,8 @@ class SearchController extends AppController {
 		} 
 		
 		try {
+			throw new Exception('Test');
+			
 			$this->setResult($this->GpzApi->search($q));
 			
 			if (!(isset($this->seo['title']) && $this->seo['title'])) {
@@ -47,8 +49,18 @@ class SearchController extends AppController {
 				);
 			}
 		}  catch (Exception $e){
-			// $this->setError($e->getMessage());
-			$this->redirect($_SERVER['REQUEST_URI']);
+			if ($this->request->query('redirect')) {
+				$this->setError($e->getMessage());
+				return;
+			}
+			
+			$url = $_SERVER['REQUEST_URI'];
+			if (strpos($url, '?')) {
+				$url.= '&redirect=1';
+			} else {
+				$url.= '?redirect=1';
+			}
+			$this->redirect($url);
 		}		
 	}
 	

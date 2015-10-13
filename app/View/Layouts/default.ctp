@@ -208,3 +208,6 @@ screen.colorDepth:screen.pixelDepth))+";u"+escape(document.URL)+
 ?>
 	</body>
 </html>
+<?
+echo '<!-- '.round(microtime(true) - TIME_START, 4).'-->';
+?>

@@ -10,6 +10,8 @@ class PartTradeApi extends AppModel {
 	}
 	
 	private function sendRequest($method, $data = array()) {
+		error_reporting(0);
+		// ini_set('default_socket_timeout', 30);
 		$soapClient = new SoapClient(Configure::read('PartTradeApi.url'), array('trace' => 1));
 		$response = (array) $soapClient->$method($data);
 		
@@ -27,8 +29,10 @@ class PartTradeApi extends AppModel {
 		if (!isset($data['partNumberContainer'])) {
 			throw new Exception('PartTradeAPI: Bad server response');
 		}
-		
-		$aData = array();
+		$data['partNumberContainer'] = (array) $data['partNumberContainer'];
+		if (!isset($data['partNumberContainer'][0])) {
+			$data['partNumberContainer'] = array($data['partNumberContainer']);
+		}
 		foreach($data['partNumberContainer'] as $item) {
 			$item = (array) $item;
 			$aData[] = array(

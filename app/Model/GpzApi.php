@@ -48,11 +48,12 @@ class GpzApi extends AppModel {
 		
 		foreach($data as &$row) {
 			// Приводим номера к одному виду - удаляем пробелы, дефисы, подчеркивания, нули
-			$row['partnumber'] = str_replace(array(' ', '-', '_'), '', $row['partnumber']);
-			if (is_numeric($row['partnumber'])) {
-				$row['partnumber'] = intval($row['partnumber']).'';
+			$row['_partnumber'] = $row['partnumber'];
+			$row['_partnumber'] = str_replace(array(' ', '-', '_'), '', $row['_partnumber']);
+			if (is_numeric($row['_partnumber'])) {
+				$row['_partnumber'] = intval($row['_partnumber']).'';
 			} else {
-				$row['partnumber'] = strtoupper($row['partnumber']);
+				$row['_partnumber'] = strtoupper($row['_partnumber']);
 			}
 			
 			$row['_title'] = mb_strtolower($row['title']);
@@ -65,7 +66,7 @@ class GpzApi extends AppModel {
 			
 			$row['_words'] = explode(' ', trim($row['_title']));
 			$aWords = array_unique(array_merge($aWords, $row['_words']));
-			$aData[$row['brand'].$row['partnumber']][] = $row;
+			$aData[$row['brand'].$row['_partnumber']][] = $row;
 		}
 		unset($row); // оч странно но почему то без этого меняется значение последнего эл-та в $data
 		
@@ -139,7 +140,7 @@ class GpzApi extends AppModel {
 		
 		$ptData = array();
 		try {
-			$ptData = $this->PartTradeApi->getPrices($partnumber, $brand);
+			@$ptData = $this->PartTradeApi->getPrices($partnumber, $brand);
 		} catch (Exception $e) {
 		}
 		

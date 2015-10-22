@@ -9,6 +9,8 @@
 <?
 	echo $this->PHForm->input('price_ratio', array('class' => 'input-small', 'label' => array('text' => 'Zzap, %', 'class' => 'control-label')));
 	echo $this->PHForm->input('td_price_ratio', array('class' => 'input-small', 'label' => array('text' => 'TecDoc, %', 'class' => 'control-label')));
+	echo $this->PHForm->input('pt_price_ratio', array('class' => 'input-small', 'label' => array('text' => 'PartTrade, %', 'class' => 'control-label')));
+	echo $this->PHForm->input('zt_price_ratio', array('class' => 'input-small', 'label' => array('text' => 'ZapTrade, %', 'class' => 'control-label')));
 ?>
 </fieldset>
 <fieldset class="fieldset">

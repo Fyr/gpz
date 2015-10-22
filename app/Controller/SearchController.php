@@ -37,8 +37,6 @@ class SearchController extends AppController {
 		} 
 		
 		try {
-			throw new Exception('Test');
-			
 			$this->setResult($this->GpzApi->search($q));
 			
 			if (!(isset($this->seo['title']) && $this->seo['title'])) {
@@ -100,7 +98,7 @@ class SearchController extends AppController {
 		$this->set('sort', $sort);
 		$this->set('order', $order);
 		
-		try {	
+		try {
 			$content = $this->GpzApi->getPrices($brand, $number, $sort, $order, $lFullInfo);
 			$this->setResult($content);
 			$this->set('lFullInfo', $lFullInfo);
@@ -119,8 +117,18 @@ class SearchController extends AppController {
 				'descr' => "На нашем сайте вы можете приобрести {$title} - лучшие запчасти в Белорусии. Низкие цены на запчасти, быстрая доставка по стране, диагностика, ремонт."
 			);
 		}  catch (Exception $e){
-			// $this->setError($e->getMessage());
-			$this->redirect($_SERVER['REQUEST_URI']);
+			if ($this->request->query('redirect')) {
+				$this->setError($e->getMessage());
+				return;
+			}
+			
+			$url = $_SERVER['REQUEST_URI'];
+			if (strpos($url, '?')) {
+				$url.= '&redirect=1';
+			} else {
+				$url.= '?redirect=1';
+			}
+			$this->redirect($url);
 		}
 	}
 	

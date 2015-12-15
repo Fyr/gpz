@@ -135,10 +135,12 @@ class GpzApi extends AppModel {
 		} catch (Exception $e) {
 		}
 		
-		$ztData = array();
-		try {
-			@$ztData = $this->ZapTradeApi->getPrices($partnumber, $brand);
-		} catch (Exception $e) {
+		if (!$this->isBot()) { // только реальные юзеры,т.к. есть ограничение на кол-во запросов
+			$ztData = array();
+			try {
+				@$ztData = $this->ZapTradeApi->getPrices($partnumber, $brand);
+			} catch (Exception $e) {
+			}
 		}
 		
 		$tdData = array();

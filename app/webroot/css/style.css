@@ -343,8 +343,8 @@ textarea { height: auto;}
 }
 
 
-.grid .grid-row td .innerThumb { width: 60px; height: 60px; background: #fff; display: inline-block; text-align: center;  }
-.grid .grid-row .product-img {  display: inline-block; vertical-align: middle; }
+.grid .grid-row td .innerThumb { width: 60px; height: 60px; background: #fff; display: inline-block; text-align: center; }
+.grid .grid-row .product-img {  display: inline-block; vertical-align: middle; max-width: 60px; }
 .grid .grid-row td .innerThumb .fancybox { display: inline-block; }
 .grid .grid-row td .innerThumb i { display: inline-block; height: 100%; vertical-align: middle; }
 

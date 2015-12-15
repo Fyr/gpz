@@ -11,7 +11,7 @@ class PartTradeApi extends AppModel {
 	
 	private function sendRequest($method, $data = array()) {
 		error_reporting(0);
-		// ini_set('default_socket_timeout', 30);
+		ini_set('default_socket_timeout', 30);
 		$soapClient = new SoapClient(Configure::read('PartTradeApi.url'), array('trace' => 1));
 		$response = (array) $soapClient->$method($data);
 		
@@ -116,7 +116,7 @@ class PartTradeApi extends AppModel {
 	 * Цена в BYR с наценкой
 	 */
 	private function getPrice2($item) {
-		$priceRatio = 1 + (Configure::read('Settings.price_ratio')/100);
+		$priceRatio = 1 + (Configure::read('Settings.pt_price_ratio')/100);
 		return round($priceRatio * $this->getPrice($item), -2);
 	}
 }

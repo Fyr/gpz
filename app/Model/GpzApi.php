@@ -3,6 +3,8 @@ App::uses('AppModel', 'Model');
 App::uses('ZzapApi', 'Model');
 App::uses('TechDocApi', 'Model');
 App::uses('PartTradeApi', 'Model');
+App::uses('ZapTradeApi', 'Model');
+
 class GpzApi extends AppModel {
 	
 	public function search($q) {
@@ -27,6 +29,7 @@ class GpzApi extends AppModel {
 		try {
 			$ptData = $this->PartTradeApi->getSuggests($q);
 		} catch (Exception $e) {
+			$e = null; // для того, чтобы не выдавало ошибку при пустых данных
 		}
 		
 		if (!$zzapData && !$tdData && !$ptData) {
@@ -122,6 +125,23 @@ class GpzApi extends AppModel {
 		$this->ZzapApi = $this->loadModel('ZzapApi');
 		$this->TechDocApi = $this->loadModel('TechDocApi');
 		$this->PartTradeApi = $this->loadModel('PartTradeApi');
+		$this->ZapTradeApi = $this->loadModel('ZapTradeApi');
+		
+		$e = null;
+		
+		$ptData = array();
+		try {
+			@$ptData = $this->PartTradeApi->getPrices($partnumber, $brand);
+		} catch (Exception $e) {
+		}
+		
+		if (!$this->isBot()) { // только реальные юзеры,т.к. есть ограничение на кол-во запросов
+			$ztData = array();
+			try {
+				@$ztData = $this->ZapTradeApi->getPrices($partnumber, $brand);
+			} catch (Exception $e) {
+			}
+		}
 		
 		$tdData = array();
 		try {
@@ -138,20 +158,16 @@ class GpzApi extends AppModel {
 		} catch (Exception $e) {
 		}
 		
-		$ptData = array();
-		try {
-			@$ptData = $this->PartTradeApi->getPrices($partnumber, $brand);
-		} catch (Exception $e) {
+		if (!$zzapData && !$tdData && !$ptData && !$ztData) {
+			if ($e) {
+				throw $e;
+			}
 		}
 		
-		if (!$zzapData && !$tdData && !$ptData) {
-			throw $e;
-		}
-		
-		return $this->processPrices(array_merge($zzapData, $tdData, $ptData), $sort, $order, $lFullInfo);
+		return $this->processPrices(array_merge($zzapData, $tdData, $ptData, $ztData), $sort, $order, $lFullInfo);
 	}
 	
-	private function processPricesByOfferType($table, $lFullInfo) {
+	private function processPricesByOfferType($table, $lFullInfo = false) {
 		$table = Hash::sort($table, '{n}.offer_type', 'asc');
 		$_table = array();
 		foreach($table as $item) {

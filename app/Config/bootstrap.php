@@ -65,6 +65,13 @@ Configure::write('PartTradeApi', array(
 	'password' => 'mogirus159'
 ));
 
+Configure::write('ZapTradeApi', array(
+	'url' => 'http://giperzap-by.zaptrade.ru/api/soap.php?wsdl',
+	'log' => ROOT.DS.APP_DIR.DS.'tmp'.DS.'logs'.DS.'zaptrade_api.log',
+	'username' => 'fyr.work@gmail.com',
+	'password' => 'mogirus159'
+));
+
 // Values from google recaptcha account
 define('RECAPTCHA_PUBLIC_KEY', '6Lezy-QSAAAAAJ_mJK5OTDYAvPEhU_l-EoBN7rxV');
 define('RECAPTCHA_PRIVATE_KEY', '6Lezy-QSAAAAACCM1hh6ceRr445OYU_D_uA79UFZ');

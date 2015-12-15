@@ -45,7 +45,7 @@ class ZapTradeApi extends AppModel {
 	 * @return array
 	 */
 	public function getPrices($article, $brand = '') {
-		$params = array("article" => $article, "findSubstitutes" => true);
+		$params = array("article" => $article, "findSubstitutes" => true, 'showPartSource' => true);
 		$data = $this->sendRequest('findDetail', $params);
 		
 		if (!isset($data['parts'])) {
@@ -79,7 +79,7 @@ class ZapTradeApi extends AppModel {
 				'price2' => $this->getPrice2($item),
 				'price_orig' => $item['price'].' BYR',
 				'price_descr' => 'Цены поставщиков в BYR. Формирование цены - см. настройки ZapTrade + GiperZap',
-				'provider_descr' => 'Поставщик: ZapTrade'
+				'provider_descr' => 'Поставщик: '.$item['source']
 			);
 		}
 		return $aData;

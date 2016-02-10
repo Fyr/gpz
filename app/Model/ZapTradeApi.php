@@ -77,8 +77,8 @@ class ZapTradeApi extends AppModel {
 				'qty_order' => '',
 				'price' => $this->getPrice($item), 
 				'price2' => $this->getPrice2($item),
-				'price_orig' => $item['price'].' BYR',
-				'price_descr' => 'Цены поставщиков в BYR. Формирование цены - см. настройки ZapTrade + GiperZap',
+				'price_orig' => $item['price'].' RUR',
+				'price_descr' => 'Цены поставщиков в RUR. Формирование цены - см. настройки ZapTrade + GiperZap',
 				'provider_descr' => 'Поставщик: '.$item['source']
 			);
 		}
@@ -89,7 +89,8 @@ class ZapTradeApi extends AppModel {
 	 * Оригинальная цена в BYR без наценки
 	 */
 	private function getPrice($item) {
-		return $item['price'];
+		$price = floatval($item['price']);
+		return round(Configure::read('Settings.xchg_rur') * $price, -2); // переводим в BYR по курсу из настроек
 	}
 	
 	/**

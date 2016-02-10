@@ -58,7 +58,7 @@ a:hover { text-decoration: none;}
 	.contacts .icon { margin-right: 5px;}
 
 .address { display: inline-block; vertical-align: top; margin: 0 0 0 0; text-align: left;}
-    .address .text { display: inline-block; max-width: 150px; vertical-align: middle; line-height: 17px; margin-left: 11px; }
+    .address .text { display: inline-block; max-width: 250px; vertical-align: middle; line-height: 17px; margin-left: 11px; }
 
 
 @media (max-width: 900px) {
@@ -201,7 +201,7 @@ textarea { height: auto;}
 	.footer .carFirst { position: absolute; left: 0; bottom: -67px;}
 	.footer .carSecond { position: absolute; right: 0; bottom: -70px;}
 	.footer .copyright { font-size: 11px; color: #2d2d2d; text-align: right; padding: 5px 0 0 0;}
-	.footer .colomn { float: right; width: 200px;}
+	.footer .colomn { float: right; width: 290px;}
 	.footer .contacts { float: right;}
 		.footer .contacts a { color: #343535;}
 	.footer .address, .footer .phones { display: block; margin-left: 0;}
@@ -215,6 +215,7 @@ textarea { height: auto;}
 
 @media (max-width: 760px) { 
 	.footer .menu { margin-left: 20px}
+	.footer .colomn { margin: 20px 0 0 0;}
 }
 
 @media (max-width: 700px) { 

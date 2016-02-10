@@ -26,11 +26,13 @@ class GpzApi extends AppModel {
 		}
 		
 		$ptData = array();
+		/*
 		try {
 			$ptData = $this->PartTradeApi->getSuggests($q);
 		} catch (Exception $e) {
 			$e = null; // для того, чтобы не выдавало ошибку при пустых данных
 		}
+		*/
 		
 		if (!$zzapData && !$tdData && !$ptData) {
 			if ($e) {
@@ -130,10 +132,12 @@ class GpzApi extends AppModel {
 		$e = null;
 		
 		$ptData = array();
+		/*
 		try {
 			@$ptData = $this->PartTradeApi->getPrices($partnumber, $brand);
 		} catch (Exception $e) {
 		}
+		*/
 		
 		if (!$this->isBot()) { // только реальные юзеры,т.к. есть ограничение на кол-во запросов
 			$ztData = array();

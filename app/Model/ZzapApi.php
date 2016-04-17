@@ -13,8 +13,10 @@ class ZzapApi extends AppModel {
 	const MAX_ROW_PRICE = 100;
 	
 	private function writeLog($actionType, $data = ''){
-		$string = date('d-m-Y H:i:s').' '.$actionType.' '.$data;
-		file_put_contents(Configure::read('ZzapApi.log'), $string."\r\n", FILE_APPEND);
+		if (Configure::read('ZzapApi.txtLog')) {
+			$string = date('d-m-Y H:i:s') . ' ' . $actionType . ' ' . $data;
+			file_put_contents(Configure::read('ZzapApi.log'), $string . "\r\n", FILE_APPEND);
+		}
 	}
 	
 	private function sendApiRequest($method, $data){
@@ -29,18 +31,20 @@ class ZzapApi extends AppModel {
 			// пытаемся достать инфу из кэша без запроса на API - так быстрее и не нужно юзать прокси
 			$_cache = $this->loadModel('ZzapCache')->getCache($method, $request);
 			if ($_cache) {
-				$this->loadModel('ZzapLog')->clear();
-				$this->loadModel('ZzapLog')->save(array(
-					'ip_type' => $proxy_type,
-					'ip' => $ip,
-					'host' => gethostbyaddr($ip),
-					'ip_details' => json_encode($_SERVER),
-					'method' => $method,
-					'request' => $request,
-					'response_type' => 'CACHE',
-					'cache_id' => $_cache['ZzapCache']['id'],
-					'cache' => $_cache['ZzapCache']['response']
-				));
+				if (Configure::read('ZzapApi.dbLog')) {
+					$this->loadModel('ZzapLog')->clear();
+					$this->loadModel('ZzapLog')->save(array(
+						'ip_type' => $proxy_type,
+						'ip' => $ip,
+						'host' => gethostbyaddr($ip),
+						'ip_details' => json_encode($_SERVER),
+						'method' => $method,
+						'request' => $request,
+						'response_type' => 'CACHE',
+						'cache_id' => $_cache['ZzapCache']['id'],
+						'cache' => $_cache['ZzapCache']['response']
+					));
+				}
 				return json_decode($_cache['ZzapCache']['response'], true);
 			}
 		}
@@ -113,21 +117,23 @@ class ZzapApi extends AppModel {
 		}
 		
 		// Логируем всю инфу для статистики
-		$this->loadModel('ZzapLog')->clear();
-		$this->loadModel('ZzapLog')->save(array(
-			'ip_type' => $proxy_type,
-			'ip' => $ip,
-			'host' => gethostbyaddr($ip),
-			'ip_details' => json_encode($_SERVER),
-			'proxy_used' => $proxy['ProxyUse']['host'],
-			'method' => $method,
-			'request' => $request,
-			'response_type' => $responseType,
-			'response_status' => json_encode($curl->getStatus()),
-			'response' => $_response,
-			'cache_id' => $cache_id,
-			'cache' => $cache
-		));
+		if (Configure::read('ZzapApi.dbLog')) {
+			$this->loadModel('ZzapLog')->clear();
+			$this->loadModel('ZzapLog')->save(array(
+				'ip_type' => $proxy_type,
+				'ip' => $ip,
+				'host' => gethostbyaddr($ip),
+				'ip_details' => json_encode($_SERVER),
+				'proxy_used' => $proxy['ProxyUse']['host'],
+				'method' => $method,
+				'request' => $request,
+				'response_type' => $responseType,
+				'response_status' => json_encode($curl->getStatus()),
+				'response' => $_response,
+				'cache_id' => $cache_id,
+				'cache' => $cache
+			));
+		}
 		
 		if ($e) {
 			throw $e; // повторно кидаем ошибку чтоб ее показать

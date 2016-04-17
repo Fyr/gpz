@@ -1,6 +1,7 @@
 <?php
 App::uses('AppModel', 'Model');
 class ProxyUse extends AppModel {
+	protected $altDbConfig = 'giperzap';
 	
 	public function getProxy($object_type) {
 		$conditions = array('object_type' => $object_type, 'active' => 1);

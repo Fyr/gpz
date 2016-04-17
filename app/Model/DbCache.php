@@ -6,6 +6,7 @@
 App::uses('AppModel', 'Model');
 class DbCache extends AppModel {
 	public $useTable = 'cache_db';
+	protected $altDbConfig = 'giperzap';
 	
 	private function hash($key) {
 		return sha1($key);

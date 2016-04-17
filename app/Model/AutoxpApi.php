@@ -13,30 +13,34 @@ class AutoxpApi extends AppModel {
 	// private $proxy_used = '', $curlStatus = ''; // для логов
 	
 	private function writeLog($actionType, $data = '') {
-		$string = date('d-m-Y H:i:s').' '.$actionType.' '.$data;
-		file_put_contents(Configure::read('AutoxpApi.log'), $string."\r\n", FILE_APPEND);
+		if (Configure::read('AutoxpApi.txtLog')) {
+			$string = date('d-m-Y H:i:s') . ' ' . $actionType . ' ' . $data;
+			file_put_contents(Configure::read('AutoxpApi.log'), $string . "\r\n", FILE_APPEND);
+		}
 	}
 	
 	private function writeDBLog($method, $requestData, $responseType, $_response = '', $proxy_used = '', $curlStatus = '') {
-		$this->loadModel('LogAutoxp')->clear();
-		
-		$ip = $_SERVER['REMOTE_ADDR'];
-		$proxy_type = ($this->isBot($ip)) ? 'Bot' : 'Site';
-		
-		$this->loadModel('LogAutoxp')->save(array(
-			'ip_type' => $proxy_type,
-			'ip' => $ip,
-			'host' => gethostbyaddr($ip),
-			'ip_details' => json_encode($_SERVER),
-			'proxy_used' => $proxy_used,
-			'method' => $method,
-			'request' => $this->getRequestURL($requestData, $method),
-			'response_type' => $responseType,
-			'response_status' => ($curlStatus) ? json_encode($curlStatus) : '',
-			'response' => $_response,
-			'cache_id' => ($responseType == 'CACHE') ? Hash::get(Cache::settings('autoxp'), 'data.id') : 0,
-			'cache' => ($responseType == 'CACHE') ? Hash::get(Cache::settings('autoxp'), 'data.value') : ''
-		));
+		if (Configure::read('AutoxpApi.dbLog')) {
+			$this->loadModel('LogAutoxp')->clear();
+
+			$ip = $_SERVER['REMOTE_ADDR'];
+			$proxy_type = ($this->isBot($ip)) ? 'Bot' : 'Site';
+
+			$this->loadModel('LogAutoxp')->save(array(
+				'ip_type' => $proxy_type,
+				'ip' => $ip,
+				'host' => gethostbyaddr($ip),
+				'ip_details' => json_encode($_SERVER),
+				'proxy_used' => $proxy_used,
+				'method' => $method,
+				'request' => $this->getRequestURL($requestData, $method),
+				'response_type' => $responseType,
+				'response_status' => ($curlStatus) ? json_encode($curlStatus) : '',
+				'response' => $_response,
+				'cache_id' => ($responseType == 'CACHE') ? Hash::get(Cache::settings('autoxp'), 'data.id') : 0,
+				'cache' => ($responseType == 'CACHE') ? Hash::get(Cache::settings('autoxp'), 'data.value') : ''
+			));
+		}
 	}
 	
 	private function getRequestURL($data, $method = '') {
@@ -433,10 +437,16 @@ class AutoxpApi extends AppModel {
 				if (!$i) {
 					continue;
 				}
-				
+
+				$npp = $tr->find('td', 0);
+				if ($npp->find('b', 0)) {
+					$npp = $npp->find('b', 0)->plaintext;
+				} else {
+					$npp = $npp->plaintext;
+				}
 				$response['items'][] = array(
 					'tr_id' => $tr->id,
-					'npp' => $tr->find('td', 0)->find('b', 0)->plaintext,
+					'npp' => $npp,
 					'title' => $tr->find('td', 1)->plaintext,
 					'detail_num' => $tr->find('td', 2)->find('a', 0)->plaintext
 				);

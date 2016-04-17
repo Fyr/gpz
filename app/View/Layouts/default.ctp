@@ -146,7 +146,7 @@
 				</div>
 				<div class="footerLine" style="text-align: center; height: auto; padding: 2px 0">&nbsp;
 <?
-	if (DOMAIN_NAME == 'giperzap.by') {
+	if (Configure::read('domain.url') == 'giperzap.by') {
 ?>
 <!--LiveInternet counter--><script type="text/javascript"><!--
 document.write("<a href='//www.liveinternet.ru/click' "+
@@ -164,12 +164,11 @@ screen.colorDepth:screen.pixelDepth))+";u"+escape(document.URL)+
     (function (d, w, c) {
         (w[c] = w[c] || []).push(function() {
             try {
-                w.yaCounter31286878 = new Ya.Metrika({
-                    id:31286878,
+                w.yaCounter35355930 = new Ya.Metrika({
+                    id:35355930,
                     clickmap:true,
                     trackLinks:true,
-                    accurateTrackBounce:true,
-                    webvisor:true
+                    accurateTrackBounce:true
                 });
             } catch(e) { }
         });
@@ -186,8 +185,18 @@ screen.colorDepth:screen.pixelDepth))+";u"+escape(document.URL)+
         } else { f(); }
     })(document, window, "yandex_metrika_callbacks");
 </script>
-<noscript><div><img src="https://mc.yandex.ru/watch/31286878" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<noscript><div><img src="https://mc.yandex.ru/watch/35355930" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
 <!-- /Yandex.Metrika counter -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-73744599-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
 <?
 	}
 ?>

@@ -5,8 +5,10 @@ class ZapTradeApi extends AppModel {
 	public $useTable = false;
 	
 	private function writeLog($actionType, $data = ''){
-		$string = date('d-m-Y H:i:s').' '.$actionType.' '.$data;
-		file_put_contents(Configure::read('ZapTradeApi.log'), $string."\r\n", FILE_APPEND);
+		if (Configure::read('ZapTradeApi.txtLog')) {
+			$string = date('d-m-Y H:i:s') . ' ' . $actionType . ' ' . $data;
+			file_put_contents(Configure::read('ZapTradeApi.log'), $string . "\r\n", FILE_APPEND);
+		}
 	}
 	
 	private function sendRequest($method, $data = array()) {

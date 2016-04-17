@@ -2,6 +2,7 @@
 App::uses('AppModel', 'Model');
 class ZzapCache extends AppModel {
 	public $useTable = 'zzap_cache';
+	protected $altDbConfig = 'giperzap';
 	
 	public function setCache($method, $request, $response) {
 		try {

@@ -2,16 +2,21 @@
 App::uses('Model', 'Model');
 class AppModel extends Model {
 	
-	protected $objectType = '';
+	protected $objectType = '', $altDbConfig = false;
 	
 	public function __construct($id = false, $table = null, $ds = null) {
 		$this->_beforeInit();
-	    parent::__construct($id, $table, $ds);
-	    $this->_afterInit();
+		parent::__construct($id, $table, $ds);
+		$this->_afterInit();
 	}
 	
 	protected function _beforeInit() {
-	    // Add here behaviours, models etc that will be also loaded while extending child class
+		// Add here behaviours, models etc that will be also loaded while extending child class
+		if ($this->altDbConfig) {
+			if ($this->getDomain() !== $this->altDbConfig) {
+				$this->useDbConfig = $this->altDbConfig;
+			}
+		}
 	}
 
 	protected function _afterInit() {
@@ -131,5 +136,10 @@ class AppModel extends Model {
 		$hostname = gethostbyaddr($ip);
 		return ($hostname === 'spider-'.str_replace('.', '-', $ip).'.yandex.com') 
 			|| ($hostname === 'crawl-'.str_replace('.', '-', $ip).'.googlebot.com');
+	}
+
+	public function getDomain() {
+		list($domain) = explode('.', Configure::read('domain.url'));
+		return $domain;
 	}
 }

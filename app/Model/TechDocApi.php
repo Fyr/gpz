@@ -6,8 +6,10 @@ class TechDocApi extends AppModel {
 	public $useTable = false;
 	
 	private function writeLog($actionType, $data = ''){
-		$string = date('d-m-Y H:i:s').' '.$actionType.' '.$data;
-		file_put_contents(Configure::read('TechDocApi.log'), $string."\r\n", FILE_APPEND);
+		if (Configure::read('TechDocApi.txtLog')) {
+			$string = date('d-m-Y H:i:s') . ' ' . $actionType . ' ' . $data;
+			file_put_contents(Configure::read('TechDocApi.log'), $string . "\r\n", FILE_APPEND);
+		}
 	}
 	
 	private function sendRequest($method, $data = array()) {

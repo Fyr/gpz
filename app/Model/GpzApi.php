@@ -6,6 +6,7 @@ App::uses('PartTradeApi', 'Model');
 App::uses('ZapTradeApi', 'Model');
 
 class GpzApi extends AppModel {
+	public $useTable = false;
 	
 	public function search($q) {
 		$this->ZzapApi = $this->loadModel('ZzapApi');

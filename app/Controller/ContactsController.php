@@ -21,8 +21,8 @@ class ContactsController extends AppController {
 				$Email->template('contact_message')->viewVars(compact('aRowset', 'aParams'))
 					->emailFormat('html')
 					->from('info@'.Configure::read('domain.url'))
-					->to(Configure::read('Settings.admin_email'))
-					->bcc('fyr.work@gmail.com')
+					->to(Configure::read('Settings.email'))
+					->bcc(Configure::read('Settings.admin_email'))
 					->subject(Configure::read('domain.title').': '.__('Мessage from Contacts page'))
 					->send();
 				

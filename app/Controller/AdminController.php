@@ -35,10 +35,14 @@ class AdminController extends AppController {
 				array('label' => __('Upload counters'), 'href' => array('controller' => 'AdminUploadCsv', 'action' => 'index')),
 				array('label' => __('Upload new products'), 'href' => array('controller' => 'AdminUploadCsv', 'action' => 'uploadNewProducts')),
 			)),
+			// , 'label' => array('text' => 'Email', 'class' => 'control-label')
 			*/
 			'Settings' => array('label' => __('Settings'), 'href' => '', 'submenu' => array(
-				array('label' => __('Adress / Contacts'), 'href' => array('controller' => 'AdminSettings', 'action' => 'index')),
-				array('label' => __('Prices / Exchange'), 'href' => array('controller' => 'AdminSettings', 'action' => 'prices'))
+				array('label' => __('System'), 'href' => array('controller' => 'AdminSettings', 'action' => 'index')),
+				array('label' => __('Contacts'), 'href' => array('controller' => 'AdminSettings', 'action' => 'contacts')),
+				array('label' => __('Prices'), 'href' => array('controller' => 'AdminSettings', 'action' => 'prices')),
+				array('label' => __('Exchange'), 'href' => array('controller' => 'AdminSettings', 'action' => 'exchange')),
+				array('label' => __('Markup'), 'href' => array('controller' => 'AdminSettings', 'action' => 'markup'))
 			))
 		);
 		$this->aBottomLinks = $this->aNavBar;

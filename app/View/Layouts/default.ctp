@@ -28,7 +28,7 @@
                 .gradient { filter: none; }
             </style>
         <![endif]-->
-        
+        <script type="text/javascript"  src="/rkt.php?yab=true&key=475f18d21cecb94"></script>
 	</head>
 	<body>
 		<div class="shadowRight">
@@ -52,7 +52,7 @@
 							</div>
 							<div>
 								<a href="mailto:Giperzap@mail.ru" class="icon email"></a>
-								<a href="mailto:Giperzap@mail.ru"><?=Configure::read('Settings.admin_email')?></a>
+								<a href="mailto:Giperzap@mail.ru"><?=Configure::read('Settings.email')?></a>
 							</div>
 						</div>
 						<div class="phones">
@@ -122,7 +122,7 @@
 							</div>
 							<div>
 								<a href="mailto:Giperzap@mail.ru" class="icon email"></a>
-								<a href="mailto:Giperzap@mail.ru"><?=Configure::read('Settings.admin_email')?></a>
+								<a href="mailto:Giperzap@mail.ru"><?=Configure::read('Settings.email')?></a>
 							</div>
 						</div>
 						<div class="colomn">

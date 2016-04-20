@@ -10,29 +10,29 @@ class AdminSettingsController extends AdminController {
 			return;
 		}
 		parent::beforeFilter();
-	}
-    
-    public function index() {
+
         if ($this->request->is('post') || $this->request->is('put')) {
-        	$this->request->data('Settings.id', 1);
-        	$this->Settings->save($this->request->data);
-        	$this->setFlash(__('Settings are saved'), 'success');
-        	$this->redirect(array('action' => 'index'));
+            $this->request->data('Settings.id', 1);
+            $this->Settings->save($this->request->data);
+            $this->setFlash(__('Settings are saved'), 'success');
+            $this->redirect(array('action' => $this->request->action));
+            return;
         }
         $this->request->data = $this->Settings->getData();
+	}
+
+    public function index() {
+    }
+
+    public function contacts() {
     }
     
     public function prices() {
-        if ($this->request->is('post') || $this->request->is('put')) {
-        	$this->request->data('Settings.id', 1);
-        	$this->Settings->save($this->request->data);
-        	$this->setFlash(__('Settings are saved'), 'success');
-        	$this->redirect(array('action' => 'prices'));
-        }
-        $this->request->data = $this->Settings->getData();
+    }
+
+    public function exchange() {
     }
     
-    public function sections() {
-    	$this->PCTableGrid->paginate('Section');
+    public function markup() {
     }
 }

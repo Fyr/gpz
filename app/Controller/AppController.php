@@ -33,7 +33,7 @@ class AppController extends Controller {
 	protected function beforeFilterLayout() {
 		$this->loadModel('Settings');
 		$this->Settings->initData();
-		
+
 		$this->aNavBar = array(
 			'Home' => array('label' => __('Home'), 'href' => array('controller' => 'Pages', 'action' => 'home')),
 			'News' => array('label' => __('News'), 'href' => array('controller' => 'News', 'action' => 'index')),

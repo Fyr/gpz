@@ -487,11 +487,53 @@ msgstr "Статистика по входящим IP"
 msgid "Amount"
 msgstr "Кол-во"
 
-msgid "Adress / Contacts"
-msgstr "Адрес / Контакты"
+msgid "Contacts"
+msgstr "Контакты"
 
-msgid "Prices / Exchange"
-msgstr "Цены / Курсы"
+msgid "Prices"
+msgstr "Цены"
+
+msgid "Exchange"
+msgstr "Курсы"
+
+msgid "Markup"
+msgstr "Наценки"
 
 msgid "Settings are saved"
 msgstr "Настройки сохранены"
+
+msgid "Price prefix"
+msgstr "Префикс цены"
+
+msgid "Price postfix"
+msgstr "Постфикс цены"
+
+msgid "Decimal point"
+msgstr "Разделитель разрядов"
+
+msgid "Decimals"
+msgstr "Кол-во цифр для дробн.части"
+
+msgid "Decimal point"
+msgstr "Разделитель для дробн.части"
+
+msgid "Thousands separator"
+msgstr "Разделитель для цел.части"
+
+msgid "Incorrect currency code"
+msgstr "Передан неверный код валюты"
+
+msgid "Incorrect currency date"
+msgstr "Передана неверная дата"
+
+msgid "Bad server answer or server is not available"
+msgstr "Возможно указан неверный код валюты, также возможно на указанную дату еще не установлен курс валюты, либо сервер cbrates.rbc.ru недоступен."
+
+msgid "No server response on specified date"
+msgstr "Сервер не выдал результатов по данной валюте на указнную дату"
+
+msgid "Rates refreshing"
+msgstr "Обновление курсов"
+
+msgid "Round by"
+msgstr "Округлять до знаков"

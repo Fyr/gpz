@@ -6,6 +6,8 @@ class RateController extends AppController {
 	public $uses = array('Settings');
 
 	public function refresh() {
+		$this->autoRender = false;
+
 		$aCurrency = array(
 			'usd' => 840,
 			'eur' => 978,
@@ -25,6 +27,7 @@ class RateController extends AppController {
 					$setKurs[$curr] = $kurs;
 					$this->Settings->save(array('id' => 1, 'xchg_'.$curr => $kurs));
 				}
+				echo "$curr: $kurs<br/>";
 			}
 
 			$this->Settings->trxCommit();
@@ -32,10 +35,10 @@ class RateController extends AppController {
 		} catch (Exception $e) {
 			$this->Settings->trxRollback();
 			$errMsg = $e->getMessage();
+			echo "Error! ".$errMsg;
 		}
 
 		if ($errMsg || $setKurs) {
-			/*
 			$Email = new CakeEmail();
 			$Email->template('rates_refresh')->viewVars(compact('setKurs', 'errMsg'))
 				->emailFormat('html')
@@ -44,7 +47,6 @@ class RateController extends AppController {
 				->bcc(Configure::read('Settings.admin_email'))
 				->subject(Configure::read('domain.title') . ': ' . __('Rates refreshing'))
 				->send();
-			*/
 		}
 	}
 	

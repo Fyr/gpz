@@ -28,7 +28,6 @@
                 .gradient { filter: none; }
             </style>
         <![endif]-->
-        <script type="text/javascript"  src="/rkt.php?yab=true&key=475f18d21cecb94"></script>
 	</head>
 	<body>
 		<div class="shadowRight">

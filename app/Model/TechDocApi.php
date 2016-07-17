@@ -191,17 +191,18 @@ class TechDocApi extends AppModel {
 		if (in_array($currency2, array('usd', 'eur'))) {
 			$rate2 = Configure::read('Settings.xchg_'.$currency2);
 		} elseif ($currency2 == 'byr') { // цена в BYR по курсу 10000 BYR = x RUR
-			$rate2 = Configure::read('Settings.xchg_byr') / 10000;
+			$rate2 = Configure::read('Settings.xchg_byr'); // / 10000;
 		} else {
 			$rate2 = 1;
 		}
 
 		// конвертируем RUR в валюту, в которой показываем цены
 		$rate = Configure::read('Settings.xchg_' . $currency);
+		/*
 		if ($currency == 'byr') {
 			$rate = $rate / 10000; // коррекция курса
 		}
-
+		*/
 		$round_by = Configure::read('Settings.round_'.$currency);
 		return round(floatval($price['price']) * $rate2 / $rate, $round_by);
 	}

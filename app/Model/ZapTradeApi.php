@@ -95,9 +95,11 @@ class ZapTradeApi extends AppModel {
 		$price = floatval($item['price']);
 		$currency = Configure::read('Settings.price_currency'); // валюта в которой показываем цену
 		$rate = Configure::read('Settings.xchg_'.$currency);
+		/*
 		if ($currency == 'byr') {
 			$rate = $rate / 10000; // коррекция курса
 		}
+		*/
 		$round_by = Configure::read('Settings.round_'.$currency);
 		return round($price / $rate, $round_by); // переводим по курсу из настроек
 	}

@@ -4,7 +4,7 @@
 	} else {
 ?>
 
-На <?=date('d.m.Y')?> установлены следующие курсы:<br/>
+На <?=date('d.m.Y')?> установлены следующие курсы ЦБ РФ:<br/>
 <?
 		foreach($setKurs as $curr => $rate) {
 			echo strtoupper($curr).': '.$rate.'<br/>';

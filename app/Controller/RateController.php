@@ -11,7 +11,7 @@ class RateController extends AppController {
 		$aCurrency = array(
 			'usd' => 840,
 			'eur' => 978,
-			'byr' => 974
+			'byr' => 933
 		);
 		App::uses('Rbc', 'Vendor');
 		$today = new Rbc();

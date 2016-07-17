@@ -27,6 +27,7 @@ class ZzapApi extends AppModel {
 		// Определяем идет ли это запрос от поискового бота
 		$ip = $_SERVER['REMOTE_ADDR'];
 		$proxy_type = ($this->isBot($ip)) ? 'Bot' : 'Site';
+		/*
 		if ($proxy_type == 'Bot' || TEST_ENV) {
 			// пытаемся достать инфу из кэша без запроса на API - так быстрее и не нужно юзать прокси
 			$_cache = $this->loadModel('ZzapCache')->getCache($method, $request);
@@ -48,6 +49,7 @@ class ZzapApi extends AppModel {
 				return json_decode($_cache['ZzapCache']['response'], true);
 			}
 		}
+		*/
 		
 		$curl = new Curl($url);
 		$curl->setParams($data)
@@ -389,9 +391,11 @@ class ZzapApi extends AppModel {
 		$price = floatval(str_replace(array('р.', ' '), '', $item['price']));
 		$currency = Configure::read('Settings.price_currency'); // валюта в которой показываем цену
 		$rate = Configure::read('Settings.xchg_'.$currency);
+		/*
 		if ($currency == 'byr') {
 			$rate = $rate / 10000; // коррекция курса
 		}
+		*/
 		$round_by = Configure::read('Settings.round_'.$currency);
 		return round($price / $rate, $round_by); // переводим по курсу из настроек
 	}
